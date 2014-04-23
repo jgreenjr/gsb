@@ -1,5 +1,5 @@
 var Transaction = require("./Transaction.js");
-
+var helpers = require("./helpers.js");
 exports.CreateBank = function(json){
     
     exports.InitAccount(json);
@@ -10,7 +10,7 @@ exports.CreateBank = function(json){
     this.Title = function(){return backingData.title; }
     this.Save = function(){exports.Saver.SaveBank(backingData)}
     this.AddTransaction = function(transaction){
-      backingData.Total = exports.UpdateTotal(backingData.Total, transaction);
+      backingData.Total = helpers.UpdateTotal(backingData.Total, transaction);
         
         backingData.Transactions.push(transaction)
         
@@ -23,18 +23,6 @@ exports.CreateBank = function(json){
     return this;
 }
 
-exports.UpdateTotal = function(currentTotal, transaction)
-{
-     switch(transaction.type){
-            case "deposit":
-              currentTotal += parseFloat(transaction.amount);
-              break;
-              case "widthdrawl":
-              currentTotal -= parseFloat(transaction.amount);
-              break;
-        }
-        return currentTotal;
-}
 
 
 exports.InitAccount=function(json){
