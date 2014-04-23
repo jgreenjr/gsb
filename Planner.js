@@ -7,9 +7,14 @@ exports.ValidateTransaction = function(json){
         errors.push({errorCode: "InvalidStartDate", errorMessage: "Invalid Start Date"});
     }
     
-    if(isNaN(json.daysTilRepeat))
+    if(isNaN(json.repeatInterval))
     {
-        errors.push({errorCode: "InvalidDaysTilRepeat", errorMessage: "Invalid Days Til Repeat"})
+        errors.push({errorCode: "InvalidrepeatInterval", errorMessage: "Invalid Days Til Repeat"})
+    }
+    
+     if(!json.repeatUnit)
+    {
+        errors.push({errorCode: "InvalidrepeatUnit", errorMessage: "Invalid Repeat Unit"})
     }
     
     return errors;
@@ -19,6 +24,7 @@ exports.CreatePlan = function(json){
     var backingData = json
     
     this.AddTransaction = function(transaction){
+        transaction.IsValidDate = IsValidDate;
         backingData.Transactions.push(transaction);
     }
     
@@ -28,18 +34,41 @@ exports.CreatePlan = function(json){
         for(var i = 0; i < days; i++){
             for(var j = 0; j < backingData.Transactions.length; j++){
                 var trans = backingData.Transactions[j];
-                var time = date.getTime() - new Date(trans.startDate).getTime;
-                var days = time / 86400;
-                
-                if(days % trans.daysTilRepeat == 0){
+              
+                if(trans.IsValidDate(date)){
                     transactions.push({payee:trans.payee, date:date.toDateString(), amount:trans.amount, type:trans.type});
                 }
-                date += 86400;
             }
+             date.setDate(date.getDate()+1);
         }
         
         return transactions;
     }
     
     return this;
+}
+
+function IsValidDate(date){
+     var startDate = new Date(this.startDate);
+     if(date < startDate)
+        return false;
+    switch(this.repeatUnit){
+        case "day":
+            var time = date - startDate;
+            var day = Math.floor(time / 86400000);
+            
+            return day % this.repeatInterval === 0;
+        case "month":
+            var xDay = date.getDate();
+            var yDay = startDate.getDate();
+            
+            var xMonth = date.getMonth();
+            var yMonth = startDate.getMonth();
+            
+            var monthDiff = yMonth - xMonth;
+            
+            return (xDay == yDay && monthDiff % this.repeatInterval===0);
+    }
+    
+    return false;
 }
