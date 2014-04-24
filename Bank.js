@@ -34,7 +34,7 @@ exports.InitAccount=function(json){
     else{
             json.Total = 0;
             for(var i = 0; i < json.Transactions.length; i++){
-               json.Total = exports.UpdateTotal(json.Total, json.Transactions[i]); 
+               json.Total = helpers.UpdateTotal(json.Total, json.Transactions[i]); 
             }
         }
       

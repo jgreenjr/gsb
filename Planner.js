@@ -1,5 +1,6 @@
 var Transaction = require("./Transaction.js")
 var helpers = require("./helpers.js");
+var saver = require("./saver.js");
 
 exports.ValidateTransaction = function(json){
     var errors = Transaction.StandardTransactionValidation(json);
@@ -48,6 +49,10 @@ exports.CreatePlan = function(json){
         }
         
         return planResult;
+    }
+    
+    this.Save = function(){
+        saver.Save(backingData, "bank");
     }
     
     return this;
