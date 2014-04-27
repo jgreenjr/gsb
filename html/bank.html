@@ -2,32 +2,47 @@
     <head>
         <title>Greens Savings and Blown</title>
        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
-        
+        <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     </head>
     
     <body>
+    <div class="container ">
         <h2 data-bind="text: title" >Test Title</h2>
-        
-        <table>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Payee</th>
-                <th>Deposit</th>
-                <th>Widthdrawl</th>
-                <th data-bind="text: Money(total())"></th>
-            </tr>
-            </thead>
-            <tbody data-bind="foreach: Transactions">
-        <tr>
-            <td data-bind="text: payee"></td>
-            <td data-bind="text: amount"></td>
-        </tr>
-    </tbody>
-        </table>
+        <div>Balance: <span data-bind="text: Money(total())"></span></div>
+        <ul class="alert alert-danger" data-bind="visible: errors().length > 0, foreach:errors">
+          <li data-bind="text:message"></li>
+           
+      </ul>
+            
+       
+       <div class="row">
+            <div class="col-md-1">Date</div>
+            <div class="col-md-4">Payee</div>
+            <div class="col-md-2">Deposit</div>
+            <div class="col-md-2">Widthdrawl</div>
+            <div class="col-md-2">Balance</div>
+      </div>
+        <div class="row">
+            <div class="col-md-1"><input data-bind="value: transactionDate" style="width:80px"/></div>
+            <div class="col-md-4"><input data-bind="value: transactionPayee" style="width:320px"/></div>
+            <div class="col-md-2"><input data-bind="value: transactionDeposit" style="width:80px"/></div>
+            <div class="col-md-2"><input data-bind="value: transactionWidthdrawl" style="width:80px"/></div>
+            <div class="col-md-2"><div data-bind="text: transactionTotal"></div></div>
+            <div class="col-md-1"> <div data-bind="click: AddTransaction" class="link">Add</div></div>
+      </div>
+    <div data-bind="foreach: Transactions">
+        <div class="row">
+            <div class="col-md-1" data-bind="text: date"></div>
+            <div class="col-md-4" data-bind="text: payee"></div>
+            <div class="col-md-2" data-bind="text: model.MoneyWithType(amount, type=='deposit')"></div>
+            <div class="col-md-2" data-bind="text: model.MoneyWithType(amount, type=='widthdrawl')"></div>
+            <div class="col-md-2"  data-bind="text: model.Money(balance)"></div>
+      </div>
+    </div>
+       </div>
          <script src="js/knockout-3.1.0.js" type="text/javascript"></script>
         <script src="js/bank.js" type="text/javascript"></script>
-        <div onclick="AddTransaction()">Add Transaction</div>
+       
     </body>
     
 </html>

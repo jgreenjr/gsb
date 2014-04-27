@@ -14,8 +14,6 @@ var server = http.createServer(function(request, response){
      if(parsed.pathname == "/")
         parsed.pathname = "/bank.html";
     
-    console.log(parsed);
-     
      if(request.headers.accept.indexOf("text/html") != -1 ){
          fs.readFile("html/"+parsed.pathname, function(err, data) {
              

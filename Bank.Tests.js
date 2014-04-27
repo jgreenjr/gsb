@@ -47,3 +47,16 @@ testrunner.Test("Adding Transaction Should Update Total Deposit", function(){
     
     testrunner.Assert.IsEqual(1, bankAccountJson.Transactions.length);
 })
+
+testrunner.Test("Adding Transaction Should Update Total Deposit", function(){
+     var bankAccountJson = {title: "TestTitle"}
+     var b = Bank.CreateBank(bankAccountJson);
+    
+    b.AddTransaction({payee:'testPayee', date:'1/1/2013', amount:100.00, type:"deposit"})
+    b.AddTransaction({payee:'testPayee', date:'2/1/2013', amount:100.00, type:"deposit"})
+    b.AddTransaction({payee:'testPayee', date:'1/1/2012', amount:100.00, type:"deposit"})
+    
+    testrunner.Assert.IsEqual('2/1/2013', bankAccountJson.Transactions[0].date);
+     testrunner.Assert.IsEqual('1/1/2013', bankAccountJson.Transactions[1].date);
+      testrunner.Assert.IsEqual('1/1/2012', bankAccountJson.Transactions[2].date);
+})
