@@ -1,5 +1,6 @@
 var Transaction = require("./Transaction.js");
 var helpers = require("./helpers.js");
+var Saver = require("./saver.js");
 exports.CreateBank = function(json){
     
     exports.InitAccount(json);
@@ -8,7 +9,7 @@ exports.CreateBank = function(json){
     
     
     this.Title = function(){return backingData.title; }
-    this.Save = function(){exports.Saver.SaveBank(backingData)}
+    this.Save = function(){Saver.Save(backingData, "bank")}
     this.AddTransaction = function(transaction){
       backingData.Total = helpers.UpdateTotal(backingData.Total, transaction);
       transaction.balance = backingData.Total;
@@ -36,17 +37,19 @@ exports.CreateBank = function(json){
 
 
 exports.InitAccount=function(json){
-    if(json.Total === undefined)
-        json.Total = 0;
+  
+    json.Total = 0;
    
     if(json.Transactions === undefined)
         json.Transactions = [];
     else{
-            json.Total = 0;
-            for(var i = 0; i < json.Transactions.length; i++){
-               json.Total = helpers.UpdateTotal(json.Total, json.Transactions[i])
-               json.Transactions[i].balance = json.Total; 
+            var i = 0;
+            var total = 0;
+            for(i = json.Transactions.length-1; i >=0 ; i--){
+            total = helpers.UpdateTotal(total, json.Transactions[i])
+               json.Transactions[i].balance = total; 
             }
+            json.Total = total;
         }
       
 }

@@ -10,17 +10,6 @@ testrunner.Test("BankAccount should Set title from json",function(){
     
 });
 
-testrunner.Test("Save Data Should Pass Backing Data",function(){
-    var result = null;
-    var bankAccountJson = {title: "TestTitle"}
-   Bank.Saver = {SaveBank: function(data){ result = data;}};
-   
-   var b = Bank.CreateBank(bankAccountJson);
-    b.Save();
-    testrunner.Assert.IsEqual(result, bankAccountJson);
-   
-});
-
 testrunner.Test("Adding Transaction Should Update Total Deposit", function(){
      var bankAccountJson = {title: "TestTitle"}
      var b = Bank.CreateBank(bankAccountJson);
@@ -59,4 +48,12 @@ testrunner.Test("Adding Transaction Should Update Total Deposit", function(){
     testrunner.Assert.IsEqual('2/1/2013', bankAccountJson.Transactions[0].date);
      testrunner.Assert.IsEqual('1/1/2013', bankAccountJson.Transactions[1].date);
       testrunner.Assert.IsEqual('1/1/2012', bankAccountJson.Transactions[2].date);
+})
+
+testrunner.Test("Adding Transaction Should Update Total Deposit", function(){
+     var bankAccountJson = {title: "TestTitle",Total: 75, Transactions:[{payee:'testPayee', date:'1/1/2013', amount:100.00, type:"deposit"},{payee:'testPayee', date:'1/1/2013', amount:25.00, type:"widthdrawl"}]}
+     var b = Bank.CreateBank(bankAccountJson);
+    
+    testrunner.Assert.IsEqual(bankAccountJson.Transactions[0].balance,75)
+    testrunner.Assert.IsEqual(bankAccountJson.Transactions[1].balance,-25)
 })

@@ -66,6 +66,7 @@ var ViewModel = function(json) {
       dataType: "json",  
       contentType: "json",  
       data: data,  
+      beforeSend: beforeSend,
       success: function(data2){     
           
        self.total(data2.Total);
@@ -82,9 +83,52 @@ var ViewModel = function(json) {
    
 }
 };
- 
- $.getJSON("/bank", function(data){
+  function populateBank(){
+ $.ajax({
+    url: "/bank",
+    dataType: "json",
+    beforeSend: beforeSend,
+    success: function(data){
     model = new ViewModel(data)
-    ko.applyBindings(model); // This makes Knockout get to work
+    ko.applyBindings(model, $("#bankSheet")[0]); // This makes Knockout get to work
+    },
+     error: function(data2){  
+        model = new ViewModel({})
+        ko.applyBindings(model); // This makes Knockout get to work
+        model.errors(data2.responseJSON);  
+      }  
  })
+  }
 
+ $.ajax({
+    url: "/banks",
+    dataType: "json",
+    success: function(data){
+    var bankmodel = new BankModel(data)
+  
+    ko.applyBindings(bankmodel, $("#bankSelect")[0]); // This makes Knockout get to work
+    },
+     error: function(data2){  
+       
+      }  
+ });
+ 
+ function beforeSend(xhr) {
+        xhr.setRequestHeader('bank', selectedBankName);
+    }
+
+var BankModel = function(json){
+    this.bankNames = ko.observableArray(json);
+    this.bankName = ko.observable();
+    
+    this.DoThis = ko.computed(function(){
+        if(this.bankName())
+        {
+           selectedBankName = this.bankName().bankName;
+           populateBank();
+           $("#bankSheet").show();
+        }
+    }
+    , this)
+    }
+var selectedBankName = "";

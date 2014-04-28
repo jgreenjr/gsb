@@ -4,7 +4,7 @@ var Bank = require("./Bank");
 var Transaction = require("./Transaction")
 var fs = require("fs");
 
-var b = Bank.CreateBank({name:"becu"})
+var banks = [];
 
 
 var server = http.createServer(function(request, response){
@@ -26,8 +26,17 @@ var server = http.createServer(function(request, response){
          });
          return;
      }
+     var b = null;
+    if(parsed.pathname!=="/banks"){
+     for(var i =0; i < banks.length; i++){
+         if(banks[i].Title() == request.headers.bank){
+             b=banks[i];
+             
+             break;
+         }
+     }
      
-    if(parsed.pathname.indexOf(".js") != -1)
+      if(parsed.pathname.indexOf(".js") != -1)
     {
           fs.readFile("html/"+parsed.pathname, function(err, data) {
              
@@ -39,6 +48,29 @@ var server = http.createServer(function(request, response){
           return;
          });
          return;
+    }
+     
+     if(b === null){
+      
+         fs.readFile(request.headers.bank + ".bank", function(err, fileData){
+             if(err)
+             {
+                SendResponseWithType(response, 400, JSON.stringify([{message: 'Bank was not loaded'}]), "application/json" );
+                return;
+             }
+             var toLoad = fileData.toString();
+           
+             b = Bank.CreateBank(JSON.parse(toLoad));
+             banks.push(b);
+             response.writeHead(302, {
+                'Location': request.url,
+                'bank': b.Title()
+            });
+            response.end();
+         });
+         return;
+     }
+     
     }
      
      switch (parsed.pathname.toLowerCase()) {
@@ -65,7 +97,7 @@ var server = http.createServer(function(request, response){
                 }
             
                 b.AddTransaction(trans);
-               // b.save();
+                b.Save();
                 SendResponse(response,200, b.GetDisplay());
                     
                 });
@@ -75,20 +107,35 @@ var server = http.createServer(function(request, response){
                 SendResponse(response,200, b.GetDisplay());
             
             break;
+            case "/banks":
+                fs.readdir(".", function(err, files){
+                    if(err){
+                         SendResponseWithType(response, 400, JSON.stringify([{message: 'Cannot Find List of Banks'}]), "application/json" );
+                        return;
+                    }
+                    
+                    var banks = [];
+                    for(var i = 0; i < files.length; i++){
+                        var index = files[i].indexOf(".bank");
+                        console.log(index);
+                        if( index != -1){
+                            banks.push({bankName: files[i].substr(0,index)})
+                        }
+                        }
+                    
+                    
+                    SendResponseWithType(response, 200, JSON.stringify(banks), "application/json" );
+                        return;
+                });
+                
+                break;
          default:
               SendResponse(response, 400, "{errorCode:'BADENDPOINT', errorMessage:'Unhandled Endpoint'}");
      }
 });
 
-fs.readFile("./Data.bank", function(err, data) {
-    if(err)
-        throw err;
-    b = Bank.CreateBank(JSON.parse(data.toString()))
-     
-    server.listen(process.env.PORT);
+server.listen(process.env.PORT);
 console.log("Server is listening");
-}
-)
 
 function SendResponseWithType(response, statusCode, responseMessage, type){
     response.writeHead(statusCode, {"Content-Type": type});

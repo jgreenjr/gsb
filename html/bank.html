@@ -6,7 +6,12 @@
     </head>
     
     <body>
-    <div class="container ">
+    <div class="container " id="bankSelect" >
+        Account  <select id="bankNames" data-bind="options:bankNames, optionsText:'bankName',optionsCaption: 'Choose...', value:bankName">
+        </select>
+    </div>
+    
+    <div class="container " id="bankSheet" style="display:none">
         <h2 data-bind="text: title" >Test Title</h2>
         <div>Balance: <span data-bind="text: Money(total())"></span></div>
         <ul class="alert alert-danger" data-bind="visible: errors().length > 0, foreach:errors">
