@@ -29,6 +29,30 @@ exports.CreateBank = function(json){
         
         
     };
+    this.UpdateTransaction = function(transaction){
+        var i = 0;
+        for(i = 0; i < backingData.Transactions.length; i++){
+            if(backingData.Transactions[i].id == transaction.id){
+                break;
+            }
+        }
+        if( i == backingData.Transactions.length){
+            return;
+        }
+        var total = 0; 
+        if( i < backingData.Transactions.length -1){
+            total = backingData.Transactions[i+1].balance;
+        }
+        
+        backingData.Transactions[i] = transaction;
+        
+        while(i >= 0){
+            total = helpers.UpdateTotal(total, backingData.Transactions[i])
+            json.Transactions[i].balance = total; 
+            i--;
+        }
+        backingData.Total = total;
+    }
     this.Total = function(){return backingData.Total}
     this.GetDisplay = function(){return JSON.stringify(backingData);}
     return this;

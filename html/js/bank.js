@@ -2,12 +2,38 @@ var model = null;
 var ViewModel = function(json) {
     this.title = ko.observable(json.title);
     this.total = ko.observable(json.Total);
+    //this.Transactions = ko.observableArray(buildTransactionModels(json.Transactions));
     this.Transactions = ko.observableArray(json.Transactions);
     this.errors = ko.observableArray([]);
     this.transactionDate = ko.observable(new Date().toLocaleDateString())
     this.transactionPayee = ko.observable();
     this.transactionDeposit = ko.observable();
     this.transactionWidthdrawl = ko.observable();
+    
+    this.UpdateTransaction = function(item){
+       var self = this;
+    $.ajax({  
+      url: "/transaction",  
+      type: "PUT",  
+      dataType: "json",  
+      contentType: "json",  
+      data: JSON.stringify(item),  
+      beforeSend: beforeSend,
+      success: function(data2){     
+          
+       model.total(data2.Total);
+       model.Transactions(data2.Transactions);
+       model.transactionDate(new Date().toLocaleDateString());
+       model.transactionWidthdrawl("");
+       model.transactionDeposit("");
+       model.transactionPayee("");
+      },  
+      error: function(data2){  
+        model.errors(data2.responseJSON);  
+      }  
+    })
+    }
+    
      this.transactionType = ko.computed(function(){
          var  t = parseFloat(this.total()) ;
        if(this.transactionDeposit()){
@@ -45,11 +71,7 @@ var ViewModel = function(json) {
         return parseFloat(data).toFixed(2);
         
     };
-    this.MoneyWithType = function (amount, type){
-        if(type)
-           return parseFloat(amount).toFixed(2); 
-        return "";
-    };
+   
     
     this.GetTransactionSettings = function(){
    
@@ -79,8 +101,15 @@ var ViewModel = function(json) {
       error: function(data2){  
         self.errors(data2.responseJSON);  
       }  
-    });  
+    });
    
+   function buildTransactionModels(arr){
+       var returnValue = []
+       for(i = 0; i < arr.length; i++){
+           returnValue.push(new TransactionModel(arr[i]));
+       }
+       return returnValue;
+   }
 }
 };
   function populateBank(){

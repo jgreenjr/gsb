@@ -79,30 +79,15 @@ var server = http.createServer(function(request, response){
               return;
         case "/transaction":
             if(request.method.toLowerCase() == "post"){
-                 var trans = {};
-               request.on("data", function(stream){
-                    var myText = stream.toString();
-                    try{
-                      trans = JSON.parse(myText);
-                    }catch(ex){
-                          SendResponse(response, 400, JSON.stringify({errorCode:"InvalidJson", message:"InvalidJson:"+myText}));
-                          return;
-                    }
-                        
-                    var validationResult = Transaction.Validate(trans);
-                
-                if(validationResult.length !== 0){
-                    SendResponse(response, 400, JSON.stringify(validationResult));
-                    return;
-                }
-            
-                b.AddTransaction(trans);
-                b.Save();
-                SendResponse(response,200, b.GetDisplay());
-                    
-                });
+                ProcessTransaction(request, response, b, b.AddTransaction)
                 return;
             }
+            
+            if(request.method.toLowerCase() == "put"){
+                ProcessTransaction(request, response, b, b.UpdateTransaction);
+                return;
+            }
+          
             case "PlannedTransaction":
                 SendResponse(response,200, b.GetDisplay());
             
@@ -147,3 +132,27 @@ function SendResponse(response, statusCode, responseMessage){
    SendResponseWithType(response, statusCode, responseMessage, "application/json")
 }
 
+function ProcessTransaction(request, response, b, processTransactionFunction){
+     request.on("data", function(stream){
+         var trans = {};
+            var myText = stream.toString();
+            try{
+              trans = JSON.parse(myText);
+            }catch(ex){
+                  SendResponse(response, 400, JSON.stringify({errorCode:"InvalidJson", message:"InvalidJson:"+myText}));
+                  return;
+            }
+                
+            var validationResult = Transaction.Validate(trans);
+        
+        if(validationResult.length !== 0){
+            SendResponse(response, 400, JSON.stringify(validationResult));
+            return;
+        }
+    
+        processTransactionFunction(trans);
+        b.Save()
+        SendResponse(response,200, b.GetDisplay());
+            
+        });
+}

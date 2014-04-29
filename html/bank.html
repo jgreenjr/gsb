@@ -22,14 +22,14 @@
        
        <div class="row">
             <div class="col-md-1">Date</div>
-            <div class="col-md-4">Payee</div>
+            <div class="col-md-3">Payee</div>
             <div class="col-md-2">Deposit</div>
             <div class="col-md-2">Widthdrawl</div>
             <div class="col-md-2">Balance</div>
       </div>
         <div class="row">
             <div class="col-md-1"><input data-bind="value: transactionDate" style="width:80px"/></div>
-            <div class="col-md-4"><input data-bind="value: transactionPayee" style="width:320px"/></div>
+            <div class="col-md-3"><input data-bind="value: transactionPayee" style="width:320px"/></div>
             <div class="col-md-2"><input data-bind="value: transactionDeposit" style="width:80px"/></div>
             <div class="col-md-2"><input data-bind="value: transactionWidthdrawl" style="width:80px"/></div>
             <div class="col-md-2"><div data-bind="text: transactionTotal"></div></div>
@@ -38,10 +38,11 @@
     <div data-bind="foreach: Transactions">
         <div class="row">
             <div class="col-md-1" data-bind="text: date"></div>
-            <div class="col-md-4" data-bind="text: payee"></div>
-            <div class="col-md-2" data-bind="text: model.MoneyWithType(amount, type=='deposit')"></div>
-            <div class="col-md-2" data-bind="text: model.MoneyWithType(amount, type=='widthdrawl')"></div>
+            <div class="col-md-3" data-bind="text: payee"></div>
+            <div class="col-md-2" data-bind="if: type=='deposit'" > <input data-bind="value: amount" style="width:80px"></input></div>
+            <div class="col-md-2" data-bind="if: type=='widthdrawl'"><input data-bind="value: amount" style="width:80px"></input></div>
             <div class="col-md-2"  data-bind="text: model.Money(balance)"></div>
+              <div class="col-md-2"  data-bind="click: $parent.UpdateTransaction">Update</div>
       </div>
     </div>
        </div>

@@ -4,6 +4,10 @@ exports.Validate = function(json){
      if(!Date.parse(json.date))
       messages.push({errorCode:"InvalidDate", message:"Invalid Date"});
       
+      if(json.id == undefined){
+          var date = new Date();
+          json.id = date.getYear() + "_"+date.getMonth() + "_" + date.getDate()  + "_" + date.getHours() + "_" + date.getMinutes() + "_" + date.getSeconds()+ "_" + date.getMilliseconds();   
+      }
       
     return messages
 }
