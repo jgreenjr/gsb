@@ -2,15 +2,19 @@ var model = null;
 var ViewModel = function(json) {
     this.title = ko.observable(json.title);
     this.total = ko.observable(json.Total);
+    this.loaded = ko.observable(false);
     //this.Transactions = ko.observableArray(buildTransactionModels(json.Transactions));
     this.Transactions = ko.observableArray(json.Transactions);
     this.errors = ko.observableArray([]);
+    this.warnings = ko.observableArray([]);
     this.transactionDate = ko.observable(new Date().toLocaleDateString())
     this.transactionPayee = ko.observable();
     this.transactionDeposit = ko.observable();
     this.transactionWidthdrawl = ko.observable();
     
     this.UpdateTransaction = function(item){
+         model.warnings(["Updating Transaction:"+item.payee])
+      
        var self = this;
     $.ajax({  
       url: "/transaction",  
@@ -27,6 +31,8 @@ var ViewModel = function(json) {
        model.transactionWidthdrawl("");
        model.transactionDeposit("");
        model.transactionPayee("");
+        model.warnings([])
+       var self = this;
       },  
       error: function(data2){  
         model.errors(data2.responseJSON);  
@@ -64,7 +70,7 @@ var ViewModel = function(json) {
        else if(this.transactionWidthdrawl()){
            return this.Money(t- parseFloat(this.transactionWidthdrawl()));
        }
-       return "";
+       return "-";
     },this);
     this.Money = function(data){
           
@@ -120,6 +126,7 @@ var ViewModel = function(json) {
     success: function(data){
     model = new ViewModel(data)
     ko.applyBindings(model, $("#bankSheet")[0]); // This makes Knockout get to work
+    model.loaded(true);
     },
      error: function(data2){  
         model = new ViewModel({})
@@ -155,7 +162,7 @@ var BankModel = function(json){
         {
            selectedBankName = this.bankName().bankName;
            populateBank();
-           $("#bankSheet").show();
+           
         }
     }
     , this)

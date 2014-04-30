@@ -3,6 +3,17 @@
         <title>Greens Savings and Blown</title>
        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
         <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+        <style>
+            .heading  [class^="col-"] {
+                background-color:black;
+                color:white;
+                border-left:white 1px solid;}
+                
+            .my-row  [class^="col-"] {
+                margin-top:2px;
+                border-left:gray 1px solid;
+                }
+        </style>
     </head>
     
     <body>
@@ -11,36 +22,43 @@
         </select>
     </div>
     
-    <div class="container " id="bankSheet" style="display:none">
+    <div class="container " id="bankSheet" style="display:none" data-bind="visible: loaded()">
         <h2 data-bind="text: title" >Test Title</h2>
         <div>Balance: <span data-bind="text: Money(total())"></span></div>
         <ul class="alert alert-danger" data-bind="visible: errors().length > 0, foreach:errors">
           <li data-bind="text:message"></li>
            
       </ul>
+      
+       <ul class="alert alert-warning" data-bind="visible: warnings().length > 0, foreach:warnings">
+          <li data-bind="text:$data"></li>
+           
+      </ul>
+            
             
        
-       <div class="row">
+       <div class="row heading">
             <div class="col-md-1">Date</div>
             <div class="col-md-3">Payee</div>
             <div class="col-md-2">Deposit</div>
             <div class="col-md-2">Widthdrawl</div>
             <div class="col-md-2">Balance</div>
+            <div class="col-md-2">Actions</div>
       </div>
-        <div class="row">
+        <div class="row my-row">
             <div class="col-md-1"><input data-bind="value: transactionDate" style="width:80px"/></div>
-            <div class="col-md-3"><input data-bind="value: transactionPayee" style="width:320px"/></div>
+            <div class="col-md-3"><input data-bind="value: transactionPayee" style="width:250px"/></div>
             <div class="col-md-2"><input data-bind="value: transactionDeposit" style="width:80px"/></div>
             <div class="col-md-2"><input data-bind="value: transactionWidthdrawl" style="width:80px"/></div>
             <div class="col-md-2"><div data-bind="text: transactionTotal"></div></div>
-            <div class="col-md-1"> <div data-bind="click: AddTransaction" class="link">Add</div></div>
+            <div class="col-md-1"><div data-bind="click: AddTransaction" class="link">Add</div></div>
       </div>
     <div data-bind="foreach: Transactions">
-        <div class="row">
+        <div class="row my-row">
             <div class="col-md-1" data-bind="text: date"></div>
             <div class="col-md-3" data-bind="text: payee"></div>
-            <div class="col-md-2" data-bind="if: type=='deposit'" > <input data-bind="value: amount" style="width:80px"></input></div>
-            <div class="col-md-2" data-bind="if: type=='widthdrawl'"><input data-bind="value: amount" style="width:80px"></input></div>
+            <div class="col-md-2"  ><!-- ko if: type=='deposit' --><input data-bind="value: amount" style="width:80px"></input><!-- /ko -->&nbsp;</div>
+            <div class="col-md-2"  ><!-- ko if: type=='widthdrawl' --><input data-bind="value: amount" style="width:80px"></input><!-- /ko -->&nbsp;</div>
             <div class="col-md-2"  data-bind="text: model.Money(balance)"></div>
               <div class="col-md-2"  data-bind="click: $parent.UpdateTransaction">Update</div>
       </div>
