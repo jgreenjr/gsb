@@ -13,12 +13,23 @@ var ViewModel = function(json) {
     this.transactionWidthdrawl = ko.observable();
     
     this.UpdateTransaction = function(item){
-         model.warnings(["Updating Transaction:"+item.payee])
+        model.warnings(["Updating Transaction:"+item.payee]);
+        model.ProcessTransaction(item, "PUT")
+        
+    }
+    
+     this.DeleteTransaction = function(item){
+        model.warnings(["Deleting Transaction:"+item.payee])
+        model.ProcessTransaction(item, "DELETE")
+    }
+    
+    this.ProcessTransaction = function(item, action){
+      
       
        var self = this;
     $.ajax({  
       url: "/transaction",  
-      type: "PUT",  
+      type: action ,  
       dataType: "json",  
       contentType: "json",  
       data: JSON.stringify(item),  

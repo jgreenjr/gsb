@@ -78,12 +78,26 @@ var server = http.createServer(function(request, response){
               SendResponse(response,200, b.GetDisplay());
               return;
         case "/transaction":
+            switch(request.method.toLowerCase()){
+                case "post":
+                    ProcessTransaction(request, response, b, b.AddTransaction)
+                    return;
+                case "put":
+                    ProcessTransaction(request, response, b, b.UpdateTransaction);
+                    return;
+                case "delete":
+                    ProcessTransaction(request, response, b, b.DeleteTransaction);
+                    return;
+            }
             if(request.method.toLowerCase() == "post"){
-                ProcessTransaction(request, response, b, b.AddTransaction)
-                return;
+              
             }
             
             if(request.method.toLowerCase() == "put"){
+                
+            }
+            
+             if(request.method.toLowerCase() == "delete"){
                 ProcessTransaction(request, response, b, b.UpdateTransaction);
                 return;
             }
@@ -102,7 +116,7 @@ var server = http.createServer(function(request, response){
                     var banks = [];
                     for(var i = 0; i < files.length; i++){
                         var index = files[i].indexOf(".bank");
-                        console.log(index);
+                        
                         if( index != -1){
                             banks.push({bankName: files[i].substr(0,index)})
                         }
@@ -119,8 +133,14 @@ var server = http.createServer(function(request, response){
      }
 });
 
-server.listen(process.env.PORT);
-console.log("Server is listening");
+var port = process.env.PORT;
+if(process.argv[2])
+{
+    port = process.argv[2]
+}
+console.log(port);
+server.listen(port);
+console.log("Server is listening" + port);
 
 function SendResponseWithType(response, statusCode, responseMessage, type){
     response.writeHead(statusCode, {"Content-Type": type});

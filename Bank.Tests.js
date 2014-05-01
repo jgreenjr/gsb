@@ -69,3 +69,14 @@ testrunner.Test("Updating Transaction Should Update transaction", function(){
     
 })
 
+testrunner.Test("Deleting Transaction should remove and update Total and transaction balance", function(){
+var deleteTransaction = {payee:'asdfasdf', date:'1/1/2013', amount:25.00, type:"widthdrawl", id:"2"};
+     var bankAccountJson = {title: "TestTitle",Total: 75, Transactions:[{payee:'testPayee', date:'1/1/2013', amount:100.00, type:"deposit", id:"1"},deleteTransaction]}
+     
+     var b = Bank.CreateBank(bankAccountJson);
+    b.DeleteTransaction(deleteTransaction);
+    
+    testrunner.Assert.IsEqual(1,bankAccountJson.Transactions.length);
+    testrunner.Assert.IsEqual(100, bankAccountJson.Total);
+    testrunner.Assert.IsEqual(100, bankAccountJson.Transactions[0].balance);
+});
