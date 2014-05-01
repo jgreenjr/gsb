@@ -1,10 +1,26 @@
 var model = null;
-var ViewModel = function(json) {
-    this.title = ko.observable(json.title);
-    this.total = ko.observable(json.Total);
+var ViewModel = function() {
+
+    
+    this.bankNames = ko.observableArray([]);
+    this.bankName = ko.observable();
+    
+    this.DoThis = ko.computed(function(){
+        if(this.bankName())
+        {
+           selectedBankName = this.bankName().bankName;
+           if(needBankData)
+           populateBank();
+           
+        }
+    }
+    , this)
+    
+    this.title = ko.observable();
+    this.total = ko.observable();
     this.loaded = ko.observable(false);
     //this.Transactions = ko.observableArray(buildTransactionModels(json.Transactions));
-    this.Transactions = ko.observableArray(json.Transactions);
+    this.Transactions = ko.observableArray();
     this.errors = ko.observableArray([]);
     this.warnings = ko.observableArray([]);
     this.messages = ko.observableArray([]);
@@ -139,13 +155,13 @@ var ViewModel = function(json) {
     dataType: "json",
     beforeSend: beforeSend,
     success: function(data){
-    model = new ViewModel(data)
-    ko.applyBindings(model, $("#bankSheet")[0]); // This makes Knockout get to work
+   
+     model.total(data.Total);
+    model.Transactions(data.Transactions);
     model.loaded(true);
     },
      error: function(data2){  
-        model = new ViewModel({})
-        ko.applyBindings(model); // This makes Knockout get to work
+     
         model.errors(data2.responseJSON);  
       }  
  })
@@ -155,9 +171,9 @@ var ViewModel = function(json) {
     url: "/banks",
     dataType: "json",
     success: function(data){
-    var bankmodel = new BankModel(data)
-  
-    ko.applyBindings(bankmodel, $("#bankSelect")[0]); // This makes Knockout get to work
+    model = new ViewModel()
+    ko.applyBindings(model); // This makes Knockout get to work
+    model.bankNames(data)
     },
      error: function(data2){  
        
@@ -168,18 +184,4 @@ var ViewModel = function(json) {
         xhr.setRequestHeader('bank', selectedBankName);
     }
 
-var BankModel = function(json){
-    this.bankNames = ko.observableArray(json);
-    this.bankName = ko.observable();
-    
-    this.DoThis = ko.computed(function(){
-        if(this.bankName())
-        {
-           selectedBankName = this.bankName().bankName;
-           populateBank();
-           
-        }
-    }
-    , this)
-    }
 var selectedBankName = "";
