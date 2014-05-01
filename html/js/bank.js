@@ -7,6 +7,7 @@ var ViewModel = function(json) {
     this.Transactions = ko.observableArray(json.Transactions);
     this.errors = ko.observableArray([]);
     this.warnings = ko.observableArray([]);
+    this.messages = ko.observableArray([]);
     this.transactionDate = ko.observable(new Date().toLocaleDateString())
     this.transactionPayee = ko.observable();
     this.transactionDeposit = ko.observable();
@@ -14,28 +15,28 @@ var ViewModel = function(json) {
     
     this.UpdateTransaction = function(item){
         model.warnings(["Updating Transaction:"+item.payee]);
-        model.ProcessTransaction(item, "PUT")
+        model.ProcessTransaction(JSON.stringify(item), "PUT", "Updated",item.payee)
         
     }
     
      this.DeleteTransaction = function(item){
         model.warnings(["Deleting Transaction:"+item.payee])
-        model.ProcessTransaction(item, "DELETE")
+        model.ProcessTransaction(JSON.stringify(item), "DELETE", "Deleted", item.payee)
     }
     
-    this.ProcessTransaction = function(item, action){
-      
-      
+    this.ProcessTransaction = function(item, action, actionText, transPayee){
+        this.warnings([])
+      this.errors([]);
        var self = this;
     $.ajax({  
       url: "/transaction",  
       type: action ,  
       dataType: "json",  
       contentType: "json",  
-      data: JSON.stringify(item),  
+      data: item,  
       beforeSend: beforeSend,
       success: function(data2){     
-          
+           model.messages(["Transaction " + actionText + ": "+transPayee])
        model.total(data2.Total);
        model.Transactions(data2.Transactions);
        model.transactionDate(new Date().toLocaleDateString());
@@ -43,9 +44,12 @@ var ViewModel = function(json) {
        model.transactionDeposit("");
        model.transactionPayee("");
         model.warnings([])
+       
        var self = this;
       },  
       error: function(data2){  
+          model.warnings([])
+            model.messages([])
         model.errors(data2.responseJSON);  
       }  
     })
@@ -97,6 +101,12 @@ var ViewModel = function(json) {
     
   this.AddTransaction = function (){
       this.errors([]);
+       var data = model.GetTransactionSettings();
+       model.warnings(["Adding Transaction: "+ model.transactionPayee()])
+       model.ProcessTransaction(data, "POST", "Added",model.transactionPayee())
+       
+/*      this.errors([]);
+      
    var data = this.GetTransactionSettings();
     var self = this;
     $.ajax({  
@@ -119,14 +129,8 @@ var ViewModel = function(json) {
         self.errors(data2.responseJSON);  
       }  
     });
-   
-   function buildTransactionModels(arr){
-       var returnValue = []
-       for(i = 0; i < arr.length; i++){
-           returnValue.push(new TransactionModel(arr[i]));
-       }
-       return returnValue;
-   }
+    */
+    
 }
 };
   function populateBank(){
