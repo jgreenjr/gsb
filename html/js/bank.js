@@ -180,6 +180,10 @@ var ViewModel = function() {
       }  
  });
  
+ $(function() {
+    $( "#transactionDate" ).datepicker();
+  });
+ 
  function beforeSend(xhr) {
         xhr.setRequestHeader('bank', selectedBankName);
     }

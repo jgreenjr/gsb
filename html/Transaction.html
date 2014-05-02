@@ -2,6 +2,8 @@
     <head>
         <title>Greens Savings and Blown</title>
         <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
         <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
         <style>
            
@@ -10,13 +12,42 @@
     
     <body>
     <div class="container">
+    <ul class="alert alert-danger" data-bind="visible: errors().length > 0, foreach:errors">
+          <li data-bind="text:message"></li>
+           
+      </ul>
+      
+       <ul class="alert alert-warning" data-bind="visible: warnings().length > 0, foreach:warnings">
+          <li data-bind="text:$data"></li>
+           
+      </ul>
+        <ul class="alert alert-success" data-bind="visible: messages().length > 0, foreach:messages">
+          <li data-bind="text:$data"></li>
+           
+      </ul>
         <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">Add Transaction</h3>
   </div>
   <div class="panel-body">
-    Panel content
-  </div>
+        <div>Account:</div>
+          <select id="bankNames" data-bind="options:bankNames, optionsText:'bankName', value:bankName"></select>
+        <hr/>
+        <div>Date:</div>
+            <input data-bind="value: transactionDate" id="transactionDate" style="width:80px"/>
+        
+        <hr/>
+        <div>Payee:</div>
+        <input data-bind="value: transactionPayee" style="width:250px"/>
+        <hr/>
+        <div>Deposit Amount:</div>
+        <input data-bind="value: transactionDeposit" style="width:80px"/>
+        <hr/>
+         <div>Widthdrawl Amount:</div>
+        <input data-bind="value: transactionWidthdrawl" style="width:80px"/>
+        <hr/>
+        <button type="button" class="btn btn-success" data-bind="click: AddTransaction">Add</button>
+        </div>
   </div>
 </div>
 
