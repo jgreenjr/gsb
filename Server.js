@@ -3,11 +3,13 @@ var url = require("url");
 var Bank = require("./Bank");
 var Transaction = require("./Transaction")
 var fs = require("fs");
-
+var HtmlFileLoader = require("./HtmlFileLoader.js")
+var responseHandler = require("./responseHandler.js")
 var banks = [];
 
 
 var server = http.createServer(function(request, response){
+     var responseFunctions =responseHandler.CreateResponseHandler(request, response);
       
      var parsed = url.parse(request.url);
      
@@ -15,17 +17,21 @@ var server = http.createServer(function(request, response){
         parsed.pathname = "/bank.html";
     
      if(request.headers.accept.indexOf("text/html") != -1 ){
-         fs.readFile("html/"+parsed.pathname, function(err, data) {
-             
-             if(err){
-                 SendResponseWithType(response, 404, "Cannot Find File:"+parsed.pathname, "text/html");
-                 return;
-             }
-         SendResponseWithType(response, 200, data.toString(), "text/html");
-         return;
-         });
-         return;
+         responseFunctions.responseType="text/html";
+         responseFunctions.errorResponseType = "text/html";
+         HtmlFileLoader.LoadHTMLFile(parsed.pathname, responseFunctions);
+         return; 
      }
+    
+     
+      if(parsed.pathname.indexOf(".js") != -1)
+    {
+        responseFunctions.responseType="application/javascript";
+         responseFunctions.errorResponseType="text/html";
+         HtmlFileLoader.LoadHTMLFile(parsed.pathname, responseFunctions);
+         return; 
+    }
+    
      var b = null;
     if(parsed.pathname!=="/banks"){
      for(var i =0; i < banks.length; i++){
@@ -34,28 +40,13 @@ var server = http.createServer(function(request, response){
              
              break;
          }
-     }
-     
-      if(parsed.pathname.indexOf(".js") != -1)
-    {
-          fs.readFile("html/"+parsed.pathname, function(err, data) {
-             
-             if(err){
-                 SendResponseWithType(response, 404, "Cannot Find File:"+parsed.pathname, "text/html");
-                 return;
-             }
-         SendResponseWithType(response, 200, data.toString(), "application/javascript");
-          return;
-         });
-         return;
-    }
-     
+     } 
      if(b === null){
       
          fs.readFile(request.headers.bank + ".bank", function(err, fileData){
              if(err)
              {
-                SendResponseWithType(response, 400, JSON.stringify([{message: 'Bank was not loaded'}]), "application/json" );
+                responseHandler.SendResponseWithType(response, 400, JSON.stringify([{message: 'Bank was not loaded'}]), "application/json" );
                 return;
              }
              var toLoad = fileData.toString();
@@ -75,7 +66,7 @@ var server = http.createServer(function(request, response){
      
      switch (parsed.pathname.toLowerCase()) {
          case "/bank":
-              SendResponse(response,200, b.GetDisplay());
+              responseHandler.SendResponse(response,200, b.GetDisplay());
               return;
         case "/transaction":
             switch(request.method.toLowerCase()){
@@ -142,16 +133,11 @@ console.log(port);
 server.listen(port);
 console.log("Server is listening" + port);
 
-function SendResponseWithType(response, statusCode, responseMessage, type){
-    response.writeHead(statusCode, {"Content-Type": type});
-    response.write(responseMessage);
-    response.end();
-}
-
+/*
 function SendResponse(response, statusCode, responseMessage){
    SendResponseWithType(response, statusCode, responseMessage, "application/json")
 }
-
+*/
 function ProcessTransaction(request, response, b, processTransactionFunction){
      request.on("data", function(stream){
          var trans = {};
