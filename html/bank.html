@@ -2,7 +2,9 @@
     <head>
         <title>Greens Savings and Blown</title>
         <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
-        <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+       <script type="text/javascript" src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
+       <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/black-tie/jquery-ui.css"/>
+        <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
         <style>
             .heading  [class^="col-"] {
                 background-color:black;
@@ -12,6 +14,9 @@
             .my-row  [class^="col-"] {
                 margin-top:2px;
                 border-left:gray 1px solid;
+                }
+                .link{
+                    cursor:pointer;
                 }
         </style>
     </head>
@@ -44,28 +49,28 @@
             <tr>
                 <th class="col-md-1">Date</th>
                 <th class="col-md-3">Payee</th>
-                <th class="col-md-2">Deposit</th>
-                <th class="col-md-2">Widthdrawl</th>
+                <th class="col-md-1">Deposit</th>
+                <th class="col-md-1">Widthdrawl</th>
                 <th class="col-md-2">Balance</th>
                 <th class="col-md-2">Actions</th> 
             </tr>
         </thead>
         <tr>
-            <td class="col-md-1"><input data-bind="value: transactionDate" style="width:80px"/></td>
+            <td class="col-md-1"><input data-bind="value: transactionDate" class="transactionDate" style="width:80px"/></td>
             <td class="col-md-3"><input data-bind="value: transactionPayee" style="width:250px"/></td>
-            <td class="col-md-2"><input data-bind="value: transactionDeposit" style="width:80px"/></td>
-            <td class="col-md-2"><input data-bind="value: transactionWidthdrawl" style="width:80px"/></td>
+            <td class="col-md-1"><input data-bind="value: transactionDeposit" style="width:80px"/></td>
+            <td class="col-md-1"><input data-bind="value: transactionWidthdrawl" style="width:80px"/></td>
             <td class="col-md-2"><span data-bind="text: transactionTotal"></span></td>
-            <td class="col-md-1"><span data-bind="click: AddTransaction" class="link">Add</span></td>
+            <td class="col-md-1"><input type='button' data-bind="click: AddTransaction" class="link" value="Add"/></td>
         </tr>
         <tbody data-bind="foreach: Transactions">
             <tr >
                 <td class="col-md-1" data-bind="text: date"></td>
                 <td class="col-md-3" data-bind="text: payee"></td>
-                <td class="col-md-2"  ><!-- ko if: type=='deposit' --><input data-bind="value: amount" style="width:80px"></input><!-- /ko -->&nbsp;</td>
-                <td class="col-md-2"  ><!-- ko if: type=='widthdrawl' --><input data-bind="value: amount" style="width:80px"></input><!-- /ko -->&nbsp;</td>
+                <td class="col-md-1"  ><!-- ko if: type=='deposit' --><input data-bind="value: amount" style="width:80px"></input><!-- /ko -->&nbsp;</td>
+                <td class="col-md-1"  ><!-- ko if: type=='widthdrawl' --><input data-bind="value: amount" style="width:80px"></input><!-- /ko -->&nbsp;</td>
                 <td class="col-md-2"  data-bind="text: model.Money(balance)"></td>
-                <td class="col-md-2"><span data-bind="click: $parent.UpdateTransaction">Update</span> | <span data-bind="click: $parent.DeleteTransaction">Delete</span> </td>
+                <td class="col-md-2"><a data-bind="click: $parent.UpdateTransaction" class="link" >Update</a> | <a class="link" data-bind="click: $parent.DeleteTransaction">Delete</a> | <a class="link" data-bind="click: $parent.ShowDetails">Details</a> </td>
             </tr>
         </tbody>
     </table>

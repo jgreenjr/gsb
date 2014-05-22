@@ -10,6 +10,16 @@ exports.CreateBank = function(json){
     
     this.Title = function(){return backingData.title; }
     this.Save = function(){Saver.Save(backingData, "bank")}
+    
+    this.FindTransaction = function(id){
+         var i = 0;
+        for(i = 0; i < backingData.Transactions.length; i++){
+            if(backingData.Transactions[i].id == id){
+                return backingData.Transactions[i];
+            }
+        }
+        return null;
+    }
     this.AddTransaction = function(transaction){
       backingData.Total = helpers.UpdateTotal(backingData.Total, transaction);
       transaction.balance = backingData.Total;
@@ -20,12 +30,12 @@ exports.CreateBank = function(json){
             if(new Date(backingData.Transactions[i].date) <= transDate )
             {
                 backingData.Transactions.splice(i,0, transaction);
-                return transaction.Id;
+                return transaction.id;
             }
         }
         backingData.Transactions.push(transaction)
       
-        return transaction.Id;
+        return transaction.id;
         
         
     };
@@ -83,7 +93,7 @@ exports.CreateBank = function(json){
 exports.InitAccount=function(json){
   
     json.Total = 0;
-   
+    
     if(json.Transactions === undefined)
         json.Transactions = [];
     else{

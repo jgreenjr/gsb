@@ -27,6 +27,10 @@ exports.StandardTransactionValidation = function(json)
      
      if(!json.payee)
       messages.push({errorCode:"InvalidPayee", message:"Invalid Payee"});
+      
+     if(!json.category)
+        json.category = "Not Specified";
+     
      
      return messages;
 }

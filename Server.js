@@ -1,10 +1,10 @@
 var http = require("http");
 var url = require("url");
 var Bank = require("./Bank");
-var Transaction = require("./Transaction")
+
 var fs = require("fs");
 var HtmlFileLoader = require("./HtmlFileLoader.js")
-var responseHandler = require("./responseHandler.js")
+var responseHandler = require("./ResponseHandler.js")
 var banks = [];
 
 
@@ -46,7 +46,7 @@ var server = http.createServer(function(request, response){
          fs.readFile(request.headers.bank + ".bank", function(err, fileData){
              if(err)
              {
-                responseHandler.SendResponseWithType(response, 400, JSON.stringify([{message: 'Bank was not loaded'}]), "application/json" );
+                responseFunctions.SendResponseWithType(400, JSON.stringify([{message: 'Bank was not loaded'}]), "application/json" );
                 return;
              }
              var toLoad = fileData.toString();
@@ -66,41 +66,38 @@ var server = http.createServer(function(request, response){
      
      switch (parsed.pathname.toLowerCase()) {
          case "/bank":
-              responseHandler.SendResponse(response,200, b.GetDisplay());
+              responseFunctions.SendResponse(200, b.GetDisplay());
               return;
         case "/transaction":
             switch(request.method.toLowerCase()){
+                case "get":
+                   var transaction = b.FindTransaction(parsed.query);
+                   if(transaction === null)
+                   {
+                       responseFunctions.SendResponse(404,  JSON.stringify({errorCode:404, errorMessage:"notFound" }));
+                       return;
+                   }
+                   responseFunctions.SendResponse(200,  JSON.stringify(transaction));
+                     return;
                 case "post":
-                    ProcessTransaction(request, response, b, b.AddTransaction)
+                    responseFunctions.ProcessTransaction(b, b.AddTransaction)
                     return;
                 case "put":
-                    ProcessTransaction(request, response, b, b.UpdateTransaction);
+                    responseFunctions.ProcessTransaction(b, b.UpdateTransaction);
                     return;
                 case "delete":
-                    ProcessTransaction(request, response, b, b.DeleteTransaction);
+                    responseFunctions.ProcessTransaction(b, b.DeleteTransaction);
                     return;
-            }
-            if(request.method.toLowerCase() == "post"){
-              
-            }
-            
-            if(request.method.toLowerCase() == "put"){
-                
-            }
-            
-             if(request.method.toLowerCase() == "delete"){
-                ProcessTransaction(request, response, b, b.UpdateTransaction);
-                return;
             }
           
             case "PlannedTransaction":
-                SendResponse(response,200, b.GetDisplay());
+               responseFunctions.SendResponse(200, b.GetDisplay());
             
             break;
             case "/banks":
                 fs.readdir(".", function(err, files){
                     if(err){
-                         SendResponseWithType(response, 400, JSON.stringify([{message: 'Cannot Find List of Banks'}]), "application/json" );
+                         responseFunctions.SendResponseWithType(400, JSON.stringify([{message: 'Cannot Find List of Banks'}]), "application/json" );
                         return;
                     }
                     
@@ -114,13 +111,13 @@ var server = http.createServer(function(request, response){
                         }
                     
                     
-                    SendResponseWithType(response, 200, JSON.stringify(banks), "application/json" );
+                    responseFunctions.SendResponseWithType(200, JSON.stringify(banks), "application/json" );
                         return;
                 });
                 
                 break;
          default:
-              SendResponse(response, 400, "{errorCode:'BADENDPOINT', errorMessage:'Unhandled Endpoint'}");
+             responseFunctions.SendResponse(400, "{errorCode:'BADENDPOINT', errorMessage:'Unhandled Endpoint'}");
      }
 });
 
@@ -138,27 +135,4 @@ function SendResponse(response, statusCode, responseMessage){
    SendResponseWithType(response, statusCode, responseMessage, "application/json")
 }
 */
-function ProcessTransaction(request, response, b, processTransactionFunction){
-     request.on("data", function(stream){
-         var trans = {};
-            var myText = stream.toString();
-            try{
-              trans = JSON.parse(myText);
-            }catch(ex){
-                  SendResponse(response, 400, JSON.stringify({errorCode:"InvalidJson", message:"InvalidJson:"+myText}));
-                  return;
-            }
-                
-            var validationResult = Transaction.Validate(trans);
-        
-        if(validationResult.length !== 0){
-            SendResponse(response, 400, JSON.stringify(validationResult));
-            return;
-        }
-    
-        processTransactionFunction(trans);
-        b.Save()
-        SendResponse(response,200, b.GetDisplay());
-            
-        });
-}
+

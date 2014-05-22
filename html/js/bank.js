@@ -39,6 +39,9 @@ var ViewModel = function() {
         model.warnings(["Deleting Transaction:"+item.payee])
         model.ProcessTransaction(JSON.stringify(item), "DELETE", "Deleted", item.payee)
     }
+     this.ShowDetails = function(item, arg2){
+        console.log(arg2);
+    }
     
     this.ProcessTransaction = function(item, action, actionText, transPayee){
         this.warnings([])
@@ -158,6 +161,7 @@ var ViewModel = function() {
    
      model.total(data.Total);
     model.Transactions(data.Transactions);
+     $( ".transactionDate" ).datepicker();
     model.loaded(true);
     },
      error: function(data2){  
@@ -179,10 +183,7 @@ var ViewModel = function() {
        
       }  
  });
- 
- $(function() {
-    $( "#transactionDate" ).datepicker();
-  });
+ $(function(){ $( ".transactionDate" ).datepicker();})
  
  function beforeSend(xhr) {
         xhr.setRequestHeader('bank', selectedBankName);

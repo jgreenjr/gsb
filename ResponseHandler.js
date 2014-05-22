@@ -1,4 +1,5 @@
 var url = require("url")
+var Transaction = require("./Transaction")
 
 exports.CreateResponseHandler = function(request, response){
     var parsed = url.parse(request.url)
@@ -11,36 +12,39 @@ exports.CreateResponseHandler = function(request, response){
         responseType: GetResponseType(isHtml, parsed, false),
         errorResponseType: GetResponseType(isHtml, parsed, true),
         
-        SendResponseWithType: function (response, statusCode, responseMessage, type){
-                response.writeHead(statusCode, {"Content-Type": type});
-                response.write(responseMessage);
-                response.end();
+        SendResponseWithType: function (statusCode, responseMessage, type){
+                returnValue.response.writeHead(statusCode, {"Content-Type": type});
+                returnValue.response.write(responseMessage);
+                returnValue.response.end();
             },
             
-        ProcessTransaction: function (request, response, b, processTransactionFunction){
+        ProcessTransaction: function (b, processTransactionFunction){
      request.on("data", function(stream){
          var trans = {};
             var myText = stream.toString();
             try{
               trans = JSON.parse(myText);
             }catch(ex){
-                  SendResponse(response, 400, JSON.stringify({errorCode:"InvalidJson", message:"InvalidJson:"+myText}));
+                  returnValue.SendResponse(400, JSON.stringify({errorCode:"InvalidJson", message:"InvalidJson:"+myText}));
                   return;
             }
                 
             var validationResult = Transaction.Validate(trans);
         
         if(validationResult.length !== 0){
-            SendResponse(response, 400, JSON.stringify(validationResult));
+            returnValue.SendResponseWithType(400, JSON.stringify(validationResult), returnValue.errorResponseType);
             return;
         }
     
         processTransactionFunction(trans);
         b.Save()
-        SendResponse(response,200, b.GetDisplay());
+        returnValue.SendResponseWithType(200, b.GetDisplay(), returnValue.responseType);
             
         });
-}
+},
+    SendResponse: function (statusCode, responseMessage){
+        returnValue.SendResponseWithType(statusCode, responseMessage, returnValue.responseType)
+    }
     }
     return returnValue;
 }

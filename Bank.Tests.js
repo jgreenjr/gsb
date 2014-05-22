@@ -80,3 +80,14 @@ var deleteTransaction = {payee:'asdfasdf', date:'1/1/2013', amount:25.00, type:"
     testrunner.Assert.IsEqual(100, bankAccountJson.Total);
     testrunner.Assert.IsEqual(100, bankAccountJson.Transactions[0].balance);
 });
+
+testrunner.Test("Adding Transaction should set handle TransactionID", function(){
+    
+     var bankAccountJson = {title: "TestTitle", bankId:"testID"}
+     var b = Bank.CreateBank(bankAccountJson);
+    var trans = {payee:'testPayee', date:'1/1/2013', amount:100.00, type:"deposit"}
+    b.AddTransaction(trans)
+    
+    testrunner.Assert.IsEqual("testID_1", trans.Id);
+    
+});
