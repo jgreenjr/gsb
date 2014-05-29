@@ -18,6 +18,8 @@
                 .link{
                     cursor:pointer;
                 }
+                
+            
         </style>
     </head>
     
@@ -64,14 +66,15 @@
             <td class="col-md-1"><input type='button' data-bind="click: AddTransaction" class="link" value="Add"/></td>
         </tr>
         <tbody data-bind="foreach: Transactions">
-            <tr >
+            <tr class="no-bottom-line" >
                 <td class="col-md-1" data-bind="text: date"></td>
                 <td class="col-md-3" data-bind="text: payee"></td>
                 <td class="col-md-1"  ><!-- ko if: type=='deposit' --><input data-bind="value: amount" style="width:80px"></input><!-- /ko -->&nbsp;</td>
                 <td class="col-md-1"  ><!-- ko if: type=='widthdrawl' --><input data-bind="value: amount" style="width:80px"></input><!-- /ko -->&nbsp;</td>
                 <td class="col-md-2"  data-bind="text: model.Money(balance)"></td>
-                <td class="col-md-2"><a data-bind="click: $parent.UpdateTransaction" class="link" >Update</a> | <a class="link" data-bind="click: $parent.DeleteTransaction">Delete</a> | <a class="link" data-bind="click: $parent.ShowDetails">Details</a> </td>
+                <td class="col-md-2"><a data-bind="click: $parent.UpdateTransaction" class="link" >Update</a> | <a class="link" data-bind="click: $parent.DeleteTransaction">Delete</a> </td>
             </tr>
+            <tr class="subRow"><th>Category:</th><td><select data-bind="options:$parent.cats, optionsText:'name', optionsValue:'name', value:category"></select></td> </tr>
         </tbody>
     </table>
        
@@ -80,6 +83,7 @@
     
     
        </div>
+       
        <script type="text/javascript">needBankData=true</script>
          <script src="js/knockout-3.1.0.js" type="text/javascript"></script>
         <script src="js/bank.js" type="text/javascript"></script>

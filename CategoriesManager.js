@@ -16,10 +16,11 @@ exports.CreateCategoriesManager = function(json){
     this.GetResponse = function(type, responseHandler){
         switch(type){
             case "html":
-                
+                break;
+            case "json":
+                responseHandler.SendResponse(200, JSON.stringify(backingData));
                 break;
         }
     }
-    
     return this;
 }

@@ -1,12 +1,16 @@
 var http = require("http");
 var url = require("url");
 var Bank = require("./Bank");
-
+var saver = require("./saver")
 var fs = require("fs");
 var HtmlFileLoader = require("./HtmlFileLoader.js")
 var responseHandler = require("./ResponseHandler.js")
-var banks = [];
 
+var CategoriesManager = require("./CategoriesManager")
+
+
+var banks = [];
+var cm = null;
 
 var server = http.createServer(function(request, response){
      var responseFunctions =responseHandler.CreateResponseHandler(request, response);
@@ -33,7 +37,7 @@ var server = http.createServer(function(request, response){
     }
     
      var b = null;
-    if(parsed.pathname!=="/banks"){
+    if(parsed.pathname!=="/banks" && parsed.pathname!=="/categories"){
      for(var i =0; i < banks.length; i++){
          if(banks[i].Title() == request.headers.bank){
              b=banks[i];
@@ -50,7 +54,7 @@ var server = http.createServer(function(request, response){
                 return;
              }
              var toLoad = fileData.toString();
-           
+           console.log("loading bank: " + request.headers.bank)
              b = Bank.CreateBank(JSON.parse(toLoad));
              banks.push(b);
              response.writeHead(302, {
@@ -116,6 +120,10 @@ var server = http.createServer(function(request, response){
                 });
                 
                 break;
+                case "/categories":
+                   cm.GetResponse("json",responseFunctions )
+                   return;
+                    break;
          default:
              responseFunctions.SendResponse(400, "{errorCode:'BADENDPOINT', errorMessage:'Unhandled Endpoint'}");
      }
@@ -126,9 +134,12 @@ if(process.argv[2])
 {
     port = process.argv[2]
 }
-console.log(port);
+
+
+saver.Load("cats","cats", function(data){cm = CategoriesManager.CreateCategoriesManager(JSON.parse(data)); 
 server.listen(port);
-console.log("Server is listening" + port);
+console.log("Server is listening"); });
+
 
 /*
 function SendResponse(response, statusCode, responseMessage){

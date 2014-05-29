@@ -100,6 +100,9 @@ exports.InitAccount=function(json){
             var i = 0;
             var total = 0;
             for(i = json.Transactions.length-1; i >=0 ; i--){
+               if(!json.Transactions[i].category || json.Transactions[i].category == undefined)
+                    json.Transactions[i].category = "Not Specified";
+                    
             total = helpers.UpdateTotal(total, json.Transactions[i])
                json.Transactions[i].balance = total; 
             }

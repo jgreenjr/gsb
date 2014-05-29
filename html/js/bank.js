@@ -28,6 +28,15 @@ var ViewModel = function() {
     this.transactionPayee = ko.observable();
     this.transactionDeposit = ko.observable();
     this.transactionWidthdrawl = ko.observable();
+    this.transactionCommandText = ko.observable("Add");
+    this.transactionId = ko.observable();
+    
+    this.cats =  ko.observableArray([])
+    
+    this.category = function(item){
+        console.log(item);
+        return "cat1";
+    }
     
     this.UpdateTransaction = function(item){
         model.warnings(["Updating Transaction:"+item.payee]);
@@ -42,7 +51,7 @@ var ViewModel = function() {
      this.ShowDetails = function(item, arg2){
         console.log(arg2);
     }
-    
+   
     this.ProcessTransaction = function(item, action, actionText, transPayee){
         this.warnings([])
       this.errors([]);
@@ -64,7 +73,6 @@ var ViewModel = function() {
        model.transactionPayee("");
         model.warnings([])
        
-       var self = this;
       },  
       error: function(data2){  
           model.warnings([])
@@ -115,40 +123,22 @@ var ViewModel = function() {
     
     this.GetTransactionSettings = function(){
    
-     return  '{"payee":"'+ this.transactionPayee() +'", "date":"'+ this.transactionDate() +'", "amount":'+ this.transactionAmount() +', "type":"'+ this.transactionType() +'"}';
+     return  '{"payee":"'+ this.transactionPayee() +'", "id":"'+ this.transactionId() +'", "date":"'+ this.transactionDate() +'", "amount":'+ this.transactionAmount() +', "type":"'+ this.transactionType() +'"}';
     };
     
   this.AddTransaction = function (){
       this.errors([]);
        var data = model.GetTransactionSettings();
+       
+       if(data.id === ""){
        model.warnings(["Adding Transaction: "+ model.transactionPayee()])
        model.ProcessTransaction(data, "POST", "Added",model.transactionPayee())
-       
-/*      this.errors([]);
-      
-   var data = this.GetTransactionSettings();
-    var self = this;
-    $.ajax({  
-      url: "/transaction",  
-      type: "POST",  
-      dataType: "json",  
-      contentType: "json",  
-      data: data,  
-      beforeSend: beforeSend,
-      success: function(data2){     
-          
-       self.total(data2.Total);
-       self.Transactions(data2.Transactions);
-       self.transactionDate(new Date().toLocaleDateString());
-       self.transactionWidthdrawl("");
-       self.transactionDeposit("");
-       self.transactionPayee("");
-      },  
-      error: function(data2){  
-        self.errors(data2.responseJSON);  
-      }  
-    });
-    */
+       }
+       else
+       {
+        model.warnings(["Updating Transaction: "+ model.transactionPayee()])
+        model.ProcessTransaction(data, "PUT", "Updated",model.transactionPayee())
+       }
     
 }
 };
@@ -161,7 +151,7 @@ var ViewModel = function() {
    
      model.total(data.Total);
     model.Transactions(data.Transactions);
-     $( ".transactionDate" ).datepicker();
+    $( ".transactionDate" ).datepicker();
     model.loaded(true);
     },
      error: function(data2){  
@@ -170,14 +160,35 @@ var ViewModel = function() {
       }  
  })
   }
+model = new ViewModel();
 
  $.ajax({
     url: "/banks",
     dataType: "json",
     success: function(data){
-    model = new ViewModel()
+    
     ko.applyBindings(model); // This makes Knockout get to work
-    model.bankNames(data)
+    model.bankNames(data);
+    if(window.location.search != "")
+    {
+        var search = window.location.search;
+        var transID = search.substr(0,window.location.search.indexOf("&bank"));
+        model.bankName(search.substr(window.location.search.indexOf("bank")+5));
+        LoadTransaction(transID);
+    }
+    },
+     error: function(data2){  
+       
+      }  
+ });
+ 
+  $.ajax({
+    url: "/categories",
+    dataType: "json",
+    success: function(data){
+  
+    model.cats(data);
+   
     },
      error: function(data2){  
        
@@ -189,4 +200,26 @@ var ViewModel = function() {
         xhr.setRequestHeader('bank', selectedBankName);
     }
 
-var selectedBankName = "";
+function LoadTransaction(id){
+    $.ajax({
+    url: "/transaction"+id,
+    dataType: "json",
+    beforeSend:beforeSend,
+    success: function(data){
+     model.transactionDate(data.date);
+     model.transactionId(data.id);
+     if(data.type == "deposit")
+       {model.transactionWidthdrawl("");
+       model.transactionDeposit(data.amount);
+       model.transactionCommandText("Update");
+       }
+       else
+       {
+        
+       model.transactionWidthdrawl(data.amount);
+       }
+    }
+    });
+}
+
+      
