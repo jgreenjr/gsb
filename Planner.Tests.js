@@ -44,7 +44,7 @@ testrunner.Test("Requesting Transaction with ValidStartDate and number of days s
     p.AddTransaction({startDate: "1/1/2000", repeatInterval: 3, repeatUnit:"day", payee: "every3", amount:100, type:"widthdrawl"});
     p.AddTransaction({startDate: "1/6/2000", repeatInterval: 3, repeatUnit:"day", payee: "not", amount:100, type:"widthdrawl"});
     
-    var pr = p.PopulatePlan(new Date("1/1/2000"), 5);
+    var pr = p.PopulatePlan(new Date("1/1/2000"), 5, {ActualBalance:0});
     testrunner.Assert.IsEqual(5, pr.transactions.length);
 });
 
@@ -54,7 +54,7 @@ testrunner.Test("Requesting Transaction with ValidStartDate and number of days s
     p.AddTransaction({startDate: "1/1/2000", repeatInterval: 2, repeatUnit:"month", payee: "every3", amount:100, type:"widthdrawl"});
     p.AddTransaction({startDate: "2/1/2001", repeatInterval: 3, repeatUnit:"month", payee: "not", amount:100, type:"widthdrawl"});
     
-    var pr = p.PopulatePlan(new Date("1/1/2000"), 370);
+    var pr = p.PopulatePlan(new Date("1/1/2000"), 370, {ActualBalance:0});
     testrunner.Assert.IsEqual(20, pr.transactions.length);
 });
 
@@ -63,8 +63,8 @@ testrunner.Test("running a plan should keep balance up to date", function(){
     p.AddTransaction({startDate: "1/1/2000", repeatInterval: 1, repeatUnit:"month", payee: "everyOther", amount:100, type:"widthdrawl"});
    
     
-    var pr = p.PopulatePlan(new Date("1/1/2000"), 1, 200);
-    testrunner.Assert.IsEqual(100, pr.transactions[0].balance);
+    var pr = p.PopulatePlan(new Date("1/1/2000"), 1, 200, {ActualBalance:0});
+    testrunner.Assert.IsEqual(100, pr.transactions[0].balance.ActualBalance);
 });
 
 testrunner.Test("a plan that results in a negitive balance should return a warning", function(){
@@ -72,6 +72,6 @@ testrunner.Test("a plan that results in a negitive balance should return a warni
     p.AddTransaction({startDate: "1/1/2000", repeatInterval: 1, repeatUnit:"month", payee: "everyOther", amount:100, type:"widthdrawl"});
    
     
-    var pr = p.PopulatePlan(new Date("1/1/2000"), 1, 0);
+    var pr = p.PopulatePlan(new Date("1/1/2000"), 1, {ActualBalance:0} );
     testrunner.Assert.IsEqual(1, pr.warnings.length);
 });

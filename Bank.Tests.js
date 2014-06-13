@@ -10,13 +10,21 @@ testrunner.Test("BankAccount should Set title from json",function(){
     
 });
 
+testrunner.Test("BankAccount should Setup Total in jsonjson",function(){
+    var bankAccountJson = {title: "TestTitle"}
+    var b = Bank.CreateBank(bankAccountJson);
+    
+    testrunner.Assert.IsEqual(b.Total().ActualBalance, 0);
+    
+});
+
 testrunner.Test("Adding Transaction Should Update Total Deposit", function(){
      var bankAccountJson = {title: "TestTitle"}
      var b = Bank.CreateBank(bankAccountJson);
     
     b.AddTransaction({payee:'testPayee', date:'1/1/2013', amount:100.00, type:"deposit"})
     
-    testrunner.Assert.IsEqual(b.Total(), 100.00);
+    testrunner.Assert.IsEqual(b.Total().ActualBalance, 100.00);
 })
 
 testrunner.Test("Adding Transaction Should Update Total Withdrawl", function(){
@@ -25,7 +33,7 @@ testrunner.Test("Adding Transaction Should Update Total Withdrawl", function(){
     
     b.AddTransaction({payee:'testPayee', date:'1/1/2013', amount:100.00, type:"widthdrawl"})
     
-    testrunner.Assert.IsEqual(b.Total(), -100.00);
+    testrunner.Assert.IsEqual(b.Total().ActualBalance, -100.00);
 })
 
 testrunner.Test("Adding Transaction Should Update Total Deposit", function(){
@@ -53,9 +61,8 @@ testrunner.Test("Adding Transaction Should Update Total Deposit", function(){
 testrunner.Test("Adding Transaction Should Update Total Deposit", function(){
      var bankAccountJson = {title: "TestTitle",Total: 75, Transactions:[{payee:'testPayee', date:'1/1/2013', amount:100.00, type:"deposit"},{payee:'testPayee', date:'1/1/2013', amount:25.00, type:"widthdrawl"}]}
      var b = Bank.CreateBank(bankAccountJson);
-    
-    testrunner.Assert.IsEqual(bankAccountJson.Transactions[0].balance,75)
-    testrunner.Assert.IsEqual(bankAccountJson.Transactions[1].balance,-25)
+    testrunner.Assert.IsEqual(bankAccountJson.Transactions[0].balance.ActualBalance,75)
+    testrunner.Assert.IsEqual(bankAccountJson.Transactions[1].balance.ActualBalance,-25)
 });
 
 testrunner.Test("Updating Transaction Should Update transaction", function(){
@@ -77,17 +84,7 @@ var deleteTransaction = {payee:'asdfasdf', date:'1/1/2013', amount:25.00, type:"
     b.DeleteTransaction(deleteTransaction);
     
     testrunner.Assert.IsEqual(1,bankAccountJson.Transactions.length);
-    testrunner.Assert.IsEqual(100, bankAccountJson.Total);
-    testrunner.Assert.IsEqual(100, bankAccountJson.Transactions[0].balance);
-});
-
-testrunner.Test("Adding Transaction should set handle TransactionID", function(){
+    testrunner.Assert.IsEqual(100, bankAccountJson.Total.ActualBalance)
     
-     var bankAccountJson = {title: "TestTitle", bankId:"testID"}
-     var b = Bank.CreateBank(bankAccountJson);
-    var trans = {payee:'testPayee', date:'1/1/2013', amount:100.00, type:"deposit"}
-    b.AddTransaction(trans)
-    
-    testrunner.Assert.IsEqual("testID_1", trans.Id);
-    
+    testrunner.Assert.IsEqual(100, bankAccountJson.Transactions[0].balance.ActualBalance);
 });

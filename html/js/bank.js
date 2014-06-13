@@ -16,8 +16,11 @@ var ViewModel = function() {
     }
     , this)
     
+    this.StatusOptions = ko.observableArray(["Pending", "Cleared", "Closed"]);
+    
     this.title = ko.observable();
     this.total = ko.observable();
+    this.ClearedBalance = ko.observable();
     this.loaded = ko.observable(false);
     //this.Transactions = ko.observableArray(buildTransactionModels(json.Transactions));
     this.Transactions = ko.observableArray();
@@ -33,11 +36,7 @@ var ViewModel = function() {
     
     this.cats =  ko.observableArray([])
     
-    this.category = function(item){
-        console.log(item);
-        return "cat1";
-    }
-    
+  
     this.UpdateTransaction = function(item){
         model.warnings(["Updating Transaction:"+item.payee]);
         model.ProcessTransaction(JSON.stringify(item), "PUT", "Updated",item.payee)
@@ -49,7 +48,7 @@ var ViewModel = function() {
         model.ProcessTransaction(JSON.stringify(item), "DELETE", "Deleted", item.payee)
     }
      this.ShowDetails = function(item, arg2){
-        console.log(arg2);
+
     }
    
     this.ProcessTransaction = function(item, action, actionText, transPayee){
@@ -65,7 +64,8 @@ var ViewModel = function() {
       beforeSend: beforeSend,
       success: function(data2){     
            model.messages(["Transaction " + actionText + ": "+transPayee])
-       model.total(data2.Total);
+       model.total(data2.Total.ActualBalance);
+       model.ClearedBalance(data2.Total.ClearedBalance)
        model.Transactions(data2.Transactions);
        model.transactionDate(new Date().toLocaleDateString());
        model.transactionWidthdrawl("");
@@ -130,7 +130,7 @@ var ViewModel = function() {
       this.errors([]);
        var data = model.GetTransactionSettings();
        
-       if(data.id === ""){
+       if(data.id === "" || data.id == undefined){
        model.warnings(["Adding Transaction: "+ model.transactionPayee()])
        model.ProcessTransaction(data, "POST", "Added",model.transactionPayee())
        }
@@ -149,7 +149,8 @@ var ViewModel = function() {
     beforeSend: beforeSend,
     success: function(data){
    
-     model.total(data.Total);
+     model.total(data.Total.ActualBalance);
+     model.ClearedBalance(data.Total.ClearedBalance);
     model.Transactions(data.Transactions);
     $( ".transactionDate" ).datepicker();
     model.loaded(true);

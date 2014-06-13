@@ -69,18 +69,18 @@ exports.CreateBank = function(json){
     
     function UpdateTransactionBalances(i){
        
-        var total = 0; 
+        var total =  {ActualBalance:0}; 
         if( i < backingData.Transactions.length -1){
-            total = backingData.Transactions[i+1].balance;
+            total = helpers.CopyTotal( backingData.Transactions[i+1].balance);
         }
         
         while(i >= 0){
             total = helpers.UpdateTotal(total, backingData.Transactions[i])
-            json.Transactions[i].balance = total; 
+            json.Transactions[i].balance = helpers.CopyTotal(total); 
             i--;
         }
        
-        backingData.Total = total;
+        backingData.Total = helpers.CopyTotal(total);
     };
     
     this.Total = function(){return backingData.Total}
@@ -92,21 +92,24 @@ exports.CreateBank = function(json){
 
 exports.InitAccount=function(json){
   
-    json.Total = 0;
+    json.Total = {ActualBalance:0};
     
     if(json.Transactions === undefined)
         json.Transactions = [];
     else{
             var i = 0;
-            var total = 0;
+            var total = {ActualBalance:0};
             for(i = json.Transactions.length-1; i >=0 ; i--){
                if(!json.Transactions[i].category || json.Transactions[i].category == undefined)
                     json.Transactions[i].category = "Not Specified";
-                    
+                     if(!json.Transactions[i].Status || json.Transactions[i].Status == undefined)
+                      json.Transactions[i].Status = "Pending";
             total = helpers.UpdateTotal(total, json.Transactions[i])
-               json.Transactions[i].balance = total; 
+               json.Transactions[i].balance = helpers.CopyTotal(total); 
+               i
             }
             json.Total = total;
         }
       
 }
+

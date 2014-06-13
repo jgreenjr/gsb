@@ -39,10 +39,10 @@ exports.CreatePlan = function(json){
               
                 if(trans.IsValidDate(date)){
                     var startingBalance = helpers.UpdateTotal(startingBalance, trans);
-                    if(startingBalance < 0){
+                    if(startingBalance.ActualBalance < 0){
                         planResult.warnings.push({errorCode:"negitiveBalanceWarning", errorMessage:"Negitive Balance as a result of transaction", transaction: trans.payee});
                     }
-                    planResult.transactions.push({payee:trans.payee, date:date.toDateString(), amount:trans.amount, type:trans.type, balance:startingBalance});
+                    planResult.transactions.push({payee:trans.payee, date:date.toDateString(), amount:trans.amount, type:trans.type, balance:helpers.CopyTotal(startingBalance)});
                 }
             }
              date.setDate(date.getDate()+1);

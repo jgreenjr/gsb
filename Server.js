@@ -54,7 +54,7 @@ var server = http.createServer(function(request, response){
                 return;
              }
              var toLoad = fileData.toString();
-           console.log("loading bank: " + request.headers.bank)
+           
              b = Bank.CreateBank(JSON.parse(toLoad));
              banks.push(b);
              response.writeHead(302, {
