@@ -122,15 +122,19 @@ var ViewModel = function() {
    
     
     this.GetTransactionSettings = function(){
-   
-     return  '{"payee":"'+ this.transactionPayee() +'", "id":"'+ this.transactionId() +'", "date":"'+ this.transactionDate() +'", "amount":'+ this.transactionAmount() +', "type":"'+ this.transactionType() +'"}';
+    var idString = "";
+    
+    if(this.transactionId() !== undefined){
+        idString = '"id": "' + this.transactionId() + '", ';
+    }
+     return  '{"payee":"'+ this.transactionPayee() +'", '+ idString + '"date":"'+ this.transactionDate() +'", "amount":'+ this.transactionAmount() +', "type":"'+ this.transactionType() +'"}';
     };
     
   this.AddTransaction = function (){
-      this.errors([]);
+      
        var data = model.GetTransactionSettings();
        
-       if(data.id === "" || data.id == undefined){
+       if(model.transactionId() === "" || model.transactionId() === undefined){
        model.warnings(["Adding Transaction: "+ model.transactionPayee()])
        model.ProcessTransaction(data, "POST", "Added",model.transactionPayee())
        }
