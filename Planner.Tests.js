@@ -63,7 +63,7 @@ testrunner.Test("running a plan should keep balance up to date", function(){
     p.AddTransaction({startDate: "1/1/2000", repeatInterval: 1, repeatUnit:"month", payee: "everyOther", amount:100, type:"widthdrawl"});
    
     
-    var pr = p.PopulatePlan(new Date("1/1/2000"), 1, 200, {ActualBalance:0});
+    var pr = p.PopulatePlan(new Date("1/1/2000"), 1, {ActualBalance:200});
     testrunner.Assert.IsEqual(100, pr.transactions[0].balance.ActualBalance);
 });
 

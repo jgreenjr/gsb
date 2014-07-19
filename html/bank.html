@@ -64,7 +64,8 @@
             <td class="col-md-3"><input data-bind="value: transactionPayee" style="width:250px"/></td>
             <td class="col-md-1"><input data-bind="value: transactionDeposit" style="width:80px"/></td>
             <td class="col-md-1"><input data-bind="value: transactionWidthdrawl" style="width:80px"/></td>
-            <td class="col-md-2"><span data-bind="text: transactionTotal"></span></td>
+            <td class="col-md-1"><span data-bind="text: transactionTotal"></span></td>
+            <td class="col-md-1">&nbsp;</td>
             <td class="col-md-1"><input type='button' data-bind="click: AddTransaction" class="link" value="Add"/></td>
         </tr>
         <tbody data-bind="foreach: Transactions">
@@ -75,9 +76,9 @@
                 <td class="col-md-1"  ><!-- ko if: type=='widthdrawl' --><input data-bind="value: amount" style="width:80px"></input><!-- /ko -->&nbsp;</td>
                 <td class="col-md-2"  data-bind="text: model.Money(balance.ActualBalance )"></td>
                 <td class="col-md-2"  data-bind="text: model.Money(balance.ClearedBalance )"></td>
-                <td class="col-md-2"><a data-bind="click: $parent.UpdateTransaction" class="link" >Update</a> | <a class="link" data-bind="click: $parent.DeleteTransaction">Delete</a> </td>
+                <td class="col-md-2"><a data-bind="click: $parent.UpdateTransaction" class="link" >Update</a> | <a class="link" data-bind="click: $parent.DeleteTransaction">Delete</a> | <a class="link" data-bind="click: $parent.ShowDetails">Details</a></td>
             </tr>
-            <tr class="subRow"><td></td><td>Category:<select data-bind="options:$parent.cats, optionsText:'name', optionsValue:'name', value:category"></select></td>
+            <tr class="subRow" style="display:none"><td></td><td>Category:<select data-bind="options:$parent.cats, optionsText:'name', optionsValue:'name', value:category"></select></td>
             <td><select data-bind="options:$parent.StatusOptions, value:Status">/td></tr>
         </tbody>
     </table>

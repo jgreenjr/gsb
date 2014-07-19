@@ -48,7 +48,8 @@ var ViewModel = function() {
         model.ProcessTransaction(JSON.stringify(item), "DELETE", "Deleted", item.payee)
     }
      this.ShowDetails = function(item, arg2){
-
+         $("tr.subRow").hide();
+        $(arg2.currentTarget).parent().parent().next().show();
     }
    
     this.ProcessTransaction = function(item, action, actionText, transPayee){

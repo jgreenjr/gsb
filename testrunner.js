@@ -49,7 +49,12 @@ exports.Assert = {
     			throw "expected: "+expected + "\nActual:" + actual;
     		}
     	}
+    },
+    IsNotBlank: function(value, message){
+        if(value === "" || value === undefined)
+            throw message;
     }
+    
 };
 
 exports.IsTestFile = function (fileName){

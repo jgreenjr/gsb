@@ -1,6 +1,8 @@
 var testrunner = require("./testrunner.js");
 var Bank = require("./Bank.js");
 
+var SummaryGeneratorFactory = require("./SummaryGenerator.js");
+
 testrunner.PassOff = true;
 testrunner.Test("BankAccount should Set title from json",function(){
     var bankAccountJson = {title: "TestTitle"}
@@ -87,4 +89,26 @@ var deleteTransaction = {payee:'asdfasdf', date:'1/1/2013', amount:25.00, type:"
     testrunner.Assert.IsEqual(100, bankAccountJson.Total.ActualBalance)
     
     testrunner.Assert.IsEqual(100, bankAccountJson.Transactions[0].balance.ActualBalance);
+});
+
+testrunner.Test("Generating A Summary should show Date Summary Was generated", function(){
+    
+     var bankAccountJson = {title: "TestTitle",Total: 75, Transactions:[{payee:'testPayee', date:'1/1/2013', amount:100.00, type:"deposit", id:"1"}]}
+     var b = Bank.CreateBank(bankAccountJson, SummaryGeneratorFactory);
+     
+     var summary = b.GetSummary();
+     
+     testrunner.Assert.IsNotBlank(summary.date, "No Date Supplied for Summary");
+     
+});
+
+testrunner.Test("Generating A Summary should show Date Summary Was generated", function(){
+    
+     var bankAccountJson = {title: "TestTitle",Total: 75, Transactions:[{payee:'testPayee', date:'1/1/2013', amount:100.00, type:"deposit", id:"1"}]}
+     var b = Bank.CreateBank(bankAccountJson, SummaryGeneratorFactory);
+     
+     var summary = b.GetSummary();
+     
+     testrunner.Assert.IsEqual(100.00, summary.TotalDeposits);
+     
 });

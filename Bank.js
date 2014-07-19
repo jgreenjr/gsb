@@ -1,11 +1,15 @@
 var Transaction = require("./Transaction.js");
 var helpers = require("./helpers.js");
 var Saver = require("./saver.js");
-exports.CreateBank = function(json){
+exports.CreateBank = function(json, summaryGeneratorFactory){
     
     exports.InitAccount(json);
     
     var backingData = json;
+    
+    var summmaryGenerator = undefined;
+    if(summaryGeneratorFactory)
+        summmaryGenerator = summaryGeneratorFactory.CreateNewGenerator(backingData.Transactions);
     
     
     this.Title = function(){return backingData.title; }
@@ -85,7 +89,14 @@ exports.CreateBank = function(json){
     };
     
     this.Total = function(){return backingData.Total}
-    this.GetDisplay = function(){return JSON.stringify(backingData);}
+    this.GetDisplay = function(){return JSON.stringify(backingData);};
+    
+    this.GetSummary = function(){
+        return summmaryGenerator.Generate();
+    
+    };
+        
+    
     return this;
 }
 
