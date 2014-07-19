@@ -44,8 +44,11 @@ var ViewModel = function() {
     }
     
      this.DeleteTransaction = function(item){
-        model.warnings(["Deleting Transaction:"+item.payee])
+         
+         if(confirm("Are you sure you want to delete:" + item.payee+"?"))
+       { model.warnings(["Deleting Transaction:"+item.payee])
         model.ProcessTransaction(JSON.stringify(item), "DELETE", "Deleted", item.payee)
+       }
     }
      this.ShowDetails = function(item, arg2){
          $("tr.subRow").hide();
