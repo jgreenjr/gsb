@@ -17,7 +17,7 @@ var ViewModel = function() {
     , this)
     
     this.StatusOptions = ko.observableArray(["Pending", "Cleared", "Closed"]);
-    
+    this.StatusOptions2 = ko.observableArray(["Pending", "Cleared", "Closed"]);
     this.title = ko.observable();
     this.total = ko.observable();
     this.ClearedBalance = ko.observable();
@@ -27,6 +27,7 @@ var ViewModel = function() {
     this.errors = ko.observableArray([]);
     this.warnings = ko.observableArray([]);
     this.messages = ko.observableArray([]);
+    this.statusFilter = ko.observable();
     this.transactionDate = ko.observable(new Date().toLocaleDateString())
     this.transactionPayee = ko.observable();
     this.transactionDeposit = ko.observable();
@@ -44,17 +45,19 @@ var ViewModel = function() {
         
     }
     
-      this.showFutureItems.subscribe(function(newValue){model.FilterTransactions(newValue)});
+      this.showFutureItems.subscribe(function(newValue){model.FilterTransactions(newValue, model.statusFilter())});
+      this.statusFilter.subscribe(function(newValue){model.FilterTransactions(model.showFutureItems(), newValue)});
     
     
-    this.FilterTransactions = function(newValue){
-        alert(newValue);
+    this.FilterTransactions = function(newValue, statusFilter ){
+        if(!statusFilter)
+            statusFilter = "";
         var trans = model.Transactions()
         var returnValue = [];
         var today = new Date();
         for(var i = 0; i < trans.length; i++){
             
-            if(new Date(trans[i].date) <= today||newValue)
+            if((new Date(trans[i].date) <= today||newValue) && (statusFilter == "" || trans[i].Status == statusFilter))
             {
                returnValue.push(trans[i]);
             }
@@ -90,7 +93,7 @@ var ViewModel = function() {
        model.total(data2.Total.ActualBalance);
        model.ClearedBalance(data2.Total.ClearedBalance)
        model.Transactions(data2.Transactions);
-       model.FilterTransactions( model.showFutureItems())
+       model.FilterTransactions( model.showFutureItems(), model.statusFilter())
        model.transactionDate(new Date().toLocaleDateString());
        model.transactionWidthdrawl("");
        model.transactionDeposit("");
@@ -180,7 +183,7 @@ var ViewModel = function() {
      model.total(data.Total.ActualBalance);
      model.ClearedBalance(data.Total.ClearedBalance);
     model.Transactions(data.Transactions);
-    model.FilterTransactions( model.showFutureItems())
+    model.FilterTransactions( model.showFutureItems(), model.statusFilter())
     $( ".transactionDate" ).datepicker();
     model.loaded(true);
     },

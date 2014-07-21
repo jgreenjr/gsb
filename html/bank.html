@@ -34,6 +34,7 @@
         <div>Actual Balance: <span data-bind="text: Money(total())"></span></div>
         <div>Current Balance: <span data-bind="text: Money(ClearedBalance())"></span></div>
         <div>Show Future  <input type="checkbox" data-bind="checked: showFutureItems" /></div>
+        <div>Show Status: <select id="someId" data-bind="options:StatusOptions,optionsCaption: '<No Filter>', value:statusFilter"></select></div>
         <ul class="alert alert-danger" data-bind="visible: errors().length > 0, foreach:errors">
           <li data-bind="text:message"></li>
            
@@ -80,7 +81,7 @@
                 <td class="col-md-2"><a data-bind="click: $parent.UpdateTransaction" class="link" >Update</a> | <a class="link" data-bind="click: $parent.DeleteTransaction">Delete</a> | <a class="link" data-bind="click: $parent.ShowDetails">Details</a></td>
             </tr>
             <tr class="subRow" style="display:none"><td></td><td>Category:<select data-bind="options:$parent.cats, optionsText:'name', optionsValue:'name', value:category"></select></td>
-            <td><select data-bind="options:$parent.StatusOptions, value:Status">/td></tr>
+            <td><select data-bind="options:$parent.StatusOptions, value:Status"><select data-bind="options:$parent.StatusOptions, value:Status"></td></tr>
         </tbody>
     </table>
        
