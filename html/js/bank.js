@@ -33,14 +33,33 @@ var ViewModel = function() {
     this.transactionWidthdrawl = ko.observable();
     this.transactionCommandText = ko.observable("Add");
     this.transactionId = ko.observable();
-    
+    this.showFutureItems = ko.observable(false)
     this.cats =  ko.observableArray([])
+    this.filteredTransactions = ko.observableArray()
     
   
     this.UpdateTransaction = function(item){
         model.warnings(["Updating Transaction:"+item.payee]);
         model.ProcessTransaction(JSON.stringify(item), "PUT", "Updated",item.payee)
         
+    }
+    
+      this.showFutureItems.subscribe(function(newValue){model.FilterTransactions(newValue)});
+    
+    
+    this.FilterTransactions = function(newValue){
+        alert(newValue);
+        var trans = model.Transactions()
+        var returnValue = [];
+        var today = new Date();
+        for(var i = 0; i < trans.length; i++){
+            
+            if(new Date(trans[i].date) <= today||newValue)
+            {
+               returnValue.push(trans[i]);
+            }
+        }
+        model.filteredTransactions(returnValue);
     }
     
      this.DeleteTransaction = function(item){
@@ -71,6 +90,7 @@ var ViewModel = function() {
        model.total(data2.Total.ActualBalance);
        model.ClearedBalance(data2.Total.ClearedBalance)
        model.Transactions(data2.Transactions);
+       model.FilterTransactions( model.showFutureItems())
        model.transactionDate(new Date().toLocaleDateString());
        model.transactionWidthdrawl("");
        model.transactionDeposit("");
@@ -160,6 +180,7 @@ var ViewModel = function() {
      model.total(data.Total.ActualBalance);
      model.ClearedBalance(data.Total.ClearedBalance);
     model.Transactions(data.Transactions);
+    model.FilterTransactions( model.showFutureItems())
     $( ".transactionDate" ).datepicker();
     model.loaded(true);
     },
