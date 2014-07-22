@@ -33,7 +33,7 @@
         <h2 data-bind="text: title" >Test Title</h2>
         <div>Actual Balance: <span data-bind="text: Money(total())"></span></div>
         <div>Current Balance: <span data-bind="text: Money(ClearedBalance())"></span></div>
-        <div>Show Future  <input type="checkbox" data-bind="checked: showFutureItems" /></div>
+        <div>Show (<span data-bind="text: numberOfFutureItems()"></span>) Future Items:  <input type="checkbox" data-bind="checked: showFutureItems" /> </div>
         <div>Show Status: <select id="someId" data-bind="options:StatusOptions,optionsCaption: '<No Filter>', value:statusFilter"></select></div>
         <ul class="alert alert-danger" data-bind="visible: errors().length > 0, foreach:errors">
           <li data-bind="text:message"></li>

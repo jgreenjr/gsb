@@ -35,6 +35,7 @@ var ViewModel = function() {
     this.transactionCommandText = ko.observable("Add");
     this.transactionId = ko.observable();
     this.showFutureItems = ko.observable(false)
+    this.numberOfFutureItems = ko.observable()
     this.cats =  ko.observableArray([])
     this.filteredTransactions = ko.observableArray()
     
@@ -54,14 +55,21 @@ var ViewModel = function() {
             statusFilter = "";
         var trans = model.Transactions()
         var returnValue = [];
+        var futureItemsCount = 0;
         var today = new Date();
         for(var i = 0; i < trans.length; i++){
-            
-            if((new Date(trans[i].date) <= today||newValue) && (statusFilter == "" || trans[i].Status == statusFilter))
+            var isFutureItem = new Date(trans[i].date) > today;
+            if((!isFutureItem||newValue) && (statusFilter == "" || trans[i].Status == statusFilter))
             {
                returnValue.push(trans[i]);
             }
+            if(isFutureItem)
+            {
+                futureItemsCount++;
+            }
+        
         }
+        model.numberOfFutureItems(futureItemsCount);
         model.filteredTransactions(returnValue);
     }
     
