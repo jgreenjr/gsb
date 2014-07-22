@@ -55,7 +55,7 @@
                 <th class="col-md-1">Date</th>
                 <th class="col-md-3">Payee</th>
                 <th class="col-md-1">Deposit</th>
-                <th class="col-md-1">Widthdrawl</th>
+                <th class="col-md-1">Withdrawl</th>
                 <th class="col-md-1">Balance</th>
                 <th class="col-md-1">Current Balance</th>
                 <th class="col-md-2">Actions</th> 
@@ -72,8 +72,8 @@
         </tr>
         <tbody data-bind="foreach: filteredTransactions">
             <tr class="no-bottom-line" >
-                <td class="col-md-1" data-bind="text: date"></td>
-                <td class="col-md-3" data-bind="text: payee"></td>
+                <td class="col-md-1" ><input data-bind="value: date" style="width:80px" class="transactionDate"></input></td>
+                <td class="col-md-3"><input data-bind="value: payee" style="width:250px"></input></td>
                 <td class="col-md-1"  ><!-- ko if: type=='deposit' --><input data-bind="value: amount" style="width:80px"></input><!-- /ko -->&nbsp;</td>
                 <td class="col-md-1"  ><!-- ko if: type=='widthdrawl' --><input data-bind="value: amount" style="width:80px"></input><!-- /ko -->&nbsp;</td>
                 <td class="col-md-2"  data-bind="text: model.Money(balance.ActualBalance )"></td>
