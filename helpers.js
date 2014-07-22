@@ -6,12 +6,36 @@ exports.UpdateTotal = function(currentTotal, transaction)
     var includeInCleared = transaction.Status == "Cleared"|| transaction.Status == "Closed";
      switch(transaction.type){
             case "deposit":
-              currentTotal.ActualBalance = currentTotal.ActualBalance + parseFloat(transaction.amount);
+                if(!transaction.IsFutureItem)
+              {
+                  currentTotal.ActualBalance = currentTotal.ActualBalance + parseFloat(transaction.amount);
+              }
+              else
+                {
+                    console.log("found future");
+                    if(!currentTotal.FutureBalance){
+                        currentTotal.FutureBalance = currentTotal.ActualBalance;
+                    }
+                    currentTotal.FutureBalance = currentTotal.FutureBalance + parseFloat(transaction.amount);
+                }
               if(includeInCleared)
                 currentTotal.ClearedBalance = currentTotal.ClearedBalance + parseFloat(transaction.amount);
+                
               break;
               case "widthdrawl":
+                if(!transaction.IsFutureItem)
+              {
               currentTotal.ActualBalance = currentTotal.ActualBalance - parseFloat(transaction.amount);
+              }
+               else
+                {
+                    
+                    console.log("found future");
+                    if(!currentTotal.FutureBalance){
+                        currentTotal.FutureBalance = currentTotal.ActualBalance;
+                    }
+                    currentTotal.FutureBalance = currentTotal.FutureBalance - parseFloat(transaction.amount);
+                }
               if(includeInCleared)
                 currentTotal.ClearedBalance = currentTotal.ClearedBalance - parseFloat(transaction.amount);
               break;
@@ -20,5 +44,5 @@ exports.UpdateTotal = function(currentTotal, transaction)
 }
 
 exports.CopyTotal = function(source){
-    return {ActualBalance: source.ActualBalance, ClearedBalance: source.ClearedBalance};
+    return {ActualBalance: source.ActualBalance, ClearedBalance: source.ClearedBalance, FutureBalance:source.FutureBalance};
 }

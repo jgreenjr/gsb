@@ -37,6 +37,7 @@ exports.CreateResponseHandler = function(request, response){
         }
     
         processTransactionFunction(trans);
+        b.UpdateTransactions();
         b.Save()
         returnValue.SendResponseWithType(200, b.GetDisplay(), returnValue.responseType);
             

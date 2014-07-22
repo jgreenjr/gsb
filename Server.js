@@ -70,6 +70,7 @@ var server = http.createServer(function(request, response){
      
      switch (parsed.pathname.toLowerCase()) {
          case "/bank":
+             b.UpdateTransactions();
               responseFunctions.SendResponse(200, b.GetDisplay());
               return;
         case "/transaction":

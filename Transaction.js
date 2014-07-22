@@ -8,7 +8,8 @@ exports.Validate = function(json){
           var date = new Date();
           json.id = date.getYear() + "_"+date.getMonth() + "_" + date.getDate()  + "_" + date.getHours() + "_" + date.getMinutes() + "_" + date.getSeconds()+ "_" + date.getMilliseconds();   
       }
-      
+    
+    json.IsFutureItem = new Date(json.date) > new Date();
     return messages
 }
 

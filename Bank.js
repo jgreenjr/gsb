@@ -95,6 +95,26 @@ exports.CreateBank = function(json, summaryGeneratorFactory){
         return summmaryGenerator.Generate();
     
     };
+    
+    this.UpdateTransactions = function(){
+        var now = new Date();
+        backingData.FutureItemCount = 0; 
+        for(var i = 0; i < backingData.Transactions.length; i++){
+            if(new Date(backingData.Transactions[i].date) > now)
+                {
+                    backingData.Transactions[i].IsFutureItem = true;
+                    backingData.FutureItemCount++;
+                }
+            else if(backingData.Transactions[i].IsFutureItem)
+            {
+                backingData.Transactions[i].IsFutureItem = false;
+            }
+            else
+            {
+                break;
+            }
+        }
+    };
         
     
     return this;
@@ -112,6 +132,11 @@ exports.InitAccount=function(json){
             var i = 0;
             var total = {ActualBalance:0};
             for(i = json.Transactions.length-1; i >=0 ; i--){
+                 if(!json.Transactions[i].IsFutureItem)
+     {
+         json.Transactions[i].IsFutureItem =false;
+     }
+      
                if(!json.Transactions[i].category || json.Transactions[i].category == undefined)
                     json.Transactions[i].category = "Not Specified";
                      if(!json.Transactions[i].Status || json.Transactions[i].Status == undefined)

@@ -39,6 +39,7 @@ var ViewModel = function() {
     this.cats =  ko.observableArray([])
     this.filteredTransactions = ko.observableArray()
     
+    
   
     this.UpdateTransaction = function(item){
         model.warnings(["Updating Transaction:"+item.payee]);
@@ -55,21 +56,15 @@ var ViewModel = function() {
             statusFilter = "";
         var trans = model.Transactions()
         var returnValue = [];
-        var futureItemsCount = 0;
-        var today = new Date();
         for(var i = 0; i < trans.length; i++){
-            var isFutureItem = new Date(trans[i].date) > today;
+            var isFutureItem =trans[i].IsFutureItem;
             if((!isFutureItem||newValue) && (statusFilter == "" || trans[i].Status == statusFilter))
             {
                returnValue.push(trans[i]);
             }
-            if(isFutureItem)
-            {
-                futureItemsCount++;
-            }
         
         }
-        model.numberOfFutureItems(futureItemsCount);
+        
         model.filteredTransactions(returnValue);
     }
     
@@ -98,8 +93,7 @@ var ViewModel = function() {
       beforeSend: beforeSend,
       success: function(data2){     
            model.messages(["Transaction " + actionText + ": "+transPayee])
-       model.total(data2.Total.ActualBalance);
-       model.ClearedBalance(data2.Total.ClearedBalance)
+       model.total(data2.Total);
        model.Transactions(data2.Transactions);
        model.FilterTransactions( model.showFutureItems(), model.statusFilter())
        model.transactionDate(new Date().toLocaleDateString());
@@ -118,7 +112,7 @@ var ViewModel = function() {
     }
     
      this.transactionType = ko.computed(function(){
-         var  t = parseFloat(this.total()) ;
+         
        if(this.transactionDeposit()){
            return "deposit";
        }
@@ -129,7 +123,6 @@ var ViewModel = function() {
     },this);
     
      this.transactionAmount = ko.computed(function(){
-         var  t = parseFloat(this.total()) ;
        if(this.transactionDeposit()){
            return this.transactionDeposit();
        }
@@ -140,7 +133,8 @@ var ViewModel = function() {
     },this);
     
       this.transactionTotal = ko.computed(function(){
-         var  t = parseFloat(this.total()) ;
+          if(this.total())
+         var  t = parseFloat(this.total().ClearedBalance) ;
        if(this.transactionDeposit()){
            return this.Money(parseFloat(this.transactionDeposit()) + t);
        }
@@ -188,9 +182,10 @@ var ViewModel = function() {
     beforeSend: beforeSend,
     success: function(data){
    
-     model.total(data.Total.ActualBalance);
+     model.total(data.Total);
      model.ClearedBalance(data.Total.ClearedBalance);
     model.Transactions(data.Transactions);
+    model.numberOfFutureItems(data.FutureItemCount);
     model.FilterTransactions( model.showFutureItems(), model.statusFilter())
     $( ".transactionDate" ).datepicker();
     model.loaded(true);
@@ -263,4 +258,9 @@ function LoadTransaction(id){
     });
 }
 
-      
+   
+   function formatMoney(data){
+          
+        return "$"+parseFloat(data).toFixed(2);
+        
+    };   
