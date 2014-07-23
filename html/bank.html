@@ -41,6 +41,8 @@
         </div>
         <div>Show (<span data-bind="text: numberOfFutureItems()"></span>) Future Items:  <input type="checkbox" data-bind="checked: showFutureItems" /> </div>
         <div>Show Status: <select id="someId" data-bind="options:StatusOptions,optionsCaption: '<No Filter>', value:statusFilter"></select></div>
+        <div>Show Category: <select id="someId2" data-bind="options:cats, optionsText:'name', optionsValue:'name',optionsCaption: '<No Filter>', value:categoryFilter"></select></div>
+       
         <ul class="alert alert-danger" data-bind="visible: errors().length > 0, foreach:errors">
           <li data-bind="text:message"></li>
            

@@ -28,6 +28,7 @@ var ViewModel = function() {
     this.warnings = ko.observableArray([]);
     this.messages = ko.observableArray([]);
     this.statusFilter = ko.observable();
+    this.categoryFilter = ko.observable();
     this.transactionDate = ko.observable(new Date().toLocaleDateString())
     this.transactionPayee = ko.observable();
     this.transactionDeposit = ko.observable();
@@ -47,18 +48,23 @@ var ViewModel = function() {
         
     }
     
-      this.showFutureItems.subscribe(function(newValue){model.FilterTransactions(newValue, model.statusFilter())});
-      this.statusFilter.subscribe(function(newValue){model.FilterTransactions(model.showFutureItems(), newValue)});
+      this.showFutureItems.subscribe(function(newValue){model.FilterTransactions(newValue, model.statusFilter(), model.categoryFilter())});
+      this.statusFilter.subscribe(function(newValue){model.FilterTransactions(model.showFutureItems(), newValue, model.categoryFilter())});
+      this.categoryFilter.subscribe(function(newValue){model.FilterTransactions(model.showFutureItems(), model.statusFilter(), newValue)});
     
     
-    this.FilterTransactions = function(newValue, statusFilter ){
+    this.FilterTransactions = function(newValue, statusFilter, categoryFilter ){
         if(!statusFilter)
             statusFilter = "";
+        if(!categoryFilter)
+            categoryFilter = "";
         var trans = model.Transactions()
         var returnValue = [];
         for(var i = 0; i < trans.length; i++){
             var isFutureItem =trans[i].IsFutureItem;
-            if((!isFutureItem||newValue) && (statusFilter == "" || trans[i].Status == statusFilter))
+            if((!isFutureItem||newValue) 
+                && (statusFilter == "" || trans[i].Status == statusFilter)
+                && (categoryFilter == "" || trans[i].category == categoryFilter))
             {
                returnValue.push(trans[i]);
             }
@@ -186,7 +192,7 @@ var ViewModel = function() {
      model.ClearedBalance(data.Total.ClearedBalance);
     model.Transactions(data.Transactions);
     model.numberOfFutureItems(data.FutureItemCount);
-    model.FilterTransactions( model.showFutureItems(), model.statusFilter())
+    model.FilterTransactions( model.showFutureItems(), model.statusFilter(),model.categoryFilter())
     $( ".transactionDate" ).datepicker();
     model.loaded(true);
     },

@@ -108,6 +108,7 @@ exports.CreateBank = function(json, summaryGeneratorFactory){
             else if(backingData.Transactions[i].IsFutureItem)
             {
                 backingData.Transactions[i].IsFutureItem = false;
+                
             }
             else
             {

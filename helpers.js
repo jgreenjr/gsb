@@ -12,7 +12,7 @@ exports.UpdateTotal = function(currentTotal, transaction)
               }
               else
                 {
-                    console.log("found future");
+                    
                     if(!currentTotal.FutureBalance){
                         currentTotal.FutureBalance = currentTotal.ActualBalance;
                     }
@@ -30,7 +30,7 @@ exports.UpdateTotal = function(currentTotal, transaction)
                else
                 {
                     
-                    console.log("found future");
+                   
                     if(!currentTotal.FutureBalance){
                         currentTotal.FutureBalance = currentTotal.ActualBalance;
                     }
