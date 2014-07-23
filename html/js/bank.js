@@ -101,7 +101,7 @@ var ViewModel = function() {
            model.messages(["Transaction " + actionText + ": "+transPayee])
        model.total(data2.Total);
        model.Transactions(data2.Transactions);
-       model.FilterTransactions( model.showFutureItems(), model.statusFilter())
+       model.FilterTransactions( model.showFutureItems(), model.statusFilter(), model.categoryFilter())
        model.transactionDate(new Date().toLocaleDateString());
        model.transactionWidthdrawl("");
        model.transactionDeposit("");
