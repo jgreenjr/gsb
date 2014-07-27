@@ -39,8 +39,10 @@ var ViewModel = function() {
     this.numberOfFutureItems = ko.observable()
     this.cats =  ko.observableArray([])
     this.filteredTransactions = ko.observableArray()
-    
-    
+    var currentDate = new Date();
+    var summaryDate = (currentDate.getMonth()+1)+ "/1/"+currentDate.getFullYear()
+    this.summaryDate = ko.observable(summaryDate);
+    this.summary = ko.observable();
   
     this.UpdateTransaction = function(item){
         model.warnings(["Updating Transaction:"+item.payee]);
@@ -51,8 +53,21 @@ var ViewModel = function() {
       this.showFutureItems.subscribe(function(newValue){model.FilterTransactions(newValue, model.statusFilter(), model.categoryFilter())});
       this.statusFilter.subscribe(function(newValue){model.FilterTransactions(model.showFutureItems(), newValue, model.categoryFilter())});
       this.categoryFilter.subscribe(function(newValue){model.FilterTransactions(model.showFutureItems(), model.statusFilter(), newValue)});
+        this.summaryDate.subscribe(function(newValue){
+            model.GetSummary();
+        })
     
-    
+    this.GetSummary = function (){
+        $.ajax({
+            url: "/summary?StartDate=" + this.summaryDate(),
+            dataType: "json",
+            beforeSend: beforeSend,
+            success: function(data){
+                model.summary(data);
+               
+            }
+        });
+    } 
     this.FilterTransactions = function(newValue, statusFilter, categoryFilter ){
         if(!statusFilter)
             statusFilter = "";
@@ -102,6 +117,7 @@ var ViewModel = function() {
        model.total(data2.Total);
        model.Transactions(data2.Transactions);
        model.FilterTransactions( model.showFutureItems(), model.statusFilter(), model.categoryFilter())
+    model.GetSummary();
        model.transactionDate(new Date().toLocaleDateString());
        model.transactionWidthdrawl("");
        model.transactionDeposit("");
@@ -192,6 +208,7 @@ var ViewModel = function() {
      model.ClearedBalance(data.Total.ClearedBalance);
     model.Transactions(data.Transactions);
     model.numberOfFutureItems(data.FutureItemCount);
+    model.GetSummary();
     model.FilterTransactions( model.showFutureItems(), model.statusFilter(),model.categoryFilter())
     $( ".transactionDate" ).datepicker();
     model.loaded(true);

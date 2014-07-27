@@ -1,29 +1,39 @@
 exports.CreateNewGenerator = function(trans){
-    this.StartDate = undefined;
-    this.EndDate = undefined;
     
     this.trans = trans;
     
-    this.Generate = function(){
+    this.Generate = function(startDate){
+        
         var tw = 0;
         var td = 0;
         var tg = 0;
+        var twc = 0;
+        var tdc = 0;
+        var tc = 0;
         for(var i = 0; i < trans.length; i++){
+            if(!startDate ||trans[i].date >= startDate){
+                tc++;
             switch(trans[i].type){
                 case "widthdrawl":
-                    tw += trans[i].amount;
+                    twc++
+                    tw += parseInt(trans[i].amount);
                     break;
                 case "deposit":
-                    td += trans[i].amount;
+                    tdc++;
+                    td +=  parseInt(trans[i].amount);
                     break;
+            }
             }
         }
         
         return {
-            date: Date.now(),
+            date:new Date().toDateString(),
             TotalWithdrawls:tw,
+            TotalWithdrawlsCount: twc,
             TotalDeposits: td,
-            TotalGains: td-tw
+            TotalDepositsCount: tdc,
+            TotalGains: td-tw,
+            TotalTransactions: tc
         };
     }
     

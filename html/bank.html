@@ -34,14 +34,48 @@
     
     <div class="container " id="bankSheet" style="display:none" data-bind="visible: loaded()">
         <h2 data-bind="text: title" >Test Title</h2>
-        <div data-bind="with: total">
-        <div>Actual Balance: <span data-bind="text: formatMoney($data.ActualBalance)"></span></div>
-        <div>Current Balance: <span data-bind="text: formatMoney($data.ClearedBalance)"></span></div>
-        <div data-bind="visible: $data.FutureBalance">Future Balance: <span data-bind="text: formatMoney($data.FutureBalance)"></span></div>
-        </div>
-        <div>Show (<span data-bind="text: numberOfFutureItems()"></span>) Future Items:  <input type="checkbox" data-bind="checked: showFutureItems" /> </div>
-        <div>Show Status: <select id="someId" data-bind="options:StatusOptions,optionsCaption: '<No Filter>', value:statusFilter"></select></div>
-        <div>Show Category: <select id="someId2" data-bind="options:cats, optionsText:'name', optionsValue:'name',optionsCaption: '<No Filter>', value:categoryFilter"></select></div>
+        <table style="width:100%">
+            <tr>
+                <td style="padding:1px;" valign="top">
+                    <div class="panel panel-default" style="width:100%; height:150px">
+                        <div class="panel-heading"><h3 class="panel-title">Balances</h3></div>
+                        <div class="panel-body" >
+                            <div data-bind="with: total">
+                                <div>Actual Balance: <span data-bind="text: formatMoney($data.ActualBalance)"></span></div>
+                                <div>Current Balance: <span data-bind="text: formatMoney($data.ClearedBalance)"></span></div>
+                                <div data-bind="visible: $data.FutureBalance">Future Balance: <span data-bind="text: formatMoney($data.FutureBalance)"></span></div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td style="padding:1px;" valign="top">  
+                    <div class="panel panel-default" style="width:100%; height:150px">
+                        <div class="panel-heading"><h3 class="panel-title">Filter</h3></div>
+                        <div class="panel-body" >
+                            <div>Show (<span data-bind="text: numberOfFutureItems()"></span>) Future Items:  <input type="checkbox" data-bind="checked: showFutureItems" /> </div>
+                            <div>Show Status: <select id="someId" data-bind="options:StatusOptions,optionsCaption: '<No Filter>', value:statusFilter"></select></div>
+                            <div>Show Category: <select id="someId2" data-bind="options:cats, optionsText:'name', optionsValue:'name',optionsCaption: '<No Filter>', value:categoryFilter"></select></div>
+                        </div>
+                    </div>
+                </td>
+                <td style="padding:1px;" valign="top">  
+                    <div class="panel panel-default" style="width:100%; height:150px">
+                        <div class="panel-heading"><h3 class="panel-title">Summary</h3></div>
+                        <div class="panel-body" >
+                            <div> Date: <input type="text" data-bind="value: summaryDate"></input></div>
+                            <div data-bind="with: summary">
+                            <div> Deposit: <span data-bind="text: formatMoney($data.TotalDeposits)"></span>(<span data-bind="text:$data.TotalDepositsCount"></span>)</div>
+                            <div> Withdrawls: <span data-bind="text: formatMoney($data.TotalWithdrawls)"></span>(<span data-bind="text:$data.TotalWithdrawlsCount"></span>)</div>
+                            <div> Gains: <span data-bind="text: formatMoney($data.TotalGains)"></span>(<span data-bind="text:$data.TotalTransactions"></span>)</div>
+                        </div>
+                            
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        
+     
        
         <ul class="alert alert-danger" data-bind="visible: errors().length > 0, foreach:errors">
           <li data-bind="text:message"></li>

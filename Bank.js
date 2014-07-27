@@ -1,6 +1,7 @@
 var Transaction = require("./Transaction.js");
 var helpers = require("./helpers.js");
 var Saver = require("./saver.js");
+var summaryGeneratorFactory = require("./SummaryGenerator.js")
 exports.CreateBank = function(json, summaryGeneratorFactory){
     
     exports.InitAccount(json);
@@ -91,8 +92,8 @@ exports.CreateBank = function(json, summaryGeneratorFactory){
     this.Total = function(){return backingData.Total}
     this.GetDisplay = function(){return JSON.stringify(backingData);};
     
-    this.GetSummary = function(){
-        return summmaryGenerator.Generate();
+    this.GetSummary = function(startDate){
+        return summmaryGenerator.Generate(startDate);
     
     };
     

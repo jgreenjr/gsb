@@ -5,7 +5,7 @@ var saver = require("./saver")
 var fs = require("fs");
 var HtmlFileLoader = require("./HtmlFileLoader.js")
 var responseHandler = require("./ResponseHandler.js")
-
+var summaryGeneratorFactory = require("./SummaryGenerator.js")
 var CategoriesManager = require("./CategoriesManager")
 
 
@@ -55,7 +55,7 @@ var server = http.createServer(function(request, response){
              }
              var toLoad = fileData.toString();
            
-             b = Bank.CreateBank(JSON.parse(toLoad));
+             b = Bank.CreateBank(JSON.parse(toLoad), summaryGeneratorFactory.CreateNewGenerator());
              banks.push(b);
              response.writeHead(302, {
                 'Location': request.url,
@@ -124,6 +124,15 @@ var server = http.createServer(function(request, response){
                 case "/categories":
                    cm.GetResponse("json",responseFunctions )
                    return;
+                    break;
+                case "/summary":
+                    var startDate = undefined;
+                    if(parsed.query)
+                    {
+                        startDate = parsed.query.split("=")[1]
+                    }
+                    var summary = b.GetSummary(startDate);
+                    responseFunctions.SendResponseWithType(200, JSON.stringify(summary), "application/json" );
                     break;
          default:
              responseFunctions.SendResponse(400, "{errorCode:'BADENDPOINT', errorMessage:'Unhandled Endpoint'}");
