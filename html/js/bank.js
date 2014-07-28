@@ -59,7 +59,7 @@ var ViewModel = function() {
     
     this.GetSummary = function (){
         $.ajax({
-            url: "/summary?StartDate=" + this.summaryDate(),
+            url: "/summary?startDate=" + this.summaryDate(),
             dataType: "json",
             beforeSend: beforeSend,
             success: function(data){
@@ -211,7 +211,9 @@ var ViewModel = function() {
     model.GetSummary();
     model.FilterTransactions( model.showFutureItems(), model.statusFilter(),model.categoryFilter())
     $( ".transactionDate" ).datepicker();
+    $( ".transactionDate" ).datepicker("option", "dateFormat", "m/d/yyyy" );
     model.loaded(true);
+    
     },
      error: function(data2){  
      
@@ -287,3 +289,5 @@ function LoadTransaction(id){
         return "$"+parseFloat(data).toFixed(2);
         
     };   
+    
+   

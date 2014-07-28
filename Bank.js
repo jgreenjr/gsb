@@ -92,8 +92,8 @@ exports.CreateBank = function(json, summaryGeneratorFactory){
     this.Total = function(){return backingData.Total}
     this.GetDisplay = function(){return JSON.stringify(backingData);};
     
-    this.GetSummary = function(startDate){
-        return summmaryGenerator.Generate(startDate);
+    this.GetSummary = function(startDate, cm){
+        return summmaryGenerator.Generate(startDate, cm);
     
     };
     

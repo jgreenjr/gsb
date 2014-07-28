@@ -22,5 +22,14 @@ exports.CreateCategoriesManager = function(json){
                 break;
         }
     }
+    
+    this.GetSummaryArray = function (){
+        var returnValue = []
+        for(var i = 0; i < backingData.length; i++ ){
+            returnValue.push({category:backingData[i].name, total:0, count: 0})
+        }
+        
+        return returnValue;
+    }
     return this;
 }

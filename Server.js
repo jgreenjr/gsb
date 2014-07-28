@@ -55,7 +55,7 @@ var server = http.createServer(function(request, response){
              }
              var toLoad = fileData.toString();
            
-             b = Bank.CreateBank(JSON.parse(toLoad), summaryGeneratorFactory.CreateNewGenerator());
+             b = Bank.CreateBank(JSON.parse(toLoad), summaryGeneratorFactory.CreateNewGenerator(cm));
              banks.push(b);
              response.writeHead(302, {
                 'Location': request.url,
@@ -67,6 +67,7 @@ var server = http.createServer(function(request, response){
      }
      
     }
+    var query = GetQueryArguments(parsed.query);
      
      switch (parsed.pathname.toLowerCase()) {
          case "/bank":
@@ -126,12 +127,7 @@ var server = http.createServer(function(request, response){
                    return;
                     break;
                 case "/summary":
-                    var startDate = undefined;
-                    if(parsed.query)
-                    {
-                        startDate = parsed.query.split("=")[1]
-                    }
-                    var summary = b.GetSummary(startDate);
+                  var summary = b.GetSummary(query.startDate, cm);
                     responseFunctions.SendResponseWithType(200, JSON.stringify(summary), "application/json" );
                     break;
          default:
@@ -150,6 +146,20 @@ saver.Load("cats","cats", function(data){cm = CategoriesManager.CreateCategories
 server.listen(port);
 console.log("Server is listening"); });
 
+function GetQueryArguments(query){
+    var result = {};
+    
+    if(!query){
+        return result
+    }
+    
+    var passedValues = query.split("&");
+    for(var i = 0; i < passedValues.length; i++){
+        var nameValuePair = passedValues[i].split('=');
+        result[nameValuePair[0]] = nameValuePair[1];
+    }
+    return result;
+}
 
 /*
 function SendResponse(response, statusCode, responseMessage){

@@ -36,20 +36,19 @@
         <h2 data-bind="text: title" >Test Title</h2>
         <table style="width:100%">
             <tr>
-                <td style="padding:1px;" valign="top">
-                    <div class="panel panel-default" style="width:100%; height:150px">
+                <td style="padding:1px;width:300px;" valign="top">
+               <div class="panel panel-default" style="width:100%;">
                         <div class="panel-heading"><h3 class="panel-title">Balances</h3></div>
                         <div class="panel-body" >
                             <div data-bind="with: total">
-                                <div>Actual Balance: <span data-bind="text: formatMoney($data.ActualBalance)"></span></div>
-                                <div>Current Balance: <span data-bind="text: formatMoney($data.ClearedBalance)"></span></div>
+                               <div>Actual Balance: <span data-bind="text: formatMoney($data.ActualBalance)"></span></div>
+                               <div>Current Balance: <span data-bind="text: formatMoney($data.ClearedBalance)"></span></div>
                                 <div data-bind="visible: $data.FutureBalance">Future Balance: <span data-bind="text: formatMoney($data.FutureBalance)"></span></div>
                             </div>
                         </div>
                     </div>
-                </td>
-                <td style="padding:1px;" valign="top">  
-                    <div class="panel panel-default" style="width:100%; height:150px">
+                    <div class="tab-pane" id="filter">
+                    <div class="panel panel-default" style="width:100%; ">
                         <div class="panel-heading"><h3 class="panel-title">Filter</h3></div>
                         <div class="panel-body" >
                             <div>Show (<span data-bind="text: numberOfFutureItems()"></span>) Future Items:  <input type="checkbox" data-bind="checked: showFutureItems" /> </div>
@@ -57,9 +56,9 @@
                             <div>Show Category: <select id="someId2" data-bind="options:cats, optionsText:'name', optionsValue:'name',optionsCaption: '<No Filter>', value:categoryFilter"></select></div>
                         </div>
                     </div>
-                </td>
-                <td style="padding:1px;" valign="top">  
-                    <div class="panel panel-default" style="width:100%; height:150px">
+                    </div>
+                    <div class="tab-pane active" id="summary">
+                    <div class="panel panel-default" style="width:100%;">
                         <div class="panel-heading"><h3 class="panel-title">Summary</h3></div>
                         <div class="panel-body" >
                             <div> Date: <input type="text" data-bind="value: summaryDate"></input></div>
@@ -71,9 +70,7 @@
                             
                         </div>
                     </div>
-                </td>
-                <td style="padding:1px;" valign="top">  
-                    <div class="panel panel-default" style="width:100%; height:150px">
+                    <div class="panel panel-default" style="width:100%;">
                         <div class="panel-heading"><h3 class="panel-title">Summary By Category</h3></div>
                         <div class="panel-body" >
                             <div> Date: <input type="text" data-bind="value: summaryDate"></input></div>
@@ -84,28 +81,11 @@
                                 </div>
                             </div>
                         </div>
+                        </div>
                     </div>
                 </td>
-            </tr>
-        </table>
-        
-     
-       
-        <ul class="alert alert-danger" data-bind="visible: errors().length > 0, foreach:errors">
-          <li data-bind="text:message"></li>
-           
-      </ul>
-      
-       <ul class="alert alert-warning" data-bind="visible: warnings().length > 0, foreach:warnings">
-          <li data-bind="text:$data"></li>
-           
-      </ul>
-        <ul class="alert alert-success" data-bind="visible: messages().length > 0, foreach:messages">
-          <li data-bind="text:$data"></li>
-           
-      </ul>
-            
-    <table class="table table-condensed">
+                <td valign="top">
+                 <table class="table table-condensed">
         <thead>
             <tr>
                 <th class="col-md-1">Date</th>
@@ -144,7 +124,27 @@
     </table>
        
       
-  
+  </td>
+            </tr>
+        </table>
+        
+     
+       
+        <ul class="alert alert-danger" data-bind="visible: errors().length > 0, foreach:errors">
+          <li data-bind="text:message"></li>
+           
+      </ul>
+      
+       <ul class="alert alert-warning" data-bind="visible: warnings().length > 0, foreach:warnings">
+          <li data-bind="text:$data"></li>
+           
+      </ul>
+        <ul class="alert alert-success" data-bind="visible: messages().length > 0, foreach:messages">
+          <li data-bind="text:$data"></li>
+           
+      </ul>
+            
+    
     
     
        </div>

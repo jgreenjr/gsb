@@ -1,8 +1,9 @@
-exports.CreateNewGenerator = function(trans){
-    
+exports.CreateNewGenerator = function(trans, catManager){
+    console.log(catManager)
     this.trans = trans;
     
-    this.Generate = function(startDate){
+    
+    this.Generate = function(startDate, cm){
         
         var tw = 0;
         var td = 0;
@@ -11,7 +12,9 @@ exports.CreateNewGenerator = function(trans){
         var tdc = 0;
         var tc = 0;
         
-        var byCategory = [];
+        var byCategory = cm.GetSummaryArray();
+        
+        
         for(var i = 0; i < trans.length; i++){
             var amount = parseInt(trans[i].amount);
             if(!startDate ||trans[i].date >= startDate){
@@ -59,7 +62,7 @@ exports.CreateNewGenerator = function(trans){
             }
         }
         
-        obj.push({category:category, total:amount, count: 1});
+        obj.push({category:category, total:amount, count: 0});
         
     }
     
