@@ -42,9 +42,9 @@ exports.CreatePlan = function(json){
                 if(IsValidDate(trans,date) && bank.FindTransaction(id) == null){
                     startingBalance = helpers.UpdateTotal(startingBalance, trans);
                     if(startingBalance.ActualBalance < 0){
-                        planResult.warnings.splice(0,0,{errorCode:"negitiveBalanceWarning", errorMessage:"Negitive Balance as a result of transaction", transaction: trans.payee});
+                        planResult.warnings.push({errorCode:"negitiveBalanceWarning", errorMessage:"Negitive Balance as a result of transaction", transaction: trans.payee});
                     }
-                    planResult.transactions.splice(0,0,{id:id ,payee:trans.payee, date:(date.getMonth()+1)+"/"+date.getDate()+"/"+date.getFullYear(), amount:trans.amount, type:trans.type, balance:helpers.CopyTotal(startingBalance), category:trans.category, Status:"pending"});
+                    planResult.transactions.push({id:id ,payee:trans.payee, date:(date.getMonth()+1)+"/"+date.getDate()+"/"+date.getFullYear(), amount:trans.amount, type:trans.type, balance:helpers.CopyTotal(startingBalance), category:trans.category, Status:"pending"});
                 }
             }
              date.setDate(date.getDate()+1);
