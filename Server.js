@@ -6,11 +6,27 @@ var fs = require("fs");
 var HtmlFileLoader = require("./HtmlFileLoader.js")
 var responseHandler = require("./ResponseHandler.js")
 var summaryGeneratorFactory = require("./SummaryGenerator.js")
-var CategoriesManager = require("./CategoriesManager")
+var CategoriesManager = require("./CategoriesManager");
+var planner = require("./Planner")
 
 
 var banks = [];
 var cm = null;
+
+function IsAuthenticated(request){
+    return true;
+}
+
+function hash(value) {
+  var hash = 0, i, chr, len;
+  if (value.length == 0) return hash;
+  for (i = 0, len = value.length; i < len; i++) {
+    chr   = value.charCodeAt(i);
+    hash  = ((hash << 5) - hash) + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return hash;
+};
 
 var server = http.createServer(function(request, response){
      var responseFunctions =responseHandler.CreateResponseHandler(request, response);
@@ -18,7 +34,13 @@ var server = http.createServer(function(request, response){
      var parsed = url.parse(request.url);
      
      if(parsed.pathname == "/")
-        parsed.pathname = "/bank.html";
+        parsed.pathname = "/login.html";
+        
+    if(parsed.pathname != "/login.html" && parsed.pathname != "/login" && !IsAuthenticated(request)){
+        console.log("not allowed")
+        responseFunctions.SendResponseWithType("401", "Need to login to see this page", "plain/html")
+        return;
+    }
     
      if(request.headers.accept.indexOf("text/html") != -1 ){
          responseFunctions.responseType="text/html";
@@ -68,8 +90,13 @@ var server = http.createServer(function(request, response){
      
     }
     var query = GetQueryArguments(parsed.query);
-     
+     console.log(parsed.pathname.toLowerCase())
      switch (parsed.pathname.toLowerCase()) {
+         case "/login":
+             var username = parsed.Username
+             var passHash = parsed.Hashword
+             
+             
          case "/bank":
              b.UpdateTransactions();
               responseFunctions.SendResponse(200, b.GetDisplay());
@@ -96,10 +123,21 @@ var server = http.createServer(function(request, response){
                     return;
             }
           
-            case "PlannedTransaction":
-               responseFunctions.SendResponse(200, b.GetDisplay());
-            
-            break;
+            case "/bankplan":
+              switch(request.method.toLowerCase()){
+                case "get":
+                planner.LoadPlan(request.headers.bank, responseFunctions, b)
+                return;
+              }
+                break;
+                
+            case "/plan":
+              switch(request.method.toLowerCase()){
+                case "get":
+                planner.LoadPlan(request.headers.bank, responseFunctions)
+                return;
+              }
+                break;
             case "/banks":
                 fs.readdir(".", function(err, files){
                     if(err){

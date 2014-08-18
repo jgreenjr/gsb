@@ -25,7 +25,8 @@ exports.CreateBank = function(json, summaryGeneratorFactory){
         }
         return null;
     }
-    this.AddTransaction = function(transaction){
+    
+   this.AddTransaction = function(transaction){
       backingData.Total = helpers.UpdateTotal(backingData.Total, transaction);
       transaction.balance = backingData.Total;
       transaction.Status = "Pending";
@@ -117,6 +118,10 @@ exports.CreateBank = function(json, summaryGeneratorFactory){
             }
         }
     };
+    
+    this.GetBalances = function(){
+       return helpers.CopyTotal(backingData.Total);
+    }
         
     
     return this;
@@ -145,7 +150,7 @@ exports.InitAccount=function(json){
                       json.Transactions[i].Status = "Pending";
             total = helpers.UpdateTotal(total, json.Transactions[i])
                json.Transactions[i].balance = helpers.CopyTotal(total); 
-               i
+               
             }
             json.Total = total;
         }
