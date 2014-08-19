@@ -47,6 +47,15 @@ var ViewModel = function() {
     this.summaryDate = ko.observable(summaryDate);
     this.summary = ko.observable();
     
+    this.WebBalance = ko.observable("");
+    
+    this.Difference = ko.computed(function(){
+        if(this.WebBalance() != "" && this.total() != null){
+            return this.WebBalance() - this.total().ClearedBalance;
+        }
+    }, this)
+    
+    
     this.PlanDays = ko.observable(7);
   
     this.UpdateTransaction = function(item){
@@ -150,6 +159,10 @@ var ViewModel = function() {
       $("#"+item.id+ " #transactionModal").modal();
        //  $("tr.subRow").hide();
     //    $(arg2.currentTarget).parent().parent().next().show();
+    }
+    
+    this.ShowDifference = function(){
+        $("#OnlineDifferenceCalculator").modal();
     }
    
     this.ProcessTransaction = function(item, action, actionText, transPayee){
