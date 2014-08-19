@@ -105,7 +105,7 @@ var ViewModel = function() {
     
     this.GetBankPlan = function (){
         if(model.bankName())
-        {alert(model.PlanDays());
+        {
         $.ajax({
             url: "/bankplan?Days="+model.PlanDays(),
             dataType: "json",
