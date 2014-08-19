@@ -3,6 +3,8 @@ var helpers = require("./helpers.js");
 var saver = require("./saver.js");
 var fs = require("fs");
 
+var plans = [];
+
 exports.ValidateTransaction = function(json){
     var errors = Transaction.StandardTransactionValidation(json);
     
@@ -61,9 +63,11 @@ exports.CreatePlan = function(json){
     return this;
 }
 
-exports.LoadPlan = function(planName,responseFunctions,bank){
-    
-    console.log("loadingFile" + planName);
+exports.LoadPlan = function(planName,responseFunctions,bank, days){
+    var plan = planIsLoaded(planName)
+    console.log(plan);
+    if(!plan)
+    {
          fs.readFile(planName + ".plan", function(err, fileData){
              console.log(err)
              if(err)
@@ -72,16 +76,37 @@ exports.LoadPlan = function(planName,responseFunctions,bank){
                 return;
              }
              var toLoad = fileData.toString();
-           
-             var b = exports.CreatePlan(JSON.parse(toLoad));
-             if(bank)
-             {
-                 responseFunctions.SendResponseWithType(200,b.PopulatePlan(Date.now(), 7 ,bank),"application/json")
-                 return;
-             }
-              responseFunctions.SendResponseWithType(200,b.PopulatePlan(Date.now(), 7 ,bank.GetBalances()),"application/json")
+            plan = exports.CreatePlan(JSON.parse(toLoad));
+         
+            plans.push({name: planName, plan: plan});
+            SendResponse(plan, bank, responseFunctions, days )
+            return;
          });
          return;
+    }
+    
+    SendResponse(plan, bank, responseFunctions, days )
+         return;
+}
+
+function SendResponse(plan, bank, responseFunctions, days)
+    {
+        if(bank)
+             {
+                 responseFunctions.SendResponseWithType(200,plan.PopulatePlan(Date.now(), days ,bank),"application/json")
+                 return;
+             }
+              responseFunctions.SendResponseWithType(200,plan.PopulatePlan(Date.now(), days ,bank.GetBalances()),"application/json")
+    }
+    
+function planIsLoaded(planName){
+    for(var i = 0; i < plans.length; i++)
+    {
+        if(plans.name == planName){
+            return plans.plan;
+        }
+    }
+    return null;
 }
 
 function Killspaces(str){

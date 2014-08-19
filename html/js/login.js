@@ -8,3 +8,18 @@ String.prototype.hashCode = function() {
   }
   return hash;
 };
+
+var loginModal = function(){
+  this.username = ko.observable();
+  this.password = ko.observable();
+  
+  this.SignIn = function(){
+      $.ajax({
+            url: "/login?login="+this.username()+"&password="+this.password(),
+              success: function(data){
+                window.location="/bank.html";
+               
+            }
+        });
+  }
+}

@@ -126,7 +126,7 @@ var server = http.createServer(function(request, response){
             case "/bankplan":
               switch(request.method.toLowerCase()){
                 case "get":
-                planner.LoadPlan(request.headers.bank, responseFunctions, b)
+                planner.LoadPlan(request.headers.bank, responseFunctions, b, query.Days)
                 return;
               }
                 break;

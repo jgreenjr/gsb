@@ -16,6 +16,8 @@ var ViewModel = function() {
     }
     , this)
     
+    this.PlanDayOptions = ko.observableArray(["7", "14", "21"]);
+    
     this.StatusOptions = ko.observableArray(["Pending", "Cleared", "Closed"]);
     this.StatusOptions2 = ko.observableArray(["Pending", "Cleared", "Closed"]);
     this.title = ko.observable();
@@ -44,6 +46,8 @@ var ViewModel = function() {
     var summaryDate = (currentDate.getMonth()+1)+ "/1/"+currentDate.getFullYear()
     this.summaryDate = ko.observable(summaryDate);
     this.summary = ko.observable();
+    
+    this.PlanDays = ko.observable(7);
   
     this.UpdateTransaction = function(item){
         model.warnings(["Updating Transaction:"+item.payee]);
@@ -71,6 +75,7 @@ var ViewModel = function() {
       this.showFutureItems.subscribe(function(newValue){model.FilterTransactions(newValue, model.statusFilter(), model.categoryFilter())});
       this.statusFilter.subscribe(function(newValue){model.FilterTransactions(model.showFutureItems(), newValue, model.categoryFilter())});
       this.categoryFilter.subscribe(function(newValue){model.FilterTransactions(model.showFutureItems(), model.statusFilter(), newValue)});
+      this.PlanDays.subscribe(function(newValue){model.GetBankPlan()});
         this.summaryDate.subscribe(function(newValue){
             model.GetSummary();
         });
@@ -99,8 +104,10 @@ var ViewModel = function() {
     } 
     
     this.GetBankPlan = function (){
+        if(model.bankName())
+        {alert(model.PlanDays());
         $.ajax({
-            url: "/bankplan",
+            url: "/bankplan?Days="+model.PlanDays(),
             dataType: "json",
             beforeSend: beforeSend,
             success: function(data){
@@ -108,6 +115,7 @@ var ViewModel = function() {
                
             }
         });
+        }
     } 
     this.FilterTransactions = function(newValue, statusFilter, categoryFilter ){
        
