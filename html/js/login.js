@@ -14,10 +14,7 @@ var loginModel = function(){
   this.password = ko.observable();
   this.ErrorMessage = ko.observable("");
   
-  if(hasCookie("sessionKey")){
-    
-  }
-  
+ 
   this.SignIn = function(){
     var hashword = this.username()+ this.password();
       $.ajax({
