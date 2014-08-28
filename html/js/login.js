@@ -9,17 +9,32 @@ String.prototype.hashCode = function() {
   return hash;
 };
 
-var loginModal = function(){
+var loginModel = function(){
   this.username = ko.observable();
   this.password = ko.observable();
+  this.ErrorMessage = ko.observable("");
+  
+  if(hasCookie("sessionKey")){
+    
+  }
   
   this.SignIn = function(){
+    var hashword = this.username()+ this.password();
       $.ajax({
-            url: "/login?login="+this.username()+"&password="+this.password(),
+            url: "/login?Username="+this.username()+"&Hassword="+hashword.hashCode(),
               success: function(data){
-                window.location="/bank.html";
-               
+                
+              document.cookie = "sessionKey="+ data.sessionKey;
+                window.location=data.RedirectUrl;
+              
+            },
+            error:  function(response){
+              model.ErrorMessage(response.responseJSON.Message);
             }
         });
+        return false;
   }
 }
+
+var model = new loginModel();
+ko.applyBindings(model); // This makes Knockout get to work

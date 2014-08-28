@@ -1,6 +1,7 @@
 var model = null;
 var ViewModel = function() {
 
+    this.username=ko.observable("jay");
     
     this.bankNames = ko.observableArray([]);
     this.bankName = ko.observable();
@@ -62,6 +63,17 @@ var ViewModel = function() {
         model.warnings(["Updating Transaction:"+item.payee]);
         model.ProcessTransaction(JSON.stringify(item), "PUT", "Updated",item.payee)
         
+    }
+    
+    this.Logout = function(){
+         $.ajax({
+            url: "/logout",
+                     success: function(data){
+                document.cookie = "sessionKey=null; expires=Thu, 01 Jan 1970 00:00:01 GMT;"
+                window.location="login.html"
+               
+            }
+        });
     }
     
     this.bankPlanClass = ko.observable("btn btn-info")/*ko.computed(function(){
@@ -246,6 +258,10 @@ var ViewModel = function() {
         return parseFloat(data).toFixed(2);
         
     };
+    
+    this.SetBankName = function(item){
+        model.bankName(item)
+    }
    
     this.AddFutureTransaction = function(item){
       model.warnings(["Adding Transaction: "+ item.payee])
@@ -310,7 +326,8 @@ model = new ViewModel();
     success: function(data){
     
     ko.applyBindings(model); // This makes Knockout get to work
-    model.bankNames(data);
+    model.bankNames(data.banks);
+    model.username(data.username)
     if(window.location.search != "")
     {
         var search = window.location.search;

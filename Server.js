@@ -13,9 +13,13 @@ var planner = require("./Planner")
 var banks = [];
 var cm = null;
 
+var users = null;
+
 function IsAuthenticated(request){
     return true;
 }
+
+var activeSessions = [];
 
 function hash(value) {
   var hash = 0, i, chr, len;
@@ -28,17 +32,89 @@ function hash(value) {
   return hash;
 };
 
+function AddActiveSession(username, ip){
+    var id = username+Math.floor(Math.random()*1000)
+    activeSessions.push({id:id, username:username, ip:ip});
+    return id;
+}
+
+function CheckActiveSession(session, ip){
+    for(var i = 0; i < activeSessions.length; i++){
+        if(activeSessions[i].id == session && activeSessions[i].ip == ip){
+            return true;
+        }
+    }
+    return false;
+}
+
+function GetUsersOfSession(session){
+    for(var i = 0; i < activeSessions.length; i++){
+        if(activeSessions[i].id == session){
+            return activeSessions[i].username;
+        }
+    }
+    return "error";
+}
+
+
+function RemoveActiveSession(session){
+    for(var i = 0; i < activeSessions.length; i++){
+        if(activeSessions[i].id == session){
+            activeSessions.splice(i,i+1);
+            return;
+        }
+    }
+}
+function GetUser(username, hashword){
+    
+    for(var i = 0; i < users.length; i++){
+        if(users[i].username == username ){
+            if(hash(users[i].username+users[i].password) == hashword)
+            return users[i];
+        }
+    }
+    return null;
+}
+
+
+
+function parseCookies (request) {
+    var list = {},
+        rc = request.headers.cookie;
+    rc && rc.split(';').forEach(function( cookie ) {
+        var parts = cookie.split('=');
+        list[parts.shift().trim()] = unescape(parts.join('='));
+    });
+
+    return list;
+}
+
+
 var server = http.createServer(function(request, response){
      var responseFunctions =responseHandler.CreateResponseHandler(request, response);
       
      var parsed = url.parse(request.url);
-     
+     var query = GetQueryArguments(parsed.query);
+     var cookies = parseCookies(request);
      if(parsed.pathname == "/")
         parsed.pathname = "/login.html";
+     
+      if(parsed.pathname.indexOf(".js") != -1)
+    {
+        responseFunctions.responseType="application/javascript";
+         responseFunctions.errorResponseType="text/html";
+         HtmlFileLoader.LoadHTMLFile(parsed.pathname, responseFunctions);
+         return; 
+    }
+       
+    if(parsed.pathname != "/login.html" 
+        && parsed.pathname != "/login" && !CheckActiveSession(cookies.sessionKey, request.connection.address().address)){
         
-    if(parsed.pathname != "/login.html" && parsed.pathname != "/login" && !IsAuthenticated(request)){
-        console.log("not allowed")
-        responseFunctions.SendResponseWithType("401", "Need to login to see this page", "plain/html")
+         response.writeHead(302, {
+                'Location': "login.html"
+                
+            });
+            response.end();
         return;
     }
     
@@ -50,16 +126,8 @@ var server = http.createServer(function(request, response){
      }
     
      
-      if(parsed.pathname.indexOf(".js") != -1)
-    {
-        responseFunctions.responseType="application/javascript";
-         responseFunctions.errorResponseType="text/html";
-         HtmlFileLoader.LoadHTMLFile(parsed.pathname, responseFunctions);
-         return; 
-    }
-    
      var b = null;
-    if(parsed.pathname!=="/banks" && parsed.pathname!=="/categories"){
+    if(parsed.pathname!=="/banks" && parsed.pathname!=="/categories" && parsed.pathname!== "/login" && parsed.pathname !=="/logout"){
      for(var i =0; i < banks.length; i++){
          if(banks[i].Title() == request.headers.bank){
              b=banks[i];
@@ -89,14 +157,25 @@ var server = http.createServer(function(request, response){
      }
      
     }
-    var query = GetQueryArguments(parsed.query);
-     console.log(parsed.pathname.toLowerCase())
+    
+  
+    
      switch (parsed.pathname.toLowerCase()) {
          case "/login":
-             var username = parsed.Username
-             var passHash = parsed.Hashword
-             
-             
+             var username = query.Username
+             var passHash = query.Hassword
+             var user = GetUser(username, passHash);
+             if(user == null){
+                 responseFunctions.SendResponse(400,JSON.stringify({"ErrorCode":"INVALID_USER", "Message":"Invalid Username and password"}));
+                 return;
+             }
+             var id = AddActiveSession(username, request.connection.address().address);
+              responseFunctions.SendResponse(200,JSON.stringify({"sessionKey":id, "RedirectUrl":user.defaultUrl}));
+              return;
+        case "/logout":
+            RemoveActiveSession(cookies.sessionKey);
+             responseFunctions.SendResponse(200,JSON.stringify({"message":"logged out"}));
+            return;          
          case "/bank":
              b.UpdateTransactions();
               responseFunctions.SendResponse(200, b.GetDisplay());
@@ -153,9 +232,9 @@ var server = http.createServer(function(request, response){
                             banks.push({bankName: files[i].substr(0,index)})
                         }
                         }
+                    var returnValue = {username: GetUsersOfSession(cookies.sessionKey), banks: banks}
                     
-                    
-                    responseFunctions.SendResponseWithType(200, JSON.stringify(banks), "application/json" );
+                    responseFunctions.SendResponseWithType(200, JSON.stringify(returnValue), "application/json" );
                         return;
                 });
                 
@@ -181,8 +260,9 @@ if(process.argv[2])
 
 
 saver.Load("cats","cats", function(data){cm = CategoriesManager.CreateCategoriesManager(JSON.parse(data)); 
+saver.Load("users","user", function(data){users =JSON.parse(data) 
 server.listen(port);
-console.log("Server is listening"); });
+console.log("Server is listening"); });});
 
 function GetQueryArguments(query){
     var result = {};
