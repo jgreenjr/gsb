@@ -65,8 +65,7 @@ exports.CreatePlan = function(json){
 
 exports.LoadPlan = function(planName,responseFunctions,bank, days){
     var plan = planIsLoaded(planName)
-    console.log(plan);
-    if(!plan)
+        if(!plan)
     {
          fs.readFile(planName + ".plan", function(err, fileData){
              console.log(err)

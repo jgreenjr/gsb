@@ -1,5 +1,4 @@
 exports.CreateNewGenerator = function(trans, catManager){
-    console.log(catManager)
     this.trans = trans;
     
     

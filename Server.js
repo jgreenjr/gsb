@@ -170,7 +170,7 @@ var server = http.createServer(function(request, response){
                  return;
              }
              var id = AddActiveSession(username, request.connection.address().address);
-              responseFunctions.SendResponse(200,JSON.stringify({"sessionKey":id, "RedirectUrl":user.defaultUrl}));
+              responseFunctions.SendResponse(200,JSON.stringify({"sessionKey":id, "RedirectUrl":user.defaultUrl, "defaultBank":user.defaultBank}));
               return;
         case "/logout":
             RemoveActiveSession(cookies.sessionKey);

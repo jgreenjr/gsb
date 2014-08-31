@@ -5,6 +5,16 @@ var ViewModel = function() {
     
     this.bankNames = ko.observableArray([]);
     this.bankName = ko.observable();
+      var cookies = document.cookie.split(";");
+    for(var i = 0; i < cookies.length; i++){
+        var parts = cookies[i].split('=')
+        if(parts[0]== " defaultBank")
+        {
+           
+            this.bankName({bankName:parts[1]});
+            break;
+        }
+    }
     
     this.DoThis = ko.computed(function(){
         if(this.bankName())
@@ -84,6 +94,8 @@ var ViewModel = function() {
        return "btn btn-info";
     });
     */
+    
+  
     
     this.UpdateTransactionInModal = function(item){
         $("#"+item.id+ " #transactionModal").modal('toggle');
@@ -335,6 +347,8 @@ model = new ViewModel();
         model.bankName(search.substr(window.location.search.indexOf("bank")+5));
         LoadTransaction(transID);
     }
+    
+    
     },
      error: function(data2){  
        
