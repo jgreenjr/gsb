@@ -8,11 +8,11 @@ var responseHandler = require("./ResponseHandler.js")
 var summaryGeneratorFactory = require("./SummaryGenerator.js")
 var CategoriesManager = require("./CategoriesManager");
 var planner = require("./Planner")
-
+var BankMetaData = require("./BankMetaData.js")
 
 var banks = [];
 var cm = null;
-
+var bankMetaData = null;
 var users = null;
 
 function IsAuthenticated(request){
@@ -156,6 +156,9 @@ var server = http.createServer(function(request, response){
          return;
      }
      
+     if(!bankMetaData.checkUser(b.Title(), GetUsersOfSession(cookies.sessionKey))){
+          responseFunctions.SendResponseWithType(402, JSON.stringify([{message: 'user has no access to this bank'}]), "application/json" );
+     }
     }
     
   
@@ -218,26 +221,13 @@ var server = http.createServer(function(request, response){
               }
                 break;
             case "/banks":
-                fs.readdir(".", function(err, files){
-                    if(err){
-                         responseFunctions.SendResponseWithType(400, JSON.stringify([{message: 'Cannot Find List of Banks'}]), "application/json" );
-                        return;
-                    }
-                    
-                    var banks = [];
-                    for(var i = 0; i < files.length; i++){
-                        var index = files[i].indexOf(".bank");
-                        
-                        if( index != -1){
-                            banks.push({bankName: files[i].substr(0,index)})
-                        }
-                        }
-                    var returnValue = {username: GetUsersOfSession(cookies.sessionKey), banks: banks}
-                    
-                    responseFunctions.SendResponseWithType(200, JSON.stringify(returnValue), "application/json" );
-                        return;
-                });
+                var userName = GetUsersOfSession(cookies.sessionKey);
+                var bankAccessList = bankMetaData.GetBanks(userName);
                 
+                var returnValue = {username: userName , banks: bankAccessList}
+                    
+                responseFunctions.SendResponseWithType(200, JSON.stringify(returnValue), "application/json" );
+                return;
                 break;
                 case "/categories":
                    cm.GetResponse("json",responseFunctions )
@@ -258,12 +248,14 @@ if(process.argv[2])
     port = process.argv[2]
 }
 
-
+saver.Load("bank", "metadata", function(data){bankMetaData = BankMetaData.MetaDataBuilder(JSON.parse(data));
+    
 saver.Load("cats","cats", function(data){cm = CategoriesManager.CreateCategoriesManager(JSON.parse(data)); 
 saver.Load("users","user", function(data){users =JSON.parse(data) 
 server.listen(port);
 console.log("Server is listening"); });});
 
+})
 function GetQueryArguments(query){
     var result = {};
     
