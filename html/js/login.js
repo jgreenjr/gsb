@@ -33,16 +33,5 @@ var loginModel = function(){
         return false;
   }
 }
-
-$(document).ready(function() {
-  $(window).keydown(function(event){
-    if(event.keyCode == 13) {
-      event.preventDefault();
-      model.SignIn()
-      return false;
-    }
-  });
-});
-
 var model = new loginModel();
 ko.applyBindings(model); // This makes Knockout get to work

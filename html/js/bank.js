@@ -3,30 +3,6 @@ var ViewModel = function() {
 
     this.username=ko.observable("jay");
     
-    this.bankNames = ko.observableArray([]);
-    this.bankName = ko.observable();
-      var cookies = document.cookie.split(";");
-    for(var i = 0; i < cookies.length; i++){
-        var parts = cookies[i].split('=')
-        if(parts[0]== " defaultBank")
-        {
-           
-            this.bankName({bankName:parts[1]});
-            break;
-        }
-    }
-    
-    this.DoThis = ko.computed(function(){
-        if(this.bankName())
-        {
-           selectedBankName = this.bankName().bankName;
-           if(needBankData)
-           populateBank();
-           
-        }
-    }
-    , this)
-    
     this.PlanDayOptions = ko.observableArray(["7", "14", "21"]);
     
     this.StatusOptions = ko.observableArray(["Pending", "Cleared", "Closed"]);
@@ -75,26 +51,25 @@ var ViewModel = function() {
         
     }
     
-    this.Logout = function(){
-         $.ajax({
-            url: "/logout",
-                     success: function(data){
-                document.cookie = "sessionKey=null; expires=Thu, 01 Jan 1970 00:00:01 GMT;"
-                window.location="login.html"
-               
-            }
-        });
-    }
-    
-    this.bankPlanClass = ko.observable("btn btn-info")/*ko.computed(function(){
-       if(this.bankplan && this.bankplan.warnings.length > 0){
-           return "btn btn-danger";
-       } 
-       
-       return "btn btn-info";
+    this.bankName = ko.computed({
+        read: function () {
+            return bannerModel.bankName();
+        },
+        write: function (value) {
+            bannerModel.bankName(value);
+        },
+        owner: this
     });
-    */
     
+    this.bankNames = ko.computed({
+        read: function () {
+            return bannerModel.bankNames();
+        },
+        write: function (value) {
+            bannerModel.bankNames(value);
+        },
+        owner: this
+    });
   
     
     this.UpdateTransactionInModal = function(item){
@@ -137,7 +112,7 @@ var ViewModel = function() {
     } 
     
     this.GetBankPlan = function (){
-        if(model.bankName())
+        if(bannerModel.bankName())
         {
         $.ajax({
             url: "/bankplan?Days="+model.PlanDays(),
@@ -270,10 +245,6 @@ var ViewModel = function() {
         return parseFloat(data).toFixed(2);
         
     };
-    
-    this.SetBankName = function(item){
-        model.bankName(item)
-    }
    
     this.AddFutureTransaction = function(item){
       model.warnings(["Adding Transaction: "+ item.payee])
@@ -306,6 +277,7 @@ var ViewModel = function() {
 }
 };
   function populateBank(){
+  
  $.ajax({
     url: "/bank",
     dataType: "json",
@@ -331,30 +303,7 @@ var ViewModel = function() {
  })
   }
 model = new ViewModel();
-
- $.ajax({
-    url: "/banks",
-    dataType: "json",
-    success: function(data){
-    
-    ko.applyBindings(model); // This makes Knockout get to work
-    model.bankNames(data.banks);
-    model.username(data.username)
-    if(window.location.search != "")
-    {
-        var search = window.location.search;
-        var transID = search.substr(0,window.location.search.indexOf("&bank"));
-        model.bankName(search.substr(window.location.search.indexOf("bank")+5));
-        LoadTransaction(transID);
-    }
-    
-    
-    },
-     error: function(data2){  
-       
-      }  
- });
- 
+ko.applyBindings(model, $("#bankSheet")[0]);
   $.ajax({
     url: "/categories",
     dataType: "json",
@@ -370,6 +319,8 @@ model = new ViewModel();
  $(function(){ $( ".transactionDate" ).datepicker();})
  
  function beforeSend(xhr) {
+    
+   
         xhr.setRequestHeader('bank', selectedBankName);
     }
 

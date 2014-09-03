@@ -36,7 +36,7 @@
     </div>
     </nav>
      
-    <div class="container">
+    <div class="container" id="bankSheet">
     <ul class="alert alert-danger" data-bind="visible: errors().length > 0, foreach:errors">
           <li data-bind="text:message"></li>
            
@@ -78,7 +78,8 @@
 <script type="text/javascript">
     var needBankData = false;
 </script>
-    <script src="js/knockout-3.1.0.js" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/knockout/3.2.0/knockout-min.js" type="text/javascript"></script>
+        <script src="js/banner.js" type ="text/javascript"></script>
         <script src="js/bank.js" type="text/javascript"></script>
-    </body>
+        </body>
 </html>

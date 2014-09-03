@@ -13,6 +13,21 @@ exports.MetaDataBuilder = function(data){
     }
      return banks;
 }
+
+ this.GetBanksFullDetail = function(username){
+        var banks = [];
+        
+        for(var i = 0; i < backingData.length; i++){
+           if(this.containsUser(backingData[i],username))
+        {
+            banks.push(backingData[i])
+        }
+       
+    }
+     return banks;
+}
+
+
 this.checkUser = function (bankname, username){
      for(var i = 0; i < backingData.length; i++){
            if(backingData[i].title == bankname && this.containsUser(backingData[i],username))

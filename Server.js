@@ -127,7 +127,7 @@ var server = http.createServer(function(request, response){
     
      
      var b = null;
-    if(parsed.pathname!=="/banks" && parsed.pathname!=="/categories" && parsed.pathname!== "/login" && parsed.pathname !=="/logout"){
+    if(parsed.pathname!=="/banks" && parsed.pathname.toLowerCase()!=="/userlist"&&parsed.pathname.toLowerCase()!="/bankconfiguration" && parsed.pathname!=="/categories" && parsed.pathname!== "/login" && parsed.pathname !=="/logout"){
      for(var i =0; i < banks.length; i++){
          if(banks[i].Title() == request.headers.bank){
              b=banks[i];
@@ -236,8 +236,23 @@ var server = http.createServer(function(request, response){
                 case "/summary":
                   var summary = b.GetSummary(query.startDate, cm);
                     responseFunctions.SendResponseWithType(200, JSON.stringify(summary), "application/json" );
-                    break;
-         default:
+                    return;
+            case "/bankconfiguration":
+                 var userName = GetUsersOfSession(cookies.sessionKey);
+                var returnValue = bankMetaData.GetBanksFullDetail(userName);
+                
+                responseFunctions.SendResponseWithType(200, JSON.stringify(returnValue), "application/json" );
+                    
+                return;
+              case "/assignuser":
+                  var bank = bankMetaData.GetBank(query.bankname);
+                  if(!bankMetaData.checkUser(query.bankname,query.username)){
+                         responseFunctions.SendResponseWithType(200, JSON.stringify(returnValue), "application/json" );
+                         return;
+                      
+                  }
+               return;
+          default:
              responseFunctions.SendResponse(400, "{errorCode:'BADENDPOINT', errorMessage:'Unhandled Endpoint'}");
      }
 });
