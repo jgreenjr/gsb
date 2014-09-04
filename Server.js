@@ -117,6 +117,10 @@ var server = http.createServer(function(request, response){
             response.end();
         return;
     }
+    if(request.headers.accept == null){
+        responseFunctions.SendResponseWithType(400, JSON.stringify({message:"must pass accept header"}), "application/json");
+        return;
+    }
     
      if(request.headers.accept.indexOf("text/html") != -1 ){
          responseFunctions.responseType="text/html";
