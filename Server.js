@@ -91,6 +91,7 @@ function parseCookies (request) {
 
 
 var server = http.createServer(function(request, response){
+    try{
      var responseFunctions =responseHandler.CreateResponseHandler(request, response);
       
      var parsed = url.parse(request.url);
@@ -259,6 +260,10 @@ var server = http.createServer(function(request, response){
           default:
              responseFunctions.SendResponse(400, "{errorCode:'BADENDPOINT', errorMessage:'Unhandled Endpoint'}");
      }
+    }catch(ex){
+        saver.SaveRaw(Date.now().toString, "txt", ex.toString());
+        responseFunctions.SendResponse(400, "{errorCode:'BADENDPOINT', errorMessage:'Unhandled Endpoint'}");
+    }
 });
 
 var port = process.env.PORT;
