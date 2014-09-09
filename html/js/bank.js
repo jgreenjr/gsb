@@ -88,17 +88,7 @@ var ViewModel = function() {
             model.GetSummary();
         });
         
-        this.bankplan.subscribe(function(newValue){
-           
-              if(newValue && newValue.warnings.length > 0){
-           model.bankPlanClass("btn btn-danger");
-          return;
-       } 
        
-       
-       model.bankPlanClass("btn btn-info");
-        })
-    
     this.GetSummary = function (){
         $.ajax({
             url: "/summary?startDate=" + this.summaryDate(),
@@ -251,18 +241,22 @@ var ViewModel = function() {
        model.ProcessTransaction(JSON.stringify(item), "POST", "Added",item.payee);
     }
     
-    this.GetTransactionSettings = function(){
+    this.GetTransactionSettings = function(statusString){
     var idString = "";
     
     if(this.transactionId() !== undefined){
         idString = '"id": "' + this.transactionId() + '", ';
     }
-     return  '{"payee":"'+ this.transactionPayee() +'", '+ idString + '"date":"'+ this.transactionDate() +'", "amount":'+ this.transactionAmount() +', "type":"'+ this.transactionType() +'"}';
+     return  '{"payee":"'+ this.transactionPayee() +'", '+ idString + '"date":"'+ this.transactionDate() +'", "amount":'+ this.transactionAmount() +', "type":"'+ this.transactionType() +'", "Status":"'+statusString+'"}';
     };
     
-  this.AddTransaction = function (){
-      
-       var data = model.GetTransactionSettings();
+  this.AddTransaction = function (args1, args2){
+      var statusString  = "Pending";
+      if(args2.target.id == "addAsCleared"){
+          statusString = "Cleared";      
+           }
+         
+       var data = model.GetTransactionSettings(statusString);
        
        if(model.transactionId() === "" || model.transactionId() === undefined){
        model.warnings(["Adding Transaction: "+ model.transactionPayee()])

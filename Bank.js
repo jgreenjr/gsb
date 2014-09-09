@@ -29,7 +29,7 @@ exports.CreateBank = function(json, summaryGeneratorFactory){
    this.AddTransaction = function(transaction){
       backingData.Total = helpers.UpdateTotal(backingData.Total, transaction);
       transaction.balance = backingData.Total;
-      transaction.Status = "Pending";
+      
         var transDate = new Date(transaction.date);
        
         
