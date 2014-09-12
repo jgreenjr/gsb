@@ -102,7 +102,7 @@ exports.CreateBank = function(json, summaryGeneratorFactory){
                 && (categoryFilter == "" || backingData.Transactions[i].category == categoryFilter))
             {
              //   if(l>=i && l < i+30){
-            returnValue.Transactions.push(backingData.Transactions[i]);
+            returnValue.Transactions.push(backingData.Transactions[l]);
             //}
                 l++;
             }
