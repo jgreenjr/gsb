@@ -97,12 +97,12 @@ exports.CreateBank = function(json, summaryGeneratorFactory){
         var i = 30*(pageNumber-1);
         var l = 0;
         for(var j = 0; j < backingData.Transactions.length; j++ ){
-             if((!backingData.Transactions[i].isFutureItem||showFutureItems) 
-                && (statusFilter == "" || backingData.Transactions[i].Status == statusFilter)
-                && (categoryFilter == "" || backingData.Transactions[i].category == categoryFilter))
+             if((!backingData.Transactions[j].isFutureItem||showFutureItems) 
+                && (statusFilter == "" || backingData.Transactions[j].Status == statusFilter)
+                && (categoryFilter == "" || backingData.Transactions[j].category == categoryFilter))
             {
              //   if(l>=i && l < i+30){
-            returnValue.Transactions.push(backingData.Transactions[l]);
+            returnValue.Transactions.push(backingData.Transactions[j]);
             //}
                 l++;
             }
