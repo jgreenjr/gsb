@@ -91,7 +91,26 @@ exports.CreateBank = function(json, summaryGeneratorFactory){
     };
     
     this.Total = function(){return backingData.Total}
-    this.GetDisplay = function(){return JSON.stringify(backingData);};
+    this.GetDisplay = function(pageNumber, statusFilter, categoryFilter, showFutureItems){
+       var returnValue = {"title":backingData.Title,"Total":helpers.CopyTotal(backingData.Total)};
+        returnValue.Transactions = [];
+        var i = 30*(pageNumber-1);
+        var l = 0;
+        for(var j = 0; j < backingData.Transactions.length; j++ ){
+             if((!backingData.Transactions[i].isFutureItem||showFutureItems) 
+                && (statusFilter == "" || backingData.Transactions[i].Status == statusFilter)
+                && (categoryFilter == "" || backingData.Transactions[i].category == categoryFilter))
+            {
+             //   if(l>=i && l < i+30){
+            returnValue.Transactions.push(backingData.Transactions[i]);
+            //}
+                l++;
+            }
+           
+        }
+        returnValue.TransactionCount = l;
+        
+        return JSON.stringify(returnValue);};
     
     this.GetSummary = function(startDate, cm){
         return summmaryGenerator.Generate(startDate, cm);

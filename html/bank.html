@@ -134,7 +134,7 @@
 </div>
             </td>
         </tr>
-        <tbody data-bind="foreach: filteredTransactions">
+        <tbody data-bind="foreach: Transactions">
             <tr class="no-bottom-line" data-bind="attr:{id: id}" >
                 <td class="col-md-1" ><input data-bind="value: date" style="width:80px" class="transactionDate"></input></td>
                 <td class="col-md-3"><input data-bind="value: payee" style="width:250px"></input></td>
@@ -152,7 +152,8 @@
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                         <h4 class="modal-title" id="myModalLabel summaryLabel">Details</h4>
                       </div>
-                      <div class="modal-body"><div>
+                      <div class="modal-body">
+                      <div>
                           Category:<select data-bind="options:$parent.cats, optionsText:'name', optionsValue:'name', value:category"></select>
            
                       </div><div>Status:<select data-bind="options:$parent.StatusOptions, value:Status"><select data-bind="options:$parent.StatusOptions, value:Status"></div>
@@ -174,7 +175,7 @@
     </table>
        
     
-       </div>
+       
        
        <div class="modal fade bs-example-modal-lg"  id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -284,7 +285,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="myModalLabel summaryLabel">Filter</h4>
+        <h4 class="modal-title" id="myModalLabel summaryLabel">Balancing</h4>
       </div>
       <div class="modal-body">
       <table>

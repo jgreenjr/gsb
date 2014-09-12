@@ -68,7 +68,7 @@ exports.LoadPlan = function(planName,responseFunctions,bank, days){
         if(!plan)
     {
          fs.readFile(planName + ".plan", function(err, fileData){
-             console.log(err)
+            
              if(err)
              {
                 responseFunctions.SendResponseWithType(400, JSON.stringify([{message: 'Bank was not loaded'}]), "application/json" );

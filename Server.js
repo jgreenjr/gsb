@@ -166,7 +166,6 @@ var server = http.createServer(function(request, response){
      }
     }
     
-  
     
      switch (parsed.pathname.toLowerCase()) {
          case "/login":
@@ -186,7 +185,7 @@ var server = http.createServer(function(request, response){
             return;          
          case "/bank":
              b.UpdateTransactions();
-              responseFunctions.SendResponse(200, b.GetDisplay());
+              responseFunctions.SendResponse(200, b.GetDisplay(query.PageNumber, query.StatusFilter, query.CategoryFilter, query.ShowFutureItems));
               return;
         case "/transaction":
             switch(request.method.toLowerCase()){
@@ -261,7 +260,7 @@ var server = http.createServer(function(request, response){
              responseFunctions.SendResponse(400, "{errorCode:'BADENDPOINT', errorMessage:'Unhandled Endpoint'}");
      }
     }catch(ex){
-        saver.SaveRaw(Date.now().toString, "txt", ex.toString());
+        saver.SaveWithTitle(Date.now().toString(), "txt", ex);
         responseFunctions.SendResponse(400, "{errorCode:'BADENDPOINT', errorMessage:'Unhandled Endpoint'}");
     }
 });

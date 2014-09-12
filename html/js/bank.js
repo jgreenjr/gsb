@@ -16,8 +16,8 @@ var ViewModel = function() {
     this.errors = ko.observableArray([]);
     this.warnings = ko.observableArray([]);
     this.messages = ko.observableArray([]);
-    this.statusFilter = ko.observable();
-    this.categoryFilter = ko.observable();
+    this.statusFilter = ko.observable("");
+    this.categoryFilter = ko.observable("");
     this.transactionDate = ko.observable(new Date().toLocaleDateString())
     this.transactionPayee = ko.observable();
     this.transactionDeposit = ko.observable();
@@ -80,15 +80,7 @@ var ViewModel = function() {
         
     }
     
-      this.showFutureItems.subscribe(function(newValue){model.FilterTransactions(newValue, model.statusFilter(), model.categoryFilter())});
-      this.statusFilter.subscribe(function(newValue){model.FilterTransactions(model.showFutureItems(), newValue, model.categoryFilter())});
-      this.categoryFilter.subscribe(function(newValue){model.FilterTransactions(model.showFutureItems(), model.statusFilter(), newValue)});
-      this.PlanDays.subscribe(function(newValue){model.GetBankPlan()});
-        this.summaryDate.subscribe(function(newValue){
-            model.GetSummary();
-        });
-        
-       
+ 
     this.GetSummary = function (){
         $.ajax({
             url: "/summary?startDate=" + this.summaryDate(),
@@ -115,27 +107,7 @@ var ViewModel = function() {
         });
         }
     } 
-    this.FilterTransactions = function(newValue, statusFilter, categoryFilter ){
-       
-        if(!statusFilter)
-            statusFilter = "";
-        if(!categoryFilter)
-            categoryFilter = "";
-        var trans = model.Transactions()
-        var returnValue = [];
-        for(var i = 0; i < trans.length; i++){
-            var isFutureItem =trans[i].IsFutureItem;
-            if((!isFutureItem||newValue) 
-                && (statusFilter == "" || trans[i].Status == statusFilter)
-                && (categoryFilter == "" || trans[i].category == categoryFilter))
-            {
-               returnValue.push(trans[i]);
-            }
-        
-        }
-        
-        model.filteredTransactions(returnValue);
-    }
+  
     
      this.DeleteTransaction = function(item){
          
@@ -167,15 +139,7 @@ var ViewModel = function() {
       beforeSend: beforeSend,
       success: function(data2){     
            model.messages(["Transaction " + actionText + ": "+transPayee])
-       model.total(data2.Total);
-       model.Transactions(data2.Transactions);
-       model.FilterTransactions( model.showFutureItems(), model.statusFilter(), model.categoryFilter())
-    model.GetSummary()
-    model.GetBankPlan()
-       model.transactionDate(new Date().toLocaleDateString());
-       model.transactionWidthdrawl("");
-       model.transactionDeposit("");
-       model.transactionPayee("");
+      populateBank();
         model.warnings([])
        
       },  
@@ -269,11 +233,31 @@ var ViewModel = function() {
        }
     
 }
+
+
+this.filterSettings = function(){
+    var statusFilter = model.statusFilter();
+    if(statusFilter == undefined){
+        statusFilter = "";
+    }
+    
+    var categoryFilter = model.categoryFilter();
+    if(categoryFilter == undefined){
+        categoryFilter = "";
+    }
+     var showFutureItems = model.showFutureItems();
+    if(showFutureItems == undefined){
+        showFutureItems = false;
+    }
+    return "?PageNumber=1&StatusFilter="+statusFilter+"&CategoryFilter="+categoryFilter+"&ShowFutureItems="+model.showFutureItems();
+}
 };
   function populateBank(){
-  
+  if(model == null || selectedBankName == ""){
+      return;
+  }
  $.ajax({
-    url: "/bank",
+    url: "/bank"+ model.filterSettings(),
     dataType: "json",
     beforeSend: beforeSend,
     success: function(data){
@@ -284,9 +268,7 @@ var ViewModel = function() {
     model.numberOfFutureItems(data.FutureItemCount);
     model.GetSummary();
     model.GetBankPlan()
-    model.FilterTransactions( model.showFutureItems(), model.statusFilter(),model.categoryFilter())
-    $( ".transactionDate" ).datepicker();
-    $( ".transactionDate" ).datepicker("option", "dateFormat", "m/d/yyyy" );
+    //model.FilterTransactions( model.showFutureItems(), model.statusFilter(),model.categoryFilter())
     model.loaded(true);
     
     },
