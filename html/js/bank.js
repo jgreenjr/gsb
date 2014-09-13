@@ -262,6 +262,10 @@ this.filterSettings = function(){
     dataType: "json",
     beforeSend: beforeSend,
     success: function(data){
+  
+   model.transactionPayee("");
+   model.transactionDeposit("");
+   model.transactionWidthdrawl("");
    
      model.total(data.Total);
      model.ClearedBalance(data.Total.ClearedBalance);
