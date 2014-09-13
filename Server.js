@@ -261,7 +261,9 @@ var server = http.createServer(function(request, response){
      }
     }catch(ex){
         saver.SaveWithTitle(Date.now().toString(), "txt", ex);
-        responseFunctions.SendResponse(400, "{errorCode:'BADENDPOINT', errorMessage:'Unhandled Endpoint'}");
+        if(responseFunctions){
+            responseFunctions.SendResponse(400, "{errorCode:'BADENDPOINT', errorMessage:'Unhandled Endpoint'}");
+        }
     }
 });
 
