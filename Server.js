@@ -109,7 +109,7 @@ var server = http.createServer(function(request, response){
     }
        
     if(parsed.pathname != "/login.html" 
-        && parsed.pathname != "/login" && !CheckActiveSession(cookies.sessionKey, request.connection.address().address)){
+        && parsed.pathname != "/login"&& parsed.pathname!="/index.html" && !CheckActiveSession(cookies.sessionKey, request.connection.address().address)){
         
          response.writeHead(302, {
                 'Location': "login.html"
