@@ -185,7 +185,7 @@
         <h4 class="modal-title" id="myModalLabel">Future Transactions</h4>
       </div>
       <div class="modal-body">
-       Show next <select id="PlanDaysSelect" data-bind="options:PlanDayOptions, value:PlanDays"></select> Days
+       Show next <select id="PlanDaysSelect" data-bind="options:PlanDayOptions, value:PlanDays, event: { change: GetBankPlan }"></select> Days
        <div data-bind="with:bankplan" id="futureTransactions">
      
               <table class="table table-condensed">

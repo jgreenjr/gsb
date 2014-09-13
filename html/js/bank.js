@@ -105,6 +105,7 @@ var ViewModel = function() {
                
             }
         });
+        return false;
         }
     } 
   
