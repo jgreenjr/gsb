@@ -22,15 +22,51 @@ exports.ValidateTransaction = function(json){
         errors.push({errorCode: "InvalidrepeatUnit", errorMessage: "Invalid Repeat Unit"})
     }
     
+    
+    
     return errors;
 };
 
 exports.CreatePlan = function(json){
-    var backingData = json
+   var backingData = json;
+    
+    for(var i = 0; i < backingData.Transactions.length; i++){
+        if(backingData.Transactions[i].active === undefined)
+            {
+                backingData.Transactions[i].active = true;
+            }
+    }
     
     this.AddTransaction = function(transaction){
         transaction.IsValidDate = IsValidDate;
         backingData.Transactions.push(transaction);
+    }
+    
+    this.UpdatePlanFromRequest = function (request, responseFunctions){
+        var self = this;
+        console.log("starting update sequence.");
+        request.on("data", function(stream){
+            var planJson = JSON.parse(stream.toString());
+            
+            if(self.UpdatePlan(planJson)){
+                responseFunctions.SendResponseWithType(200, JSON.stringify([{'message':'succesfully updated plan', 'messageType':'success'}]), 'application/json')
+                return;
+            }
+            responseFunctions.SendResponseWithType(400, JSON.stringify({'message':'failed to update plan', 'messageType':'error'}), 'application/json');
+            return
+        })
+        return;
+    }
+    
+    this.UpdatePlan = function(newPlan){
+        for(var i =0; i < newPlan.length; i++){
+            var errors = exports.ValidateTransaction(newPlan[i])
+            if(errors.length != 0 ){
+                return false;
+            }
+        }
+        backingData.Transactions = newPlan;
+        return true;
     }
     
     this.PopulatePlan = function(startdate, days, bank){
@@ -55,6 +91,9 @@ exports.CreatePlan = function(json){
         
         return JSON.stringify(planResult);
     }
+    this.GetDisplay = function(){
+        return JSON.stringify(backingData);
+    }
     
     this.Save = function(){
         saver.Save(backingData, "plan");
@@ -64,7 +103,7 @@ exports.CreatePlan = function(json){
 }
 
 exports.LoadPlan = function(planName,responseFunctions,bank, days){
-    var plan = planIsLoaded(planName)
+    var plan = exports.planIsLoaded(planName)
         if(!plan)
     {
          fs.readFile(planName + ".plan", function(err, fileData){
@@ -95,16 +134,17 @@ function SendResponse(plan, bank, responseFunctions, days)
                  responseFunctions.SendResponseWithType(200,plan.PopulatePlan(Date.now(), days ,bank),"application/json")
                  return;
              }
-              responseFunctions.SendResponseWithType(200,plan.PopulatePlan(Date.now(), days ,bank.GetBalances()),"application/json")
+              responseFunctions.SendResponseWithType(200,plan.GetDisplay(),"application/json")
     }
     
-function planIsLoaded(planName){
+exports.planIsLoaded = function(planName){
     for(var i = 0; i < plans.length; i++)
     {
-        if(plans.name == planName){
-            return plans.plan;
+        if(plans[i].name == planName){
+            return plans[i].plan;
         }
     }
+    console.log("plan not found");
     return null;
 }
 

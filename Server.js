@@ -222,6 +222,10 @@ var server = http.createServer(function(request, response){
                 case "get":
                 planner.LoadPlan(request.headers.bank, responseFunctions)
                 return;
+                case "post":
+                    console.log(request.headers.bank)
+                    planner.planIsLoaded(request.headers.bank).UpdatePlanFromRequest(request, responseFunctions)
+                    return;
               }
                 break;
             case "/banks":
