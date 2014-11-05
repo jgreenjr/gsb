@@ -34,13 +34,14 @@ function hash(value) {
 
 function AddActiveSession(username, ip){
     var id = username+Math.floor(Math.random()*1000)
-    activeSessions.push({id:id, username:username, ip:ip});
+    activeSessions.push({id:id, username:username, ip:ip, loginTime: new Date()});
     return id;
 }
 
 function CheckActiveSession(session, ip){
+    var now  = new Date();
     for(var i = 0; i < activeSessions.length; i++){
-        if(activeSessions[i].id == session && activeSessions[i].ip == ip){
+        if(activeSessions[i].id == session && activeSessions[i].ip == ip && (now - activeSessions[i].loginTime)/60000 < 60){
             return true;
         }
     }
