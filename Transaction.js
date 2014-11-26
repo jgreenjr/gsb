@@ -23,6 +23,10 @@ exports.StandardTransactionValidation = function(json)
         json.amount = parseFloat(json.amount).toFixed(2);
     }
     
+    if(!json.Status){
+        json.Status = "Pending";
+    }
+    
      if(exports.Types.indexOf(json.type) < 0)
          messages.push({errorCode:"InvalidType", message:"Invalid Type"});   
      
