@@ -49,6 +49,7 @@ exports.CreatePlan = function(json){
             var planJson = JSON.parse(stream.toString());
             
             if(self.UpdatePlan(planJson)){
+                self.Save()
                 responseFunctions.SendResponseWithType(200, JSON.stringify([{'message':'succesfully updated plan', 'messageType':'success'}]), 'application/json')
                 return;
             }
@@ -96,7 +97,7 @@ exports.CreatePlan = function(json){
     }
     
     this.Save = function(){
-        saver.Save(backingData, "plan");
+        saver.SaveWithTitle(backingData.name, "plan", JSON.stringify(backingData));
     }
     
     return this;

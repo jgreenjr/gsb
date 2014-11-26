@@ -18,11 +18,9 @@ var PlanEditorModel = function() {
             data: JSON.stringify(model.Transactions()),
             beforeSend: beforeSend,
             success: function(data){
-                alert("huh")
                 model.messages.push({"Message":"Plan Updated", "class":"alert alert-success"})
             },
             error: function(data){
-                alert("bluh")
                 model.messages.push({"Message":"Failed to Updated: Check Data", "class":"alert alert-danger"})
             }
         });
