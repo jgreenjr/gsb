@@ -45,7 +45,18 @@ exports.CreateResponseHandler = function(request, response){
 },
     SendResponse: function (statusCode, responseMessage){
         returnValue.SendResponseWithType(statusCode, responseMessage, returnValue.responseType)
+    },
+    
+    SendPlanJson: function (error, json){
+        if(error){
+             returnValue.SendResponseWithType(400, error, "application/json");
+             return;
+        }
+        
+        
+        returnValue.SendResponseWithType(200, JSON.stringify(json), "application/json")
     }
+    
     }
     return returnValue;
 }

@@ -7,7 +7,7 @@ var HtmlFileLoader = require("./HtmlFileLoader.js")
 var responseHandler = require("./ResponseHandler.js")
 var summaryGeneratorFactory = require("./SummaryGenerator.js")
 var CategoriesManager = require("./CategoriesManager");
-var planner = require("./Planner")
+var planner = require("./planner2.js")
 var BankMetaData = require("./BankMetaData.js")
 
 var banks = [];
@@ -224,9 +224,12 @@ var server = http.createServer(function(request, response){
                 planner.LoadPlan(request.headers.bank, responseFunctions)
                 return;
                 case "post":
-                    console.log(request.headers.bank)
-                    planner.planIsLoaded(request.headers.bank).UpdatePlanFromRequest(request, responseFunctions)
+                    request.on("data", function(stream){
+                    var planJson = JSON.parse(stream.toString());
+                    planner.CreatePlan(request.headers.bank).AddTransaction(request)
+                    responseFunctions.SendResponseWithType(200, "{message:plan updated}", "application/json")
                     return;
+                    });
               }
                 break;
             case "/banks":
