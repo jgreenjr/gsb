@@ -2,9 +2,9 @@ var model = null;
 var ViewModel = function() {
 
     this.username=ko.observable("jay");
-    
+
     this.PlanDayOptions = ko.observableArray(["7", "14", "21"]);
-    
+
     this.StatusOptions = ko.observableArray(["Pending", "Cleared", "Closed"]);
     this.StatusOptions2 = ko.observableArray(["Pending", "Cleared", "Closed"]);
     this.title = ko.observable();
@@ -33,24 +33,24 @@ var ViewModel = function() {
     var summaryDate = (currentDate.getMonth()+1)+ "/1/"+currentDate.getFullYear()
     this.summaryDate = ko.observable(summaryDate);
     this.summary = ko.observable();
-    
+
     this.WebBalance = ko.observable("");
-    
+
     this.Difference = ko.computed(function(){
         if(this.WebBalance() != "" && this.total() != null){
             return this.WebBalance() - this.total().ClearedBalance;
         }
     }, this)
-    
-    
+
+
     this.PlanDays = ko.observable(7);
-  
+
     this.UpdateTransaction = function(item){
         model.warnings(["Updating Transaction:"+item.payee]);
         model.ProcessTransaction(JSON.stringify(item), "PUT", "Updated",item.payee)
-        
+
     }
-    
+
     this.bankName = ko.computed({
         read: function () {
             return bannerModel.bankName();
@@ -60,7 +60,7 @@ var ViewModel = function() {
         },
         owner: this
     });
-    
+
     this.bankNames = ko.computed({
         read: function () {
             return bannerModel.bankNames();
@@ -70,17 +70,17 @@ var ViewModel = function() {
         },
         owner: this
     });
-  
-    
+
+
     this.UpdateTransactionInModal = function(item){
         $("#"+item.id+ " #transactionModal").modal('toggle');
         $(".modal-backdrop").remove();
         model.warnings(["Updating Transaction:"+item.payee]);
         model.ProcessTransaction(JSON.stringify(item), "PUT", "Updated",item.payee)
-        
+
     }
-    
- 
+
+
     this.GetSummary = function (){
         $.ajax({
             url: "/summary?startDate=" + this.summaryDate(),
@@ -88,11 +88,11 @@ var ViewModel = function() {
             beforeSend: beforeSend,
             success: function(data){
                 model.summary(data);
-               
+
             }
         });
-    } 
-    
+    }
+
     this.GetBankPlan = function (){
         if(bannerModel.bankName())
         {
@@ -102,16 +102,16 @@ var ViewModel = function() {
             beforeSend: beforeSend,
             success: function(data){
                 model.bankplan(data);
-               
+
             }
         });
         return false;
         }
-    } 
-  
-    
+    }
+
+
      this.DeleteTransaction = function(item){
-         
+
          if(confirm("Are you sure you want to delete:" + item.payee+"?"))
        { model.warnings(["Deleting Transaction:"+item.payee])
         model.ProcessTransaction(JSON.stringify(item), "DELETE", "Deleted", item.payee)
@@ -122,33 +122,33 @@ var ViewModel = function() {
        //  $("tr.subRow").hide();
     //    $(arg2.currentTarget).parent().parent().next().show();
     }
-    
+
     this.ShowDifference = function(){
         $("#OnlineDifferenceCalculator").modal();
     }
-   
+
     this.ProcessTransaction = function(item, action, actionText, transPayee){
         this.warnings([])
       this.errors([]);
        var self = this;
-    $.ajax({  
-      url: "/transaction",  
-      type: action ,  
-      dataType: "json",  
-      contentType: "json",  
-      data: item,  
+    $.ajax({
+      url: "/transaction",
+      type: action ,
+      dataType: "json",
+      contentType: "json",
+      data: item,
       beforeSend: beforeSend,
-      success: function(data2){     
+      success: function(data2){
            model.messages(["Transaction " + actionText + ": "+transPayee])
       populateBank();
         model.warnings([])
-       
-      },  
-      error: function(data2){  
+
+      },
+      error: function(data2){
           model.warnings([])
             model.messages([])
-        model.errors(data2.responseJSON);  
-      }  
+        model.errors(data2.responseJSON);
+      }
     })
     }
     this.ShowSummary = function(){
@@ -157,14 +157,14 @@ var ViewModel = function() {
     this.ShowFutureTransactions = function(){
        $('#myModal').modal()
     }
-    
-    
+
+
     this.ShowFilter = function(){
        $('#filterModel').modal()
     }
-    
+
      this.transactionType = ko.computed(function(){
-         
+
        if(this.transactionDeposit()){
            return "deposit";
        }
@@ -173,7 +173,7 @@ var ViewModel = function() {
        }
        return "";
     },this);
-    
+
      this.transactionAmount = ko.computed(function(){
        if(this.transactionDeposit()){
            return this.transactionDeposit();
@@ -183,7 +183,7 @@ var ViewModel = function() {
        }
        return "0";
     },this);
-    
+
       this.transactionTotal = ko.computed(function(){
           if(this.total())
          var  t = parseFloat(this.total().ClearedBalance) ;
@@ -196,33 +196,33 @@ var ViewModel = function() {
        return "-";
     },this);
     this.Money = function(data){
-          
+
         return parseFloat(data).toFixed(2);
-        
+
     };
-   
+
     this.AddFutureTransaction = function(item){
       model.warnings(["Adding Transaction: "+ item.payee])
        model.ProcessTransaction(JSON.stringify(item), "POST", "Added",item.payee);
     }
-    
+
     this.GetTransactionSettings = function(statusString){
     var idString = "";
-    
+
     if(this.transactionId() !== undefined){
         idString = '"id": "' + this.transactionId() + '", ';
     }
      return  '{"payee":"'+ this.transactionPayee() +'", '+ idString + '"date":"'+ this.transactionDate() +'", "amount":'+ this.transactionAmount() +', "type":"'+ this.transactionType() +'", "Status":"'+statusString+'"}';
     };
-    
+
   this.AddTransaction = function (args1, args2){
       var statusString  = "Pending";
       if(args2.target.id == "addAsCleared"){
-          statusString = "Cleared";      
+          statusString = "Cleared";
            }
-         
+
        var data = model.GetTransactionSettings(statusString);
-       
+
        if(model.transactionId() === "" || model.transactionId() === undefined){
        model.warnings(["Adding Transaction: "+ model.transactionPayee()])
        model.ProcessTransaction(data, "POST", "Added",model.transactionPayee())
@@ -232,7 +232,7 @@ var ViewModel = function() {
         model.warnings(["Updating Transaction: "+ model.transactionPayee()])
         model.ProcessTransaction(data, "PUT", "Updated",model.transactionPayee())
        }
-    
+
 }
 
 
@@ -241,7 +241,7 @@ this.filterSettings = function(){
     if(statusFilter == undefined){
         statusFilter = "";
     }
-    
+
     var categoryFilter = model.categoryFilter();
     if(categoryFilter == undefined){
         categoryFilter = "";
@@ -258,15 +258,15 @@ this.filterSettings = function(){
       return;
   }
  $.ajax({
-    url: "/bank"+ model.filterSettings(),
+    url: "/banks/"+selectedBankName+ model.filterSettings(),
     dataType: "json",
     beforeSend: beforeSend,
     success: function(data){
-  
+
    model.transactionPayee("");
    model.transactionDeposit("");
    model.transactionWidthdrawl("");
-   
+
      model.total(data.Total);
      model.ClearedBalance(data.Total.ClearedBalance);
     model.Transactions(data.Transactions);
@@ -275,12 +275,12 @@ this.filterSettings = function(){
     model.GetBankPlan()
     //model.FilterTransactions( model.showFutureItems(), model.statusFilter(),model.categoryFilter())
     model.loaded(true);
-    
+
     },
-     error: function(data2){  
-     
-        model.errors(data2.responseJSON);  
-      }  
+     error: function(data2){
+
+        model.errors(data2.responseJSON);
+      }
  })
   }
 model = new ViewModel();
@@ -289,19 +289,19 @@ ko.applyBindings(model, $("#bankSheet")[0]);
     url: "/categories",
     dataType: "json",
     success: function(data){
-  
+
     model.cats(data);
-   
+
     },
-     error: function(data2){  
-       
-      }  
+     error: function(data2){
+
+      }
  });
  $(function(){ $( ".transactionDate" ).datepicker();})
- 
+
  function beforeSend(xhr) {
-    
-   
+
+
         xhr.setRequestHeader('bank', selectedBankName);
     }
 
@@ -320,18 +320,16 @@ function LoadTransaction(id){
        }
        else
        {
-        
+
        model.transactionWidthdrawl(data.amount);
        }
     }
     });
 }
 
-   
+
    function formatMoney(data){
-          
+
         return "$"+parseFloat(data).toFixed(2);
-        
-    };   
-    
-   
+
+    };

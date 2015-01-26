@@ -13,21 +13,22 @@ var loginModel = function(){
   this.username = ko.observable();
   this.password = ko.observable();
   this.ErrorMessage = ko.observable("");
-  
- 
+
+
   this.SignIn = function(){
-    var hashword = this.username()+ this.password();
+    var hashword =this.password();
       $.ajax({
-            url: "/login?Username="+this.username()+"&Hassword="+hashword.hashCode(),
+            method:"post",
+            url: "/login?username="+this.username()+"&password="+hashword,
               success: function(data){
-                
-              document.cookie = "sessionKey="+ data.sessionKey;
+            //  data = JSON.parse(data);
               document.cookie = "defaultBank="+data.defaultBank;
-                window.location=data.RedirectUrl;
-              
+              window.location=data.RedirectUrl;
+
             },
             error:  function(response){
-              model.ErrorMessage(response.responseJSON.Message);
+
+              model.ErrorMessage("Invalid Username or Password");
             }
         });
         return false;

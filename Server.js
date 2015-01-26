@@ -67,7 +67,7 @@ function RemoveActiveSession(session){
     }
 }
 function GetUser(username, hashword){
-    
+
     for(var i = 0; i < users.length; i++){
         if(users[i].username == username ){
             if(hash(users[i].username+users[i].password) == hashword)
@@ -94,27 +94,27 @@ function parseCookies (request) {
 var server = http.createServer(function(request, response){
     try{
      var responseFunctions =responseHandler.CreateResponseHandler(request, response);
-      
+
      var parsed = url.parse(request.url);
      var query = GetQueryArguments(parsed.query);
      var cookies = parseCookies(request);
      if(parsed.pathname == "/")
         parsed.pathname = "/login.html";
-     
+
       if(parsed.pathname.indexOf(".js") != -1)
     {
         responseFunctions.responseType="application/javascript";
          responseFunctions.errorResponseType="text/html";
          HtmlFileLoader.LoadHTMLFile(parsed.pathname, responseFunctions);
-         return; 
+         return;
     }
-       
-    if(parsed.pathname != "/login.html" 
+
+    if(parsed.pathname != "/login.html"
         && parsed.pathname != "/login"&& parsed.pathname!="/index.html" && !CheckActiveSession(cookies.sessionKey, request.connection.address().address)){
-        
+
          response.writeHead(302, {
                 'Location': "login.html"
-                
+
             });
             response.end();
         return;
@@ -123,26 +123,26 @@ var server = http.createServer(function(request, response){
         responseFunctions.SendResponseWithType(400, JSON.stringify({message:"must pass accept header"}), "application/json");
         return;
     }
-    
+
      if(request.headers.accept.indexOf("text/html") != -1 ){
          responseFunctions.responseType="text/html";
          responseFunctions.errorResponseType = "text/html";
          HtmlFileLoader.LoadHTMLFile(parsed.pathname, responseFunctions);
-         return; 
+         return;
      }
-    
-     
+
+
      var b = null;
     if(parsed.pathname!=="/banks" && parsed.pathname.toLowerCase()!=="/userlist"&&parsed.pathname.toLowerCase()!="/bankconfiguration" && parsed.pathname!=="/categories" && parsed.pathname!== "/login" && parsed.pathname !=="/logout"){
      for(var i =0; i < banks.length; i++){
          if(banks[i].Title() == request.headers.bank){
              b=banks[i];
-             
+
              break;
          }
-     } 
+     }
      if(b === null){
-      
+
          fs.readFile(request.headers.bank + ".bank", function(err, fileData){
              if(err)
              {
@@ -150,7 +150,7 @@ var server = http.createServer(function(request, response){
                 return;
              }
              var toLoad = fileData.toString();
-           
+
              b = Bank.CreateBank(JSON.parse(toLoad), summaryGeneratorFactory.CreateNewGenerator(cm));
              banks.push(b);
              response.writeHead(302, {
@@ -161,13 +161,13 @@ var server = http.createServer(function(request, response){
          });
          return;
      }
-     
+
      if(!bankMetaData.checkUser(b.Title(), GetUsersOfSession(cookies.sessionKey))){
           responseFunctions.SendResponseWithType(402, JSON.stringify([{message: 'user has no access to this bank'}]), "application/json" );
      }
     }
-    
-    
+
+
      switch (parsed.pathname.toLowerCase()) {
          case "/login":
              var username = query.Username
@@ -183,7 +183,7 @@ var server = http.createServer(function(request, response){
         case "/logout":
             RemoveActiveSession(cookies.sessionKey);
              responseFunctions.SendResponse(200,JSON.stringify({"message":"logged out"}));
-            return;          
+            return;
          case "/bank":
              b.UpdateTransactions();
               responseFunctions.SendResponse(200, b.GetDisplay(query.PageNumber, query.StatusFilter, query.CategoryFilter, query.ShowFutureItems));
@@ -209,7 +209,7 @@ var server = http.createServer(function(request, response){
                     responseFunctions.ProcessTransaction(b, b.DeleteTransaction);
                     return;
             }
-          
+
             case "/bankplan":
               switch(request.method.toLowerCase()){
                 case "get":
@@ -217,7 +217,7 @@ var server = http.createServer(function(request, response){
                 return;
               }
                 break;
-                
+
             case "/plan":
               switch(request.method.toLowerCase()){
                 case "get":
@@ -235,14 +235,15 @@ var server = http.createServer(function(request, response){
             case "/banks":
                 var userName = GetUsersOfSession(cookies.sessionKey);
                 var bankAccessList = bankMetaData.GetBanks(userName);
-                
+
                 var returnValue = {username: userName , banks: bankAccessList}
-                    
+
                 responseFunctions.SendResponseWithType(200, JSON.stringify(returnValue), "application/json" );
                 return;
                 break;
                 case "/categories":
-                   cm.GetResponse("json",responseFunctions )
+                   //cm.GetResponse("json",responseFunctions );
+                   cp.GetList()
                    return;
                     break;
                 case "/summary":
@@ -252,16 +253,16 @@ var server = http.createServer(function(request, response){
             case "/bankconfiguration":
                  var userName = GetUsersOfSession(cookies.sessionKey);
                 var returnValue = bankMetaData.GetBanksFullDetail(userName);
-                
+
                 responseFunctions.SendResponseWithType(200, JSON.stringify(returnValue), "application/json" );
-                    
+
                 return;
               case "/assignuser":
                   var bank = bankMetaData.GetBank(query.bankname);
                   if(!bankMetaData.checkUser(query.bankname,query.username)){
                          responseFunctions.SendResponseWithType(200, JSON.stringify(returnValue), "application/json" );
                          return;
-                      
+
                   }
                return;
           default:
@@ -282,20 +283,20 @@ if(process.argv[2])
 }
 
 saver.Load("bank", "metadata", function(data){bankMetaData = BankMetaData.MetaDataBuilder(JSON.parse(data));
-    
-saver.Load("cats","cats", function(data){cm = CategoriesManager.CreateCategoriesManager(JSON.parse(data)); 
-saver.Load("users","user", function(data){users =JSON.parse(data) 
+
+saver.Load("cats","cats", function(data){cm = CategoriesManager.CreateCategoriesManager(JSON.parse(data));
+saver.Load("users","user", function(data){users =JSON.parse(data)
 server.listen(port);
 console.log("Server is listening"); });});
 
 })
 function GetQueryArguments(query){
     var result = {};
-    
+
     if(!query){
         return result
     }
-    
+
     var passedValues = query.split("&");
     for(var i = 0; i < passedValues.length; i++){
         var nameValuePair = passedValues[i].split('=');
@@ -309,4 +310,3 @@ function SendResponse(response, statusCode, responseMessage){
    SendResponseWithType(response, statusCode, responseMessage, "application/json")
 }
 */
-

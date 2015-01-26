@@ -1,12 +1,10 @@
 var level = require("level");
 var sub = require("level-sublevel");
-    
-module.exports = function (dbPath)
+
+module.exports = function (db)
 {
-     var db = sub(level("./data",{valueEncoding:"json"}));
-     
-     var categories = db.sublevel("All");
-     
+    var categories = db.sublevel("Categories");
+    categories.put("category_default", [{"name":"Income - Paycheck"},{"name":"Income - Other"},{"name":"Food"},{"name":"Bills"},{"name":"Fun"},{"name":"Houseshold"},{"name":"Automotive"}])
      this.GetLists = function(callback){
          var results = [];
         categories.createReadStream()
@@ -20,9 +18,12 @@ module.exports = function (dbPath)
               callback(err)
             });
      }
-     
+
       this.GetList = function(title, callback){
-        
+
+        if(title == null || title == undefined){
+          title = "default"
+        }
         categories.get("category_"+title, function(err,data){
             if(err){
                 callback(err);
@@ -31,10 +32,10 @@ module.exports = function (dbPath)
             callback(null, data);
         })
      }
-     
+
      this.SaveList = function(title, data, callback){
          categories.put("category_"+title, data, callback)
      }
-     
+
      return this;
 };

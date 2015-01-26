@@ -1,7 +1,7 @@
 <html>
     <head>
         <title>Welcome to Green Savings and Blown</title>
-       
+
         <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
        <script type="text/javascript" src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
        <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/black-tie/jquery-ui.css"/>
@@ -25,35 +25,35 @@
       </button>
       <a class="navbar-brand" href="index.html">Green Savings and Blown</a>
       </div>
-     
+
        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
        <ul class="nav navbar-nav">
          <li class="active"><a href="login.html">Login</a></li>
           <li><a href="Transaction.html">About</a></li>
-           
+
        </ul>
-       
-       
+
+
        </div>
-    
+
     </div>
     </nav>
-     
+
       <div class="panel panel-primary" style="width:300px; margin-left:auto; margin-right: auto;">
       <div class="panel-heading"><span class="panel-title">Login</span></div>
       <div class="panel-body" >
       <div class="error" data-bind="Visible:ErrorMessage != '', text: ErrorMessage"></div>
   <div class="form-group">
-    <form role="form" data-bind="submit: SignIn">
+    <form role="form" action="/login" method="post">
     <label for="exampleInputEmail1">Email address</label>
-    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email" data-bind="value:username">
+    <input type="email" class="form-control" id="username" placeholder="Enter email" data-bind="value:username">
   </div>
 
   <div class="form-group">
     <label for="exampleInputPassword1">Password</label>
-    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" data-bind="value:password">
+    <input type="password" class="form-control" id="password" placeholder="Password" data-bind="value:password">
     </div>
-    <button type="button" class="btn btn-primary" data-bind="click: SignIn">Login</button>
+    <button type="button" class="btn btn-primary" data-bind="click: SignIn">Log In</button>
     <button class="btn btn-default">Clear</button>
     </form>
     </div>
