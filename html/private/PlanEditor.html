@@ -5,34 +5,34 @@
        <script type="text/javascript" src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
        <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/black-tie/jquery-ui.css"/>
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.css"/>
-       
+
         <style>
             .heading  [class^="col-"] {
                 background-color:black;
                 color:white;
                 border-left:white 1px solid;}
-                
-            
+
+
                 .link{
                     cursor:pointer;
                 }
-                
+
             span.futureItem
             {
                 font-style:italic;
                 color: grey;
             }
-            
-            
+
+
             .balanceLabel{
                 width:30%;
                 float:left;
             }
-                
-            
+
+
         </style>
     </head>
-    
+
     <body>
     <nav class="navbar navbar-default" role="navigation">
   <div class="container-fluid">
@@ -61,10 +61,10 @@
          </li>
              <li><a href="BankConfiguration.html">Configuration</a></li>
        </ul>
-       
-       
+
+
        </div>
-    
+
     </div>
     </nav>
     <div class="container">
@@ -72,9 +72,9 @@
             <ul data-bind="css: $data.class">
                 <li data-bind="text: $data.Message"></li>
             </ul>
-            
+
         </div>
-    
+
         <button class="btn btn-default" data-bind="click:AddRow">Add New Row</button>
         <button class="btn btn-default" data-bind="click:Update">Update</button>
         <table class="table table-condensed table-striped">
@@ -87,7 +87,7 @@
                     <th>Amount</th>
                     <th>type</th>
                     <th>Category</th>
-                </tr>    
+                </tr>
             </thead>
             <tbody data-bind="foreach:Transactions">
                 <tr>
@@ -104,9 +104,8 @@
         </table>
     </div>
         <script>var needBankData = true;</script>
-     <script src="js/knockout-3.1.0.js" type="text/javascript"></script>
+     <script src="../js/knockout-3.1.0.js" type="text/javascript"></script>
     <script src="js/banner.js" type="text/javascript"></script>
     <script src="js/PlanEditior.js" type="text/javascript"></script>
     </body>
     </html>
-    

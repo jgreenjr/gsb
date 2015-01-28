@@ -114,7 +114,20 @@ var ViewModel = function() {
 
          if(confirm("Are you sure you want to delete:" + item.payee+"?"))
        { model.warnings(["Deleting Transaction:"+item.payee])
-        model.ProcessTransaction(JSON.stringify(item), "DELETE", "Deleted", item.payee)
+      //  model.ProcessTransaction(JSON.stringify(item), "DELETE", "Deleted", item.payee)
+      $.ajax({
+        url: "/banks/"+selectedBankName+"/"+item.id,
+        type: "DELETE",
+        success: function(data){
+          model.warnings([])
+          model.messages(["Transaction Deleted: "+item.payee])
+          populateBank();
+        },
+        error: function(data){
+          model.messages(["Transaction Failed to delete: "+item.payee])
+          populateBank();
+        }
+      });
        }
     }
      this.ShowDetails = function(item, arg2){
@@ -132,19 +145,21 @@ var ViewModel = function() {
       this.errors([]);
        var self = this;
     $.ajax({
-      url: "/transaction",
+      url: "/banks/"+selectedBankName,
       type: action ,
-      dataType: "json",
+    //  dataType: "json",
       contentType: "json",
       data: item,
       beforeSend: beforeSend,
       success: function(data2){
+
            model.messages(["Transaction " + actionText + ": "+transPayee])
       populateBank();
         model.warnings([])
 
       },
       error: function(data2){
+        console(data2);
           model.warnings([])
             model.messages([])
         model.errors(data2.responseJSON);
@@ -254,6 +269,7 @@ this.filterSettings = function(){
 }
 };
   function populateBank(){
+
   if(model == null || selectedBankName == ""){
       return;
   }

@@ -5,7 +5,7 @@ module.exports = function (db)
 {
   var Users = db.sublevel("Users");
 
-  Users.put("user_admin", {username:"admin@gsb.com", RedirectUrl:'bank.html', defaultBank:"mybank"});
+  Users.put("user_admin", {username:"admin@gsb.com", RedirectUrl:'private/bank.html', defaultBank:"mybank"});
 
   this.GetUser = function(username, callback){
     var found = false;

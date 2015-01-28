@@ -2,7 +2,7 @@ var express = require('express');
 var passport = require('passport');
 var level = require("level");
 var sub = require("level-sublevel");
-
+var Transaction = require("./Transaction.js");
 var db = sub(level("./data",{valueEncoding:"json"}));
 
 var UserRepository = require('./Users/UsersRepository.js')(db);
@@ -18,7 +18,9 @@ var fs = require("fs");
 var app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(express.static(__dirname + '/html'));
+
+
+
 app.use(session({secret:"softkitty", saveUninitialized:true, resave:true}));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -41,9 +43,22 @@ passport.deserializeUser(function(user, done) {
     done(null,user);
 });
 
+
+var isAuthenticated = function (req, res, next) {
+    if (req.isAuthenticated()){
+      return next();
+    }
+    return res.redirect("/login.html");
+  }
+
+  app.all('/private/**', isAuthenticated)
+
+app.use(express.static(__dirname + '/html/public'));
+app.use('/private', express.static(__dirname + '/html/private'));
+
 app.post('/login', passport.authenticate('local'), function(req, res) {
-  res.send(req.user);
-});
+    res.send(req.user);
+  });
 
 
 app.get('/loginFailure', function(req, res, next) {
@@ -53,17 +68,6 @@ app.get('/loginFailure', function(req, res, next) {
 
 // As with any middleware it is quintessential to call next()
 // if the user is authenticated
-var isAuthenticated = function (req, res, next) {
-  if (req.isAuthenticated())
-    return next();
-    res.status(400).send("No access allowed");
-  }
-
-app.get('/default',isAuthenticated, function(req, res) {
-  res.send('Successfully authenticated');
-});
-
-
 
 app.get('/banks', isAuthenticated, function(req, res){
   var userName = req.user.username;
@@ -90,10 +94,49 @@ app.get('/categories', isAuthenticated, function(req, res){
 app.get('/banks/:bank', isAuthenticated, function(req, res){
   var bank = req.params.bank
   BankRepository.GetDisplay(bank, req.query.PageNumber, req.query.StatusFilter, req.query.CategoryFilter, req.query.ShowFutureItems, function(err, data){
-    console.log(data);
     res.status(200).send(data);
   } );
 })
+
+app.post("/banks/:bank", isAuthenticated, handleTransaction);
+app.put("/banks/:bank", isAuthenticated, handleTransaction);
+app.delete("/banks/:bank/:transactionid", isAuthenticated, function(req, res){
+  var bank = req.params.bank;
+  var id = req.params.transactionid;
+
+  BankRepository.DeleteTransaction(bank, id, function(err){
+    if(err != undefined && err != null){
+      res.status(400).send("error deleting transaction");
+      return;
+    }
+    res.status(200).send("{'message':'deleted'}")
+  });
+});
+
+function handleTransaction(req, res){
+  var bank = req.params.bank;
+  req.on("data", function(stream){
+    var trans = {};
+    var myText = stream.toString();
+    try{
+      trans = JSON.parse(myText)
+      var errs = Transaction.Validate(trans);
+      BankRepository.AddTransaction(bank, trans, function(err){
+        if(err != undefined && err != null){
+          res.status(400).send("error adding transaction");
+          return;
+        }
+        res.status(200).send("{'message':'saved'}")
+      });
+    }catch(ex){
+      res.status(400).send("bad")
+      return;
+    }
+  }
+);
+
+
+}
 
 
 var port = process.env.PORT;

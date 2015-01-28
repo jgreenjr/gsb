@@ -7,10 +7,10 @@
         <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
         <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
         <style>
-           
+
         </style>
     </head>
-    
+
     <body>
     <nav class="navbar navbar-default" role="navigation">
   <div class="container-fluid">
@@ -32,13 +32,13 @@
          </li>
           <li><a href="Transaction.html">Add Transaction</a></li>
             <li class=""><a href="PlanEditor.html">Plan Editor</a></li>
-            
+
           <li class="active"><a href="BankConfiguration.html">Configuration</a></li>
        </ul>
-       
-       
+
+
        </div>
-    
+
     </div>
     </nav>
     <div id="bankConfigurationModel">
@@ -52,9 +52,9 @@
                 <td> <button type="button" class="btn btn-default" data-bind="click:$parent.OpenAddUser">Add User</button></td>
             </tr>
         </tbody>
-        
+
     </table>
-    
+
     <div class="modal fade bs-example-modal-sm"  id="AddUserDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog  modal-sm">
     <div class="modal-content">
@@ -76,9 +76,9 @@
     <input type="email" class="form-control" id="username2" placeholder="Enter email" data-bind="value:UserToAdd">
   </div>
   </form>
-    
+
         </div>
-   
+
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" data-bind="click: addUser">Add</button>
           <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -88,7 +88,7 @@
      </div>
      </div>
    <script>var needBankData = false</script>
-   <script src="js/knockout-3.1.0.js" type="text/javascript"></script>
+   <script src="../js/knockout-3.1.0.js" type="text/javascript"></script>
    <script src="js/banner.js" type="text/javascript"></script>
     <script src="js/BankConfiguration.js" type="text/javascript"></script>
     <script>
