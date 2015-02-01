@@ -99,6 +99,7 @@
                     <td><select data-bind="options:$parent.Types, value:type"/></td>
                     <td><select data-bind="options:$parent.cats, optionsText:'name', optionsValue:'name',, value:category"/></td>
                     <td><input type="checkbox" data-bind="checked:active"/></td>
+                    <td><a data-bind="click: $parent.UpdateTransaction" class="link" >Update</a> </td>
                 </tr>
             </tbody>
         </table>

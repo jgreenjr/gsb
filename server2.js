@@ -9,6 +9,7 @@ var UserRepository = require('./Users/UsersRepository.js')(db);
 var BankMetaDataRepository = require('./bankMetaData/BankMetaDataRepository.js')(db);
 var CategoriesRepository = require('./Categories/CategoryRepository.js')(db);
 var BankRepository = require('./Bank/BankRepository.js')(db);
+var PlanRepository = require('./Plan/PlanRepository.js')(db);
 var LocalStrategy = require('passport-local').Strategy;
 var flash = require('express-flash');
 var session = require('express-session');
@@ -27,7 +28,7 @@ app.use(passport.session());
 
 passport.use(new LocalStrategy(
   function(username, password, done) {
-    UserRepository.GetUser(username, function(err, user){
+    UserRepository.LoginUser(username, password, function(err, user){
       if(err != null){
         return done(null, false,{message: 'Incorrect Username or Password'});
       }
@@ -85,8 +86,9 @@ app.get('/BankConfiguration', isAuthenticated, function(req, res){
   });
 });
 
-app.get('/categories', isAuthenticated, function(req, res){
-  CategoriesRepository.GetList(null, function(err, data){
+app.get('/categories/:bank', isAuthenticated, function(req, res){
+  var bank = req.params.bank
+  CategoriesRepository.GetList(bank, function(err, data){
     res.status(200).send(data);
   });
 });
@@ -94,6 +96,13 @@ app.get('/categories', isAuthenticated, function(req, res){
 app.get('/banks/:bank', isAuthenticated, function(req, res){
   var bank = req.params.bank
   BankRepository.GetDisplay(bank, req.query.PageNumber, req.query.StatusFilter, req.query.CategoryFilter, req.query.ShowFutureItems, function(err, data){
+    res.status(200).send(data);
+  } );
+})
+
+app.get('/plans/:bank', isAuthenticated, function(req, res){
+  var bank = req.params.bank
+  PlanRepository.GetAll(bank, function(err, data){
     res.status(200).send(data);
   } );
 })
@@ -118,9 +127,15 @@ function handleTransaction(req, res){
   req.on("data", function(stream){
     var trans = {};
     var myText = stream.toString();
+
     try{
       trans = JSON.parse(myText)
       var errs = Transaction.Validate(trans);
+      if(errs.length > 0){
+        res.status(400).send(errs);
+        return;
+      }
+
       BankRepository.AddTransaction(bank, trans, function(err){
         if(err != undefined && err != null){
           res.status(400).send("error adding transaction");
@@ -134,9 +149,116 @@ function handleTransaction(req, res){
     }
   }
 );
+}
 
+app.post("/Banks", isAuthenticated, function(req, res)
+{
+  req.on("data", function(stream){
+    var bankData = {};
+    var myText = stream.toString();
+
+    try{
+      bankData = JSON.parse(myText)
+      BankMetaDataRepository.CreateBank(bankData.title,req.user.username,function(err){
+        if(err){
+          res.status(400).send("failed to save")
+          return;
+        }
+        res.status(200).send(bankData.title)
+
+      })
+    }catch(ex){
+      res.status(400).send("bad")
+      return;
+    }
+
+})
+});
+app.post("/plans/:bank", isAuthenticated, handlePlanTransaction);
+app.put("/plans/:bank", isAuthenticated, handlePlanTransaction);
+app.get("/bankplan/:bank", isAuthenticated, function(req, res){
+  var bank = req.params.bank;
+  PlanRepository.GetAll(bank,function(err, planData){
+
+    BankRepository.GetDisplay(bank, -1, "", "", true, function(err, bankData){
+      PlanRepository.PopulatePlan(Date.now(),req.query.Days,bankData, planData, function(err, data){
+        res.status(200).send(data);
+        return;
+      });
+  })
+})
+});
+
+function handlePlanTransaction(req, res){
+  var bank = req.params.bank;
+  req.on("data", function(stream){
+    var trans = {};
+    var myText = stream.toString();
+    try{
+      trans = JSON.parse(myText)
+      var errs = Transaction.StandardTransactionValidation(trans);
+      if(errs.length > 0){
+        res.status(400).send(errs);
+        return;
+      }
+
+      PlanRepository.AddPlanItem(bank, trans, function(err){
+        if(err != undefined && err != null){
+          res.status(400).send("error adding transaction");
+          return;
+        }
+        res.status(200).send("{'message':'saved'}")
+      });
+    }catch(ex){
+      res.status(400).send("bad")
+      return;
+    }
+  }
+);
 
 }
+
+app.get("/Users/Current/Permissions", isAuthenticated, function(req, res){
+  UserRepository.GetUserPermissions(req.user.username,function(err, returnValue){
+    if(err != undefined && err != null){
+      res.status(400).send("error adding transaction");
+      return;
+    }
+    res.status(200).send(returnValue)
+
+  })
+
+
+});
+
+app.post("/Users", isAuthenticated, function(req, res){
+  UserRepository.GetUserPermissions(req.user.username,function(err, returnValue){
+    if(!returnValue.canCreateUser){
+      res.status(400).send("error creating user");
+      return;
+    }
+    req.on("data", function(stream){
+      var trans = {};
+      var myText = stream.toString();
+      try{
+        user = JSON.parse(myText)
+
+        UserRepository.CreateUser(user.username, user.password, function(err, user){
+          if(err) {
+            res.status(400).send("error creating user");
+            return;
+          }
+          res.status(200).send("user created");
+        });
+      }catch(ex){
+        console.log(ex);
+        res.status(400).send(ex)
+        return;
+      }
+
+      });
+    })
+  });
 
 
 var port = process.env.PORT;

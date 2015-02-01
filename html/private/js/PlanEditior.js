@@ -7,14 +7,30 @@ var PlanEditorModel = function() {
     this.AddRow = function(){
         this.Transactions.push({"active": false, "startDate":"", "repeatInterval": 0, "repeatUnit":"", "payee": "", "amount":0, "type":"", "category":""});
     }
-    
-    this.Update = function(){ 
+    this.UpdateTransaction = function(item){
+      $.ajax({
+        url: "/plans/"+selectedBankName,
+        type: "POST",
+        //dataType: "json",
+        contentType: "json",
+        data: JSON.stringify(item),
+        beforeSend: beforeSend,
+        success: function(data){
+          model.messages.push({"Message":"Plan Updated", "class":"alert alert-success"})
+        },
+        error: function(data){
+          model.messages.push({"Message":"Failed to Updated: Check Data", "class":"alert alert-danger"})
+        }
+      });
+    }
+
+    this.Update = function(){
         model.messages([]);
         $.ajax({
             url: "/plan",
             type: "POST",
             dataType: "json",
-            contentType: "json",  
+            contentType: "json",
             data: JSON.stringify(model.Transactions()),
             beforeSend: beforeSend,
             success: function(data){
@@ -31,12 +47,10 @@ var model = new PlanEditorModel();;
 ko.applyBindings(model, $(".container")[0]);
 function populateBank(){
      $.ajax({
-            url: "/plan",
-            dataType: "json",
-            beforeSend: beforeSend,
+            url: "/plans/"+selectedBankName,
             success: function(data){
                 model.Transactions(data.Transactions);
-               
+
             }
         });
 }
@@ -45,18 +59,16 @@ function populateBank(){
     url: "/categories",
     dataType: "json",
     success: function(data){
-  
+
     model.cats(data);
-   
+
     },
-     error: function(data2){  
-       
-      }  
+     error: function(data2){
+
+      }
  });
 function beforeSend(xhr) {
-    
-   
+
+
         xhr.setRequestHeader('bank', selectedBankName);
     }
-    
-    

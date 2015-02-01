@@ -1,5 +1,5 @@
 var bankModel = function(){
-    
+
     this.userlist = ko.observableArray([]);
     this.AddUserErrors = ko.observableArray([]);
    this.data = ko.observableArray([]);
@@ -12,16 +12,16 @@ var bankModel = function(){
     success: function(data){
     ko.applyBindings(bankConfigurationModel, $("#bankConfigurationModel")[0]);
     bankConfigurationModel.data(data);
-   
+
     }
   });
-      
+
     }
         this.OpenAddUser = function(args1, args2){
             bankConfigurationModel.selectedBank(args1);
             $("#AddUserDialog").modal();
         };
-        
+
         this.addUser= function(){
             this.AddUserErrors([])
             var sBank = bankConfigurationModel.selectedBank();
@@ -31,10 +31,24 @@ var bankModel = function(){
                   return;
               }
           }
-          
+
         }
-        
-       
+      this.CreateBank = function(title){
+        $.ajax({
+          url: "/Banks",
+          type: "POST",
+          contentType: "json",
+          data: JSON.stringify({title:title}),
+          success: function(data){
+            alert("Bank Created");
+            bankConfigurationModel.GetFullData();
+          },
+          error: function(data){
+            alert("failed to create")
+          }
+        })
+      }
+
     this.removeUser = function(){};
 }
 var bankConfigurationModel = new bankModel();

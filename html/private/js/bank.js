@@ -97,7 +97,7 @@ var ViewModel = function() {
         if(bannerModel.bankName())
         {
         $.ajax({
-            url: "/bankplan?Days="+model.PlanDays(),
+            url: "/bankplan/"+selectedBankName+"?Days="+model.PlanDays(),
             dataType: "json",
             beforeSend: beforeSend,
             success: function(data){
@@ -159,7 +159,7 @@ var ViewModel = function() {
 
       },
       error: function(data2){
-        console(data2);
+        //console(data2);
           model.warnings([])
             model.messages([])
         model.errors(data2.responseJSON);
@@ -291,7 +291,17 @@ this.filterSettings = function(){
     model.GetBankPlan()
     //model.FilterTransactions( model.showFutureItems(), model.statusFilter(),model.categoryFilter())
     model.loaded(true);
+    ko.applyBindings(model, $("#bankSheet")[0]);
+    $.ajax({
+      url: "/categories/"+selectedBankName,
+      dataType: "json",
+      success: function(data){
+        model.cats(data);
+      },
+      error: function(data2){
 
+      }
+    });
     },
      error: function(data2){
 
@@ -300,19 +310,7 @@ this.filterSettings = function(){
  })
   }
 model = new ViewModel();
-ko.applyBindings(model, $("#bankSheet")[0]);
-  $.ajax({
-    url: "/categories",
-    dataType: "json",
-    success: function(data){
 
-    model.cats(data);
-
-    },
-     error: function(data2){
-
-      }
- });
  $(function(){ $( ".transactionDate" ).datepicker();})
 
  function beforeSend(xhr) {

@@ -4,8 +4,6 @@ module.exports = function (db)
 {
   var bank = db.sublevel("BankMetaData");
 
-  bank.put("bank_mybank", {"title":"mybank", users:["admin@gsb.com"]});
-
   this.GetAllUserBanks = function(user, callback){
     var returnValue = [];
       bank.createReadStream()
@@ -38,6 +36,10 @@ module.exports = function (db)
     .on("error", function( err){
       callback(err)
     });
+  }
+
+  this.CreateBank = function(bankname,username, callback){
+    bank.put("bank_"+bankname, {"title":bankname, users:[username]}, callback);
   }
 
   return this;
