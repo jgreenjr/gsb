@@ -17,7 +17,13 @@ module.exports = function (db)
       .on('error', callback)
       .on('close', function () {
         var sortedTransactions =  new LINQ(allData).OrderByDescending(function(transaction){return new Date(transaction.date)})
-        .ToArray();
+
+        if(statusFilter !="")
+          sortedTransactions = sortedTransactions.Where(function(item){return item.Status === statusFilter});
+        if(categoryFilter != "")
+          sortedTransactions = sortedTransactions.Where(function(item){return item.category === categoryFilter});
+
+        sortedTransactions =  sortedTransactions.ToArray();
         returnValue.Total = SumUpData(sortedTransactions)
         returnValue.Transactions = sortedTransactions
         callback(null,returnValue );

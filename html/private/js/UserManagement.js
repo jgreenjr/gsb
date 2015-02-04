@@ -1,11 +1,11 @@
 
-function createUser(username, password){
+function createUser(username, password,defaultBank){
   $.ajax({
     url: "/Users",
     type: "POST",
     //dataType: "json",
     contentType: "json",
-    data: JSON.stringify({username:username, password:password}),
+    data: JSON.stringify({username:username, password:password, defaultBank:defaultBank}),
     success: function(data){
       console.log("usercreated");
     },
@@ -16,12 +16,12 @@ function createUser(username, password){
 };
 
 
-function UpdateUser(username, password){
+function UpdateUser(username, password,defaultBank){
     $.ajax({
       url: "/Users",
       type: "PUT",
       contentType: "json",
-      data: JSON.stringify({username:username, password:password}),
+      data: JSON.stringify({username:username, password:password,defaultBank:defaultBank}),
       success: function(data){
         console.log("user updated");
       },

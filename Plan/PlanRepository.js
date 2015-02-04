@@ -32,7 +32,7 @@ module.exports = function (db)
       for(var j = 0; j < backingData.Transactions.length; j++){
         var trans = backingData.Transactions[j];
         var id = (date.getMonth()+1)+""+date.getDate()+""+date.getFullYear()+Killspaces(trans.payee);
-        if(IsValidDate(trans,date) && new LINQ(bank.Transactions).Where(function(item){item.id == id}).Count() == 0){
+        if(IsValidDate(trans,date) && new LINQ(bank.Transactions).Where(function(item){return item.id == id}).Count() == 0){
           startingBalance = helpers.UpdateTotal(startingBalance, trans);
           if(startingBalance.ActualBalance < 0){
             planResult.warnings.push({errorCode:"negitiveBalanceWarning", errorMessage:"Negitive Balance as a result of transaction", transaction: trans.payee});
@@ -88,6 +88,7 @@ module.exports = function (db)
 
 
   this.AddPlanItem = function(bank, transaction, callback){
+
     Plans.put(bank+":"+transaction.id, transaction, callback);
   }
 

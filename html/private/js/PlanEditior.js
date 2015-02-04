@@ -16,9 +16,12 @@ var PlanEditorModel = function() {
         data: JSON.stringify(item),
         beforeSend: beforeSend,
         success: function(data){
+          model.messages.pop();
           model.messages.push({"Message":"Plan Updated", "class":"alert alert-success"})
+          populateBank();
         },
         error: function(data){
+          model.messages.pop();
           model.messages.push({"Message":"Failed to Updated: Check Data", "class":"alert alert-danger"})
         }
       });
@@ -46,27 +49,30 @@ var PlanEditorModel = function() {
 var model = new PlanEditorModel();;
 ko.applyBindings(model, $(".container")[0]);
 function populateBank(){
-     $.ajax({
+  if(selectedBankName != "")
+  {
+    $.ajax({
             url: "/plans/"+selectedBankName,
             success: function(data){
                 model.Transactions(data.Transactions);
+                $.ajax({
+                  url: "/categories/"+selectedBankName,
+                  dataType: "json",
+                  success: function(data){
 
+                    model.cats(data);
+
+                  },
+                  error: function(data2){
+
+                  }
+                });
             }
         });
+      }
 }
 
-  $.ajax({
-    url: "/categories",
-    dataType: "json",
-    success: function(data){
 
-    model.cats(data);
-
-    },
-     error: function(data2){
-
-      }
- });
 function beforeSend(xhr) {
 
 

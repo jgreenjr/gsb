@@ -42,5 +42,87 @@ module.exports = function (db)
     bank.put("bank_"+bankname, {"title":bankname, users:[username]}, callback);
   }
 
+  this.DeleteBank = function(bankname,username, callback){
+    bank.get("bank_"+bankname, function(err, data){
+      if(err){
+        callback("bank not found")
+        return;
+      }
+      var linqUsers = new LINQ(data.users);
+
+      if(!linqUsers.Contains(currentUser)){
+        callback("user does not have access");
+        return;
+      }
+      bank.delete("bank_"+bankname, callback);
+    });
+  }
+
+
+  this.AddUser = function(bankname, username, currentUser, callback){
+    var bankKey = "bank_"+bankname;
+
+    bank.get(bankKey, function(err, data){
+      if(err){
+        callback("bank not found")
+        return;
+      }
+
+      var linqUsers = new LINQ(data.users);
+      if(linqUsers.Contains(username)){
+        callback("user already has access");
+        return;
+      }
+      if(!linqUsers.Contains(currentUser)){
+        callback("user does not have access");
+        return;
+      }
+      data.users.push(username)
+
+      bank.put(bankKey, data, function(err){
+        if(err)
+        {
+          callback(err);
+          return;
+        }
+        callback(null, "Done!");
+      })
+    })
+  }
+
+  this.DeleteUser = function(bankname, username, currentUser, callback){
+    var bankKey = "bank_"+bankname;
+
+    bank.get(bankKey, function(err, data){
+      if(err){
+        callback("bank not found")
+        return;
+      }
+
+      var linqUsers = new LINQ(data.users);
+      if(!linqUsers.Contains(username)){
+        callback("cannot remove user");
+        return;
+      }
+      if(!linqUsers.Contains(currentUser)){
+        callback("user does not have access");
+        return;
+      }
+
+
+      var indexOf = data.users.indexOf(username);
+      data.users.splice(indexOf, 1);
+
+      bank.put(bankKey, data, function(err){
+        if(err)
+        {
+          callback(err);
+          return;
+        }
+        callback(null, "Done!");
+      })
+    })
+  }
+
   return this;
 }

@@ -44,7 +44,7 @@
       <div class="panel-body" >
       <div class="error" data-bind="Visible:ErrorMessage != '', text: ErrorMessage"></div>
   <div class="form-group">
-    <form role="form" action="/login" method="post">
+    <form role="form" data-bind="submit: SignIn">
     <label for="exampleInputEmail1">Email address</label>
     <input type="email" class="form-control" id="username" placeholder="Enter email" data-bind="value:username">
   </div>

@@ -62,6 +62,11 @@ app.post('/login', passport.authenticate('local'), function(req, res) {
   });
 
 
+app.get('/logout', function(req, res) {
+  req.logout();
+  res.send("signed out")
+});
+
 app.get('/loginFailure', function(req, res, next) {
   res.send('Failed to authenticate');
 });
@@ -105,7 +110,42 @@ app.get('/plans/:bank', isAuthenticated, function(req, res){
   PlanRepository.GetAll(bank, function(err, data){
     res.status(200).send(data);
   } );
-})
+} );
+
+
+app.put("/Banks/:bank/users", isAuthenticated, function(req, res){
+  req.on("data", function(stream){
+    var trans = {};
+    var myText = stream.toString();
+
+    try{
+      trans = JSON.parse(myText)
+      BankMetaDataRepository.AddUser(req.params.bank,trans.username, req.user.username, function(err, data){
+        if(err){
+          res.status(400).send(err);
+          return;
+        }
+        res.status(200).send(data);
+      });
+  }
+    catch(ex){
+      console.log(ex);
+      res.status(400).send("f!");
+    }
+
+  })
+});
+app.delete("/Banks/:bank/users/:username", isAuthenticated, function(req, res){
+
+  BankMetaDataRepository.DeleteUser(req.params.bank,req.params.username, req.user.username, function(err, data){
+    if(err){
+      res.status(400).send(err);
+      return;
+    }
+    res.status(200).send(data);
+  });
+});
+
 
 app.post("/banks/:bank", isAuthenticated, handleTransaction);
 app.put("/banks/:bank", isAuthenticated, handleTransaction);
@@ -150,6 +190,15 @@ function handleTransaction(req, res){
   }
 );
 }
+app.delete("/Banks/:bank", isAuthenticated, function(req, res){
+  BankMetaDataRepository.DeleteBank(req.params.bank, req.user.username, function(err){
+    if(err){
+      res.status(400).send("failed to delete")
+      return;
+    }
+    res.status(200).send("bank deleted");
+  })
+});
 
 app.post("/Banks", isAuthenticated, function(req, res)
 {
@@ -168,6 +217,7 @@ app.post("/Banks", isAuthenticated, function(req, res)
 
       })
     }catch(ex){
+      console.log(ex);
       res.status(400).send("bad")
       return;
     }
@@ -197,6 +247,9 @@ function handlePlanTransaction(req, res){
     try{
       trans = JSON.parse(myText)
       var errs = Transaction.StandardTransactionValidation(trans);
+      if(!trans.id){
+        trans.id = new Date().getTime()
+      }
       if(errs.length > 0){
         res.status(400).send(errs);
         return;
@@ -218,8 +271,8 @@ function handlePlanTransaction(req, res){
 
 }
 
-app.get("/Users/Current/Permissions", isAuthenticated, function(req, res){
-  UserRepository.GetUserPermissions(req.user.username,function(err, returnValue){
+app.get("/Users/:user/Permissions", isAuthenticated, function(req, res){
+  UserRepository.GetUserPermissions(req.params.user,function(err, returnValue){
     if(err != undefined && err != null){
       res.status(400).send("error adding transaction");
       return;
@@ -243,7 +296,7 @@ app.post("/Users", isAuthenticated, function(req, res){
       try{
         user = JSON.parse(myText)
 
-        UserRepository.CreateUser(user.username, user.password, function(err, user){
+        UserRepository.CreateUser(user.username, user.password,user.defaultBank, function(err, user){
           if(err) {
             res.status(400).send("error creating user");
             return;

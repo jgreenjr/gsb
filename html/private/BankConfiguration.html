@@ -47,7 +47,7 @@
             <tr>
                 <td data-bind="text: $data.title"></td>
                 <td> <ul data-bind="foreach: $data.users">
-                    <li><span data-bind="text:$data"></span> &nbsp;<button class="btn btn-danger btn-xs" data-bind="click:$parent.removeUser">Remove</button></li>
+                    <li><span data-bind="text:$data"></span> &nbsp;<button class="btn btn-danger btn-xs" data-bind="click:bankConfigurationModel.removeUser">Remove</button></li>
                 </ul></td>
                 <td> <button type="button" class="btn btn-default" data-bind="click:$parent.OpenAddUser">Add User</button></td>
             </tr>

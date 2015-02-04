@@ -19,7 +19,7 @@ module.exports = function (db)
   }
 
   var Users = db.sublevel("Users");
-  var admin = {username:"admin@gsb.com", RedirectUrl:'private/bank.html', defaultBank:"mybank", InsertDate:Date.now(), canCreateUser:true, canCreateBank: true};
+  var admin = {username:"admin@gsb.com", RedirectUrl:'private/BankConfiguration.html', defaultBank:"", InsertDate:Date.now(), canCreateUser:true, canCreateBank: true};
   admin.password = CreatePassword(admin, "password1");
   Users.put("user_admin", admin);
 
@@ -73,14 +73,14 @@ module.exports = function (db)
 
   }
 
-  this.CreateUser = function(username, password, callback){
+  this.CreateUser = function(username, password, defaultBank, callback){
     this.GetUser(username, function(err, user){
       if(user != null){
         callback(err, null);
         return;
       }
 
-      var user = {username:username, RedirectUrl:'private/bank.html', defaultBank:"", InsertDate:Date.now()};
+      var user = {username:username, RedirectUrl:'private/bank.html', defaultBank:defaultBank, InsertDate:Date.now()};
 
       user.password = CreatePassword(user, password);
       var atSpot = user.username.indexOf("@");
