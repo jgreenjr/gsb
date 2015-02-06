@@ -47,9 +47,27 @@ passport.deserializeUser(function(user, done) {
 
 var isAuthenticated = function (req, res, next) {
     if (req.isAuthenticated()){
-      return next();
+      if(req.params.bank){
+        BankMetaDataRepository.GetAllUserBanks(req.user.username,function(err, bankAccessList){
+          for(var i=0; i < bankAccessList.length; i++)
+          {
+            if(bankAccessList[i].bankName == req.params.bank)
+            {
+              return next();
+            }
+          }
+          return res.redirect("/login.html");
+        });
+      }
+      else
+      {
+        return next();
+      }
     }
-    return res.redirect("/login.html");
+    else
+    {
+      return res.redirect("/login.html");
+    }
   }
 
   app.all('/private/**', isAuthenticated)
