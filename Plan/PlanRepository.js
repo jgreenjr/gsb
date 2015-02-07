@@ -32,7 +32,7 @@ module.exports = function (db)
       for(var j = 0; j < backingData.Transactions.length; j++){
         var trans = backingData.Transactions[j];
         var id = (date.getMonth()+1)+""+date.getDate()+""+date.getFullYear()+Killspaces(trans.payee);
-        if(IsValidDate(trans,date) && new LINQ(bank.Transactions).Where(function(item){return item.id == id}).Count() == 0){
+        if(trans.active && IsValidDate(trans,date) && new LINQ(bank.Transactions).Where(function(item){return item.id == id}).Count() == 0){
           startingBalance = helpers.UpdateTotal(startingBalance, trans);
           planResult.transactions.push({id:id ,payee:trans.payee, date:(date.getMonth()+1)+"/"+date.getDate()+"/"+date.getFullYear(), amount:trans.amount, type:trans.type, balance:helpers.CopyTotal(startingBalance), category:trans.category, Status:"pending"});
         }
