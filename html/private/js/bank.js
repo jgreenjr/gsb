@@ -1,7 +1,7 @@
 var model = null;
 var ViewModel = function() {
 
-    this.username=ko.observable("jay");
+    this.username = ko.observable("jay");
 
     this.PlanDayOptions = ko.observableArray(["7", "14", "21"]);
 
@@ -26,18 +26,18 @@ var ViewModel = function() {
     this.transactionId = ko.observable();
     this.showFutureItems = ko.observable(true)
     this.numberOfFutureItems = ko.observable()
-    this.cats =  ko.observableArray([])
+    this.cats = ko.observableArray([])
     this.filteredTransactions = ko.observableArray()
     this.bankplan = ko.observable();
     var currentDate = new Date();
-    var summaryDate = (currentDate.getMonth()+1)+ "/1/"+currentDate.getFullYear()
+    var summaryDate = (currentDate.getMonth() + 1) + "/1/" + currentDate.getFullYear()
     this.summaryDate = ko.observable(summaryDate);
     this.summary = ko.observable();
 
     this.WebBalance = ko.observable("");
 
-    this.Difference = ko.computed(function(){
-        if(this.WebBalance() != "" && this.total() != null){
+    this.Difference = ko.computed(function() {
+        if (this.WebBalance() != "" && this.total() != null) {
             return this.WebBalance() - this.total().ClearedBalance;
         }
     }, this)
@@ -45,305 +45,302 @@ var ViewModel = function() {
 
     this.PlanDays = ko.observable(7);
 
-    this.UpdateTransaction = function(item){
-        model.warnings(["Updating Transaction:"+item.payee]);
-        model.ProcessTransaction(JSON.stringify(item), "PUT", "Updated",item.payee)
+    this.UpdateTransaction = function(item) {
+        model.warnings(["Updating Transaction:" + item.payee]);
+        model.ProcessTransaction(JSON.stringify(item), "PUT", "Updated", item.payee)
 
     }
 
     this.bankName = ko.computed({
-        read: function () {
+        read: function() {
             return bannerModel.bankName();
         },
-        write: function (value) {
+        write: function(value) {
             bannerModel.bankName(value);
         },
         owner: this
     });
 
     this.bankNames = ko.computed({
-        read: function () {
+        read: function() {
             return bannerModel.bankNames();
         },
-        write: function (value) {
+        write: function(value) {
             bannerModel.bankNames(value);
         },
         owner: this
     });
 
 
-    this.UpdateTransactionInModal = function(item){
-        $("#"+item.id+ " #transactionModal").modal('toggle');
+    this.UpdateTransactionInModal = function(item) {
+        $("#" + item.id + " #transactionModal").modal('toggle');
         $(".modal-backdrop").remove();
-        model.warnings(["Updating Transaction:"+item.payee]);
-        model.ProcessTransaction(JSON.stringify(item), "PUT", "Updated",item.payee)
+        model.warnings(["Updating Transaction:" + item.payee]);
+        model.ProcessTransaction(JSON.stringify(item), "PUT", "Updated", item.payee)
 
     }
 
 
-    this.GetSummary = function (){
+    this.GetSummary = function() {
         $.ajax({
             url: "/summary?startDate=" + this.summaryDate(),
             dataType: "json",
             beforeSend: beforeSend,
-            success: function(data){
+            success: function(data) {
                 model.summary(data);
 
             }
         });
     }
 
-    this.GetBankPlan = function (){
-        if(bannerModel.bankName())
-        {
-        $.ajax({
-            url: "/bankplan/"+selectedBankName+"?Days="+model.PlanDays(),
-            dataType: "json",
-            beforeSend: beforeSend,
-            success: function(data){
-                model.bankplan(data);
+    this.GetBankPlan = function() {
+        if (bannerModel.bankName()) {
+            $.ajax({
+                url: "/bankplan/" + selectedBankName + "?Days=" + model.PlanDays()+"&startDate="+Date.now().getMonth()+"/"+Date.Now().getDate()+Date.now().getFullYear(),
+                dataType: "json",
+                beforeSend: beforeSend,
+                success: function(data) {
+                    model.bankplan(data);
 
-            }
-        });
-        return false;
+                }
+            });
+            return false;
         }
     }
 
 
-     this.DeleteTransaction = function(item){
+    this.DeleteTransaction = function(item) {
 
-         if(confirm("Are you sure you want to delete:" + item.payee+"?"))
-       { model.warnings(["Deleting Transaction:"+item.payee])
-      //  model.ProcessTransaction(JSON.stringify(item), "DELETE", "Deleted", item.payee)
-      $.ajax({
-        url: "/banks/"+selectedBankName+"/"+item.id,
-        type: "DELETE",
-        success: function(data){
-          model.warnings([])
-          model.messages(["Transaction Deleted: "+item.payee])
-          populateBank();
-        },
-        error: function(data){
-          model.messages(["Transaction Failed to delete: "+item.payee])
-          populateBank();
+        if (confirm("Are you sure you want to delete:" + item.payee + "?")) {
+            model.warnings(["Deleting Transaction:" + item.payee])
+                //  model.ProcessTransaction(JSON.stringify(item), "DELETE", "Deleted", item.payee)
+            $.ajax({
+                url: "/banks/" + selectedBankName + "/" + item.id,
+                type: "DELETE",
+                success: function(data) {
+                    model.warnings([])
+                    model.messages(["Transaction Deleted: " + item.payee])
+                    populateBank();
+                },
+                error: function(data) {
+                    model.messages(["Transaction Failed to delete: " + item.payee])
+                    populateBank();
+                }
+            });
         }
-      });
-       }
     }
-     this.ShowDetails = function(item, arg2){
-      $("#"+item.id+ " #transactionModal").modal();
-       //  $("tr.subRow").hide();
-    //    $(arg2.currentTarget).parent().parent().next().show();
+    this.ShowDetails = function(item, arg2) {
+        $("#" + item.id + " #transactionModal").modal();
+        //  $("tr.subRow").hide();
+        //    $(arg2.currentTarget).parent().parent().next().show();
     }
 
-    this.ShowDifference = function(){
+    this.ShowDifference = function() {
         $("#OnlineDifferenceCalculator").modal();
     }
 
-    this.ProcessTransaction = function(item, action, actionText, transPayee){
+    this.ProcessTransaction = function(item, action, actionText, transPayee) {
         this.warnings([])
-      this.errors([]);
-       var self = this;
-    $.ajax({
-      url: "/banks/"+selectedBankName,
-      type: action ,
-    //  dataType: "json",
-      contentType: "json",
-      data: item,
-      beforeSend: beforeSend,
-      success: function(data2){
+        this.errors([]);
+        var self = this;
+        $.ajax({
+            url: "/banks/" + selectedBankName,
+            type: action,
+            //  dataType: "json",
+            contentType: "json",
+            data: item,
+            beforeSend: beforeSend,
+            success: function(data2) {
 
-           model.messages(["Transaction " + actionText + ": "+transPayee])
-      populateBank();
-        model.warnings([])
+                model.messages(["Transaction " + actionText + ": " + transPayee])
+                populateBank();
+                model.warnings([])
 
-      },
-      error: function(data2){
-        //console(data2);
-          model.warnings([])
-            model.messages([])
-        model.errors(data2.responseJSON);
-      }
-    })
+            },
+            error: function(data2) {
+                //console(data2);
+                model.warnings([])
+                model.messages([])
+                model.errors(data2.responseJSON);
+            }
+        })
     }
-    this.ShowSummary = function(){
+    this.ShowSummary = function() {
         $("#SummaryModal").modal();
     }
-    this.ShowFutureTransactions = function(){
-       $('#myModal').modal()
+    this.ShowFutureTransactions = function() {
+        $('#myModal').modal()
     }
 
 
-    this.ShowFilter = function(){
-       $('#filterModel').modal()
+    this.ShowFilter = function() {
+        $('#filterModel').modal()
     }
 
-     this.transactionType = ko.computed(function(){
+    this.transactionType = ko.computed(function() {
 
-       if(this.transactionDeposit()){
-           return "deposit";
-       }
-       else if(this.transactionWidthdrawl()){
-           return "widthdrawl";
-       }
-       return "";
-    },this);
+        if (this.transactionDeposit()) {
+            return "deposit";
+        } else if (this.transactionWidthdrawl()) {
+            return "widthdrawl";
+        }
+        return "";
+    }, this);
 
-     this.transactionAmount = ko.computed(function(){
-       if(this.transactionDeposit()){
-           return this.transactionDeposit();
-       }
-       else if(this.transactionWidthdrawl()){
-           return this.transactionWidthdrawl();
-       }
-       return "0";
-    },this);
+    this.transactionAmount = ko.computed(function() {
+        if (this.transactionDeposit()) {
+            return this.transactionDeposit();
+        } else if (this.transactionWidthdrawl()) {
+            return this.transactionWidthdrawl();
+        }
+        return "0";
+    }, this);
 
-      this.transactionTotal = ko.computed(function(){
-          if(this.total())
-         var  t = parseFloat(this.total().ClearedBalance) ;
-       if(this.transactionDeposit()){
-           return this.Money(parseFloat(this.transactionDeposit()) + t);
-       }
-       else if(this.transactionWidthdrawl()){
-           return this.Money(t- parseFloat(this.transactionWidthdrawl()));
-       }
-       return "-";
-    },this);
-    this.Money = function(data){
+    this.transactionTotal = ko.computed(function() {
+        if (this.total())
+            var t = parseFloat(this.total().ClearedBalance);
+        if (this.transactionDeposit()) {
+            return this.Money(parseFloat(this.transactionDeposit()) + t);
+        } else if (this.transactionWidthdrawl()) {
+            return this.Money(t - parseFloat(this.transactionWidthdrawl()));
+        }
+        return "-";
+    }, this);
+    this.Money = function(data) {
 
         return parseFloat(data).toFixed(2);
 
     };
 
-    this.AddFutureTransaction = function(item){
-      model.warnings(["Adding Transaction: "+ item.payee])
-       model.ProcessTransaction(JSON.stringify(item), "POST", "Added",item.payee);
+    this.AddFutureTransaction = function(item) {
+        model.warnings(["Adding Transaction: " + item.payee])
+        model.ProcessTransaction(JSON.stringify(item), "POST", "Added", item.payee);
     }
 
-    this.GetTransactionSettings = function(statusString){
-    var idString = "";
+    this.GetTransactionSettings = function(statusString) {
+        var idString = "";
 
-    if(this.transactionId() !== undefined){
-        idString = '"id": "' + this.transactionId() + '", ';
-    }
-     return  '{"payee":"'+ this.transactionPayee() +'", '+ idString + '"date":"'+ this.transactionDate() +'", "amount":'+ this.transactionAmount() +', "type":"'+ this.transactionType() +'", "Status":"'+statusString+'"}';
+        if (this.transactionId() !== undefined) {
+            idString = '"id": "' + this.transactionId() + '", ';
+        }
+        return '{"payee":"' + this.transactionPayee() + '", ' + idString + '"date":"' + this.transactionDate() + '", "amount":' + this.transactionAmount() + ', "type":"' + this.transactionType() + '", "Status":"' + statusString + '"}';
     };
 
-  this.AddTransaction = function (args1, args2){
-      var statusString  = "Pending";
-      if(args2.target.id == "addAsCleared"){
-          statusString = "Cleared";
-           }
+    this.AddTransaction = function(args1, args2) {
+        var statusString = "Pending";
+        if (args2.target.id == "addAsCleared") {
+            statusString = "Cleared";
+        }
 
-       var data = model.GetTransactionSettings(statusString);
+        var data = model.GetTransactionSettings(statusString);
 
-       if(model.transactionId() === "" || model.transactionId() === undefined){
-       model.warnings(["Adding Transaction: "+ model.transactionPayee()])
-       model.ProcessTransaction(data, "POST", "Added",model.transactionPayee())
-       }
-       else
-       {
-        model.warnings(["Updating Transaction: "+ model.transactionPayee()])
-        model.ProcessTransaction(data, "PUT", "Updated",model.transactionPayee())
-       }
+        if (model.transactionId() === "" || model.transactionId() === undefined) {
+            model.warnings(["Adding Transaction: " + model.transactionPayee()])
+            model.ProcessTransaction(data, "POST", "Added", model.transactionPayee())
+        } else {
+            model.warnings(["Updating Transaction: " + model.transactionPayee()])
+            model.ProcessTransaction(data, "PUT", "Updated", model.transactionPayee())
+        }
 
-}
-
-
-this.filterSettings = function(){
-    var statusFilter = model.statusFilter();
-    if(statusFilter == undefined){
-        statusFilter = "";
     }
 
-    var categoryFilter = model.categoryFilter();
-    if(categoryFilter == undefined){
-        categoryFilter = "";
+
+    this.filterSettings = function() {
+        var statusFilter = model.statusFilter();
+        if (statusFilter == undefined) {
+            statusFilter = "";
+        }
+
+        var categoryFilter = model.categoryFilter();
+        if (categoryFilter == undefined) {
+            categoryFilter = "";
+        }
+        var showFutureItems = model.showFutureItems();
+        if (showFutureItems == undefined) {
+            showFutureItems = false;
+        }
+        return "?PageNumber=1&StatusFilter=" + statusFilter + "&CategoryFilter=" + categoryFilter + "&ShowFutureItems=" + model.showFutureItems();
     }
-     var showFutureItems = model.showFutureItems();
-    if(showFutureItems == undefined){
-        showFutureItems = false;
-    }
-    return "?PageNumber=1&StatusFilter="+statusFilter+"&CategoryFilter="+categoryFilter+"&ShowFutureItems="+model.showFutureItems();
-}
 };
-  function populateBank(){
+ko.applyBindings(model, $("#bankSheet")[0]);
 
-  if(model == null || selectedBankName == ""){
-      return;
-  }
- $.ajax({
-    url: "/banks/"+selectedBankName+ model.filterSettings(),
-    dataType: "json",
-    beforeSend: beforeSend,
-    success: function(data){
+function populateBank() {
 
-   model.transactionPayee("");
-   model.transactionDeposit("");
-   model.transactionWidthdrawl("");
-
-     model.total(data.Total);
-     model.ClearedBalance(data.Total.ClearedBalance);
-    model.Transactions(data.Transactions);
-    model.numberOfFutureItems(data.FutureItemCount);
-    model.GetSummary();
-    model.GetBankPlan()
-    //model.FilterTransactions( model.showFutureItems(), model.statusFilter(),model.categoryFilter())
-    model.loaded(true);
-    ko.applyBindings(model, $("#bankSheet")[0]);
+    if (model == null || selectedBankName == "") {
+        return;
+    }
     $.ajax({
-      url: "/categories/"+selectedBankName,
-      dataType: "json",
-      success: function(data){
-        model.cats(data);
-      },
-      error: function(data2){
+        url: "/categories/" + selectedBankName,
+        dataType: "json",
+        success: function(data) {
+            model.cats(data);
+            $.ajax({
+                url: "/banks/" + selectedBankName + model.filterSettings(),
+                dataType: "json",
+                beforeSend: beforeSend,
+                success: function(data) {
 
-      }
-    });
-    },
-     error: function(data2){
+                    model.transactionPayee("");
+                    model.transactionDeposit("");
+                    model.transactionWidthdrawl("");
 
-        model.errors(data2.responseJSON);
-      }
- })
-  }
+                    model.total(data.Total);
+                    model.ClearedBalance(data.Total.ClearedBalance);
+                    model.Transactions(data.Transactions);
+                    model.numberOfFutureItems(data.FutureItemCount);
+                    model.GetSummary();
+                    model.GetBankPlan()
+                        //model.FilterTransactions( model.showFutureItems(), model.statusFilter(),model.categoryFilter())
+                    model.loaded(true);
+
+
+                },
+                error: function(data2) {
+
+                }
+            });
+        },
+        error: function(data2) {
+
+            model.errors(data2.responseJSON);
+        }
+    })
+}
 model = new ViewModel();
 
- $(function(){ $( ".transactionDate" ).datepicker();})
+$(function() {
+    $(".transactionDate").datepicker();
+})
 
- function beforeSend(xhr) {
+function beforeSend(xhr) {
 
 
-        xhr.setRequestHeader('bank', selectedBankName);
-    }
+    xhr.setRequestHeader('bank', selectedBankName);
+}
 
-function LoadTransaction(id){
+function LoadTransaction(id) {
     $.ajax({
-    url: "/transaction"+id,
-    dataType: "json",
-    beforeSend:beforeSend,
-    success: function(data){
-     model.transactionDate(data.date);
-     model.transactionId(data.id);
-     if(data.type == "deposit")
-       {model.transactionWidthdrawl("");
-       model.transactionDeposit(data.amount);
-       model.transactionCommandText("Update");
-       }
-       else
-       {
+        url: "/transaction" + id,
+        dataType: "json",
+        beforeSend: beforeSend,
+        success: function(data) {
+            model.transactionDate(data.date);
+            model.transactionId(data.id);
+            if (data.type == "deposit") {
+                model.transactionWidthdrawl("");
+                model.transactionDeposit(data.amount);
+                model.transactionCommandText("Update");
+            } else {
 
-       model.transactionWidthdrawl(data.amount);
-       }
-    }
+                model.transactionWidthdrawl(data.amount);
+            }
+        }
     });
 }
 
 
-   function formatMoney(data){
+function formatMoney(data) {
 
-        return "$"+parseFloat(data).toFixed(2);
+    return "$" + parseFloat(data).toFixed(2);
 
-    };
+};
