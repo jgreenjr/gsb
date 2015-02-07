@@ -86,7 +86,7 @@
         <button type="button" class="btn btn-default" data-bind="click:ShowFilter">Filter</button>&nbsp;
         <button type="button" class="btn btn-default" data-bind="click:ShowDifference">Difference</button>&nbsp;
         <span data-bind="with: bankplan">
-            <button type="button" class="btn btn-default"  data-bind="disable: $data.TransactionCount == 0, click:$parent.ShowFutureTransactions" >Future Transactions</button></span>
+            <button type="button" class="btn btn-default"  data-bind="click:$parent.ShowFutureTransactions" >Future Transactions</button></span>
         <br/><br/>
           <div class="panel panel-info" style="width:100%;">
                         <div class="panel-heading"><span class="panel-title">Balances</span></div>
