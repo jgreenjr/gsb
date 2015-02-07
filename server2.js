@@ -244,19 +244,34 @@ app.post("/Banks", isAuthenticated, function(req, res)
 });
 app.post("/plans/:bank", isAuthenticated, handlePlanTransaction);
 app.put("/plans/:bank", isAuthenticated, handlePlanTransaction);
-app.get("/bankplan/:bank", isAuthenticated, function(req, res){
-  var bank = req.params.bank;
-  PlanRepository.GetAll(bank,function(err, planData){
 
-    BankRepository.GetDisplay(bank, -1, "", "", true, function(err, bankData){
-      PlanRepository.PopulatePlan(Date.now(),req.query.Days,bankData, planData, function(err, data){
-        res.status(200).send(data);
-        return;
-      });
-  })
-})
+app.get("/bankplan/:bank",isAuthenticated, function(req, res){
+  var bank = req.params.bank;
+  if(req.query.startDate){
+    GenerateBankPlan(req, res, bank,{"Transactions": []}, new Date(req.query.startDate));
+    return;
+  }
+    else{
+      GetBankPlan(req, res);
+    }
 });
 
+function GetBankPlan(req, res, bank){
+  var startDate = Date.now();
+  BankRepository.GetDisplay(bank, -1, "", "", true, function(err, bankData){
+
+    GenerateBankPlan(req, res, bank, bankData, startDate);
+  })
+}
+
+function GenerateBankPlan(req, res, bank, bankData, startDate){
+  PlanRepository.GetAll(bank,function(err, planData){
+    PlanRepository.PopulatePlan(startDate,req.query.Days,bankData, planData, function(err, data){
+      res.status(200).send(data);
+      return;
+    });
+  })
+}
 function handlePlanTransaction(req, res){
   var bank = req.params.bank;
   req.on("data", function(stream){

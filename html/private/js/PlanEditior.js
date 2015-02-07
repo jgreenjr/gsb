@@ -4,6 +4,25 @@ var PlanEditorModel = function() {
     this.Types = ko.observableArray(["deposit", "widthdrawl"]);
     this.cats = ko.observableArray([]);
     this.messages = ko.observableArray([]);
+
+    this.projectionDate = ko.observable();
+    this.projectionDays = ko.observable();
+    this.projectedDelta = ko.observable();
+    this.refreshDelta = function(){
+      var startDate = model.projectionDate();
+      var days = model.projectionDays();
+
+      $.ajax({
+        url: "/bankplan/"+selectedBankName+"?Days="+days+"&startDate="+startDate,
+        dataType: "json",
+        beforeSend: beforeSend,
+        success: function(data){
+          model.projectedDelta(data.Total.ActualBalance);
+
+        }
+      });
+    }
+
     this.AddRow = function(){
         this.Transactions.push({"active": false, "startDate":"", "repeatInterval": 0, "repeatUnit":"", "payee": "", "amount":0, "type":"", "category":""});
     }
