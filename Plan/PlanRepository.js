@@ -24,7 +24,6 @@ module.exports = function (db)
   };
 
   this.PopulatePlan = function(startdate, days, bank, backingData, callback){
-
     var startingBalance = {ActualBalance: 0, ClearedBalance: 0, FutureBalance:0};
     var planResult = {transactions:[], warnings:[]};
     var date = new Date(startdate);

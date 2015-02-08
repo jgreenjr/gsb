@@ -96,7 +96,7 @@ var ViewModel = function() {
     this.GetBankPlan = function() {
         if (bannerModel.bankName()) {
             $.ajax({
-                url: "/bankplan/" + selectedBankName + "?Days=" + model.PlanDays()+"&startDate="+new Date().toLocaleDateString(),
+                url: "/bankplan/" + selectedBankName + "?Days=" + model.PlanDays(),
                 dataType: "json",
                 beforeSend: beforeSend,
                 success: function(data) {

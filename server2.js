@@ -245,27 +245,28 @@ app.post("/Banks", isAuthenticated, function(req, res)
 app.post("/plans/:bank", isAuthenticated, handlePlanTransaction);
 app.put("/plans/:bank", isAuthenticated, handlePlanTransaction);
 
-app.get("/bankplan/:bank",isAuthenticated, function(req, res){
+app.get("/bankplan/:bank", isAuthenticated,function(req, res){
   var bank = req.params.bank;
   if(req.query.startDate){
     GenerateBankPlan(req, res, bank,{"Transactions": []}, new Date(req.query.startDate));
     return;
   }
     else{
-      GetBankPlan(req, res);
+      GetBankPlan(req, res, bank);
     }
 });
 
 function GetBankPlan(req, res, bank){
-  var startDate = Date.now();
+  var startDate = new Date();
+  startDate = (startDate.getMonth()+1)+"/"+startDate.getDate()+"/"+startDate.getFullYear();
   BankRepository.GetDisplay(bank, -1, "", "", true, function(err, bankData){
-
     GenerateBankPlan(req, res, bank, bankData, startDate);
   })
 }
 
 function GenerateBankPlan(req, res, bank, bankData, startDate){
   PlanRepository.GetAll(bank,function(err, planData){
+
     PlanRepository.PopulatePlan(startDate,req.query.Days,bankData, planData, function(err, data){
       res.status(200).send(data);
       return;
