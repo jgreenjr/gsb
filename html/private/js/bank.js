@@ -96,7 +96,7 @@ var ViewModel = function() {
     this.GetBankPlan = function() {
         if (bannerModel.bankName()) {
             $.ajax({
-                url: "/bankplan/" + selectedBankName + "?Days=" + model.PlanDays()+"&startDate="+Date.now().getMonth()+"/"+Date.Now().getDate()+Date.now().getFullYear(),
+                url: "/bankplan/" + selectedBankName + "?Days=" + model.PlanDays()+"&startDate="+new Date().toLocaleDateString(),
                 dataType: "json",
                 beforeSend: beforeSend,
                 success: function(data) {
@@ -262,7 +262,6 @@ var ViewModel = function() {
         return "?PageNumber=1&StatusFilter=" + statusFilter + "&CategoryFilter=" + categoryFilter + "&ShowFutureItems=" + model.showFutureItems();
     }
 };
-ko.applyBindings(model, $("#bankSheet")[0]);
 
 function populateBank() {
 
@@ -307,6 +306,7 @@ function populateBank() {
     })
 }
 model = new ViewModel();
+ko.applyBindings(model, $("#bankSheet")[0]);
 
 $(function() {
     $(".transactionDate").datepicker();
