@@ -74,14 +74,50 @@
             </ul>
 
         </div>
+        <div class="modal fade bs-example-modal-lg"  id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Projections</h4>
+              </div>
+              <div class="modal-body">
 
-        <div>Date: <input type="text" data-bind="value: projectionDate"></div>
-        <div>Days: <input type="text" data-bind="value: projectionDays"></div>
-        <div>Projected delta $<span data-bind="text: projectedDelta"></span>
-          <button class="btn btn-default" data-bind="click:refreshDelta">Refresh</button></div>
+        <span>Date: <input type="text" data-bind="value: projectionDate"></span>
+        <span>Days: <input type="text" data-bind="value: projectionDays"></span>
+        <button class="btn btn-default" data-bind="click:refreshDelta">Refresh</button>
+        <span>Projected Total $<span data-bind="text: projectedDelta"></span>
+        </span>
+          <table class="table table-condensed">
+            <thead>
+              <tr>
+                <th class="col-md-1">Date</th>
+                <th class="col-md-3">Payee</th>
+                <th class="col-md-1">Deposit</th>
+                <th class="col-md-1">Withdrawl</th>
+                <th class="col-md-1">Balance</th>
+              </tr>
+            </thead>
 
+            <tbody data-bind="foreach: projectedDeltaTransactions" >
+
+              <tr class="no-bottom-line" >
+                <td class="col-md-1" ><input data-bind="value: date" style="width:80px" class="transactionDate"></input></td>
+                <td class="col-md-3"><input data-bind="value: payee" style="width:250px"></input></td>
+                <td class="col-md-1"  ><!-- ko if: type=='deposit' --><input data-bind="value: amount" style="width:80px"></input><!-- /ko -->&nbsp;</td>
+                <td class="col-md-1"  ><!-- ko if: type=='widthdrawl' --><input data-bind="value: amount" style="width:80px"></input><!-- /ko -->&nbsp;</td>
+                <td class="col-md-2" >
+                  <span data-bind="text: model.Money(balance.ActualBalance )"></span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+</div>
+</div>
+</div>
+</div>
         <button class="btn btn-default" data-bind="click:AddRow">Add New Row</button>
-
+        <button class="btn btn-default" data-bind="click:ShowProjections">Show Projections</button>
         <table class="table table-condensed table-striped">
             <thead>
                 <tr>

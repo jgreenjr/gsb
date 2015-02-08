@@ -8,6 +8,14 @@ var PlanEditorModel = function() {
     this.projectionDate = ko.observable();
     this.projectionDays = ko.observable();
     this.projectedDelta = ko.observable();
+    this.projectedDeltaTransactions = ko.observableArray([]);
+    this.Money = function(data) {
+
+      return parseFloat(data).toFixed(2);
+
+    };
+
+
     this.refreshDelta = function() {
         var startDate = model.projectionDate();
         var days = model.projectionDays();
@@ -18,9 +26,13 @@ var PlanEditorModel = function() {
             beforeSend: beforeSend,
             success: function(data) {
                 model.projectedDelta(data.Total.ActualBalance);
-
+                model.projectedDeltaTransactions(data.transactions);
             }
         });
+    }
+
+    this.ShowProjections = function(){
+      $("#myModal").modal();
     }
 
     this.AddRow = function() {
