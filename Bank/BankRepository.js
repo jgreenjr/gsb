@@ -42,6 +42,50 @@ module.exports = function (db)
     return currentTotal;
   }
 
+  this.GetSummary = function(bank, startDate, callback){
+    var tw = 0;
+    var td = 0;
+    var tg = 0;
+    var twc = 0;
+    var tdc = 0;
+    var tc = 0;
+
+    Banks.createReadStream({start:bank+":",end:bank+":\xff"})
+    .on("data", function(data){
+      var amount = parseInt(data.value.amount);
+      if(!startDate ||new Date(data.value.date) >= new Date(startDate)){
+        tc++;
+        switch(data.value.type){
+          case "widthdrawl":
+            twc++
+
+            tw += amount
+            //AddCategory(trans[i].category, amount, byCategory, false);
+            break;
+            case "deposit":
+              tdc++;
+              td += amount
+
+              //AddCategory(data.value.category, amount, byCategory, true);
+              break;
+            }
+          }
+    })
+    .on('error', callback)
+    .on('close', function () {
+      callback(null, {
+        date:new Date().toDateString(),
+        TotalWithdrawls:tw,
+        TotalWithdrawlsCount: twc,
+        TotalDeposits: td,
+        TotalDepositsCount: tdc,
+        TotalGains: td-tw,
+        TotalTransactions: tc,
+        ByCategory: []
+      });
+    });
+  }
+
   this.AddTransaction = function(bank, transaction, callback){
       Banks.put(bank+":"+transaction.id, transaction, callback);
   }

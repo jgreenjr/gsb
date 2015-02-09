@@ -153,6 +153,17 @@ app.put("/Banks/:bank/users", isAuthenticated, function(req, res){
 
   })
 });
+
+app.get("/Banks/:bank/summary", isAuthenticated, function(req, res){
+  BankRepository.GetSummary(req.params.bank, req.query.startDate, function(err,data){
+    if(err != undefined && err != null){
+      res.status(400).send("error getting data");
+      return;
+    }
+    res.status(200).send(data)
+  });
+});
+
 app.delete("/Banks/:bank/users/:username", isAuthenticated, function(req, res){
 
   BankMetaDataRepository.DeleteUser(req.params.bank,req.params.username, req.user.username, function(err, data){
@@ -193,7 +204,10 @@ function handleTransaction(req, res){
         res.status(400).send(errs);
         return;
       }
-
+      if(trans.category != undefined && trans.category != "")
+      {
+        CategoriesRepository.SaveToList(bank, {"name":trans.category}, function(){});
+      }
       BankRepository.AddTransaction(bank, trans, function(err){
         if(err != undefined && err != null){
           res.status(400).send("error adding transaction");

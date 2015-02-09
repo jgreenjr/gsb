@@ -83,7 +83,7 @@ var ViewModel = function() {
 
     this.GetSummary = function() {
         $.ajax({
-            url: "/summary?startDate=" + this.summaryDate(),
+            url: "/Banks/"+selectedBankName + "/summary?startDate=" + model.summaryDate(),
             dataType: "json",
             beforeSend: beforeSend,
             success: function(data) {
@@ -282,16 +282,13 @@ function populateBank() {
                     model.transactionPayee("");
                     model.transactionDeposit("");
                     model.transactionWidthdrawl("");
-
                     model.total(data.Total);
                     model.ClearedBalance(data.Total.ClearedBalance);
                     model.Transactions(data.Transactions);
                     model.numberOfFutureItems(data.FutureItemCount);
                     model.GetSummary();
                     model.GetBankPlan()
-                        //model.FilterTransactions( model.showFutureItems(), model.statusFilter(),model.categoryFilter())
                     model.loaded(true);
-
 
                 },
                 error: function(data2) {

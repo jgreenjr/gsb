@@ -236,12 +236,32 @@
       <div class="modal-body">
 
  <div data-bind="with: summary">
-        <table width="100%"><tr><td valign="top"><div> Date: <input type="text" data-bind="value: $parent.summaryDate"></input></div>
-                            <div> Deposit: <span data-bind="text: formatMoney($data.TotalDeposits)"></span>(<span data-bind="text:$data.TotalDepositsCount"></span>)</div>
-                            <div> Withdrawls: <span data-bind="text: formatMoney($data.TotalWithdrawls)"></span>(<span data-bind="text:$data.TotalWithdrawlsCount"></span>)</div>
-                            <div> Gains: <span data-bind="text: formatMoney($data.TotalGains)"></span>(<span data-bind="text:$data.TotalTransactions"></span>)</div>
+        <table width="100%"><tr><td valign="top"  >
 
-       </td><td valign="top">
+          <table class="table table-condensed">
+            <tr>
+              <td class="col-sm-1">Date:</td>
+              <td class="col-sm-2"><input type="text" data-bind="value: $parent.summaryDate"></input>
+                 <button type="button" class="btn btn-default" aria-label="Refresh" data-bind="click:model.GetSummary">
+                <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+              </button></td>
+            </tr>
+            <tr>
+              <td class="col-sm-1">Deposit:</td>
+              <td class="col-sm-2"><span data-bind="text: formatMoney($data.TotalDeposits)"></span>(<span data-bind="text:$data.TotalDepositsCount"></span>)</td>
+            </tr>
+            <tr>
+              <td class="col-sm-1">Withdrawls</td>
+              <td class="col-sm-2"> <span data-bind="text: formatMoney($data.TotalWithdrawls)"></span>(<span data-bind="text:$data.TotalWithdrawlsCount"></span>)</td>
+            </tr>
+            <tr>
+              <td class="col-sm-1">Gains</td>
+              <td class="col-sm-2"><span data-bind="text: formatMoney($data.TotalGains)"></span>(<span data-bind="text:$data.TotalTransactions"></span>)</td>
+            </tr>
+          </table>
+
+
+       </td><td valign="top">asdf
                                 <div data-bind="foreach: $data.ByCategory">
                                   <div> <span data-bind="text: $data.category"></span>: <span data-bind="text: formatMoney($data.total)"></span>(<span data-bind="text:$data.count"></span>)</div>
 
