@@ -155,7 +155,7 @@ app.put("/Banks/:bank/users", isAuthenticated, function(req, res){
 });
 
 app.get("/Banks/:bank/summary", isAuthenticated, function(req, res){
-  BankRepository.GetSummary(req.params.bank, req.query.startDate, function(err,data){
+  BankRepository.GetSummary(req.params.bank, req.query.startDate, req.query.endDate, function(err,data){
     if(err != undefined && err != null){
       res.status(400).send("error getting data");
       return;

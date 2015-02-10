@@ -32,6 +32,7 @@ var ViewModel = function() {
     var currentDate = new Date();
     var summaryDate = (currentDate.getMonth() + 1) + "/1/" + currentDate.getFullYear()
     this.summaryDate = ko.observable(summaryDate);
+    this.summaryEndDate = ko.observable("");
     this.summary = ko.observable();
 
     this.WebBalance = ko.observable("");
@@ -83,7 +84,8 @@ var ViewModel = function() {
 
     this.GetSummary = function() {
         $.ajax({
-            url: "/Banks/"+selectedBankName + "/summary?startDate=" + model.summaryDate(),
+            url: "/Banks/"+selectedBankName + "/summary?startDate=" + model.summaryDate()
+              + "&endDate=" + model.summaryEndDate(),
             dataType: "json",
             beforeSend: beforeSend,
             success: function(data) {

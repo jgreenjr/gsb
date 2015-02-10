@@ -42,7 +42,7 @@ module.exports = function (db)
     return currentTotal;
   }
 
-  this.GetSummary = function(bank, startDate, callback){
+  this.GetSummary = function(bank, startDate,endDate, callback){
     var tw = 0;
     var td = 0;
     var tg = 0;
@@ -53,19 +53,19 @@ module.exports = function (db)
     Banks.createReadStream({start:bank+":",end:bank+":\xff"})
     .on("data", function(data){
       var amount = parseInt(data.value.amount);
-      if(!startDate ||new Date(data.value.date) >= new Date(startDate)){
+      var transactionDate = new Date(data.value.date);
+      if((!startDate || transactionDate>= new Date(startDate))&&
+        (!endDate || transactionDate <= new Date(endDate))){
         tc++;
         switch(data.value.type){
           case "widthdrawl":
             twc++
-
             tw += amount
             //AddCategory(trans[i].category, amount, byCategory, false);
             break;
             case "deposit":
               tdc++;
               td += amount
-
               //AddCategory(data.value.category, amount, byCategory, true);
               break;
             }
