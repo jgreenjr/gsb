@@ -141,8 +141,7 @@
                 <td class="col-md-3"><input data-bind="value: payee" style="width:250px"></input></td>
                 <td class="col-md-1"  ><!-- ko if: type=='deposit' --><input data-bind="value: amount" style="width:80px"></input><!-- /ko -->&nbsp;</td>
                 <td class="col-md-1"  ><!-- ko if: type=='widthdrawl' --><input data-bind="value: amount" style="width:80px"></input><!-- /ko -->&nbsp;</td>
-                <td class="col-md-2" ><!-- ko if: IsFutureItem --> <span class="futureItem" data-bind="text: model.Money(balance.FutureBalance )"></span><!-- /ko -->
-                    <!-- ko if: IsFutureItem == false --> <span data-bind="text: model.Money(balance.ActualBalance )"></span><!-- /ko -->
+                <td class="col-md-2" ><span data-bind="text: model.Money(balance.ActualBalance )"></span>
                 </td>
                 <td class="col-md-2"  data-bind="text: model.Money(balance.ClearedBalance )"></td>
                 <td class="col-md-2"><a data-bind="click: $parent.UpdateTransaction" class="link" >Update</a> | <a class="link" data-bind="click: $parent.DeleteTransaction">Delete</a> | <a class="link" data-bind="click: $parent.ShowDetails">Details</a>
