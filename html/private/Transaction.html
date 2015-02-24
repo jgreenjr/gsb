@@ -6,10 +6,10 @@
         <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
         <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
         <style>
-           
+
         </style>
     </head>
-    
+
     <body>
      <nav class="navbar navbar-default" role="navigation">
   <div class="container-fluid">
@@ -31,26 +31,26 @@
             <li class=""><a href="PlanEditor.html">Plan Editor</a></li>
              <li><a href="BankConfiguration.html">Configuration</a></li>
        </ul>
-       
-       
+
+
        </div>
-    
+
     </div>
     </nav>
-     
+
     <div class="container" id="bankSheet">
     <ul class="alert alert-danger" data-bind="visible: errors().length > 0, foreach:errors">
           <li data-bind="text:message"></li>
-           
+
       </ul>
-      
+
        <ul class="alert alert-warning" data-bind="visible: warnings().length > 0, foreach:warnings">
           <li data-bind="text:$data"></li>
-           
+
       </ul>
         <ul class="alert alert-success" data-bind="visible: messages().length > 0, foreach:messages">
           <li data-bind="text:$data"></li>
-           
+
       </ul>
         <div class="panel panel-default">
   <div class="panel-heading">
@@ -62,7 +62,7 @@
         <hr/>
         <div>Date:</div>
             <input data-bind="value: transactionDate" id="transactionDate" class ="transactionDate" style="width:80px"/>
-        
+
         <hr/>
         <div>Payee:</div>
         <input data-bind="value: transactionPayee" style="width:250px"/>

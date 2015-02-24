@@ -83,7 +83,7 @@
       </ul>
         <h2 data-bind="text: title" >Test Title</h2>
         <button type="button" class="btn btn-default" data-bind="click:ShowSummary">Summary</button>&nbsp;
-        <button type="button" class="btn btn-default" data-bind="click:ShowFilter">Filter</button>&nbsp;
+        <button type="button" class="btn btn-default" data-bind="click:ShowFilter">Filters &amp; Display</button>&nbsp;
         <button type="button" class="btn btn-default" data-bind="click:ShowDifference">Difference</button>&nbsp;
         <span data-bind="with: bankplan">
             <button type="button" class="btn btn-default"  data-bind="click:$parent.ShowFutureTransactions" >Future Transactions</button></span>
@@ -195,8 +195,8 @@
                 <th class="col-md-3">Payee</th>
                 <th class="col-md-1">Deposit</th>
                 <th class="col-md-1">Withdrawl</th>
-                <th class="col-md-1">Balance</th>
-                <th class="col-md-1">Current Balance</th>
+                <th class="col-md-1 Balance-Col  Actual-Balance">Balance</th>
+                <th class="col-md-1 Balance-Col  Current-Balance">Current Balance</th>
                 <th class="col-md-2">Actions</th>
             </tr>
         </thead>
@@ -208,10 +208,8 @@
                 <td class="col-md-3"><input data-bind="value: payee" style="width:250px"></input></td>
                 <td class="col-md-1"  ><!-- ko if: type=='deposit' --><input data-bind="value: amount" style="width:80px"></input><!-- /ko -->&nbsp;</td>
                 <td class="col-md-1"  ><!-- ko if: type=='widthdrawl' --><input data-bind="value: amount" style="width:80px"></input><!-- /ko -->&nbsp;</td>
-                <td class="col-md-2" >
-                    <span data-bind="text: model.Money(balance.ActualBalance )"></span>
-                </td>
-                <td class="col-md-2"  data-bind="text: model.Money(balance.ClearedBalance )"></td>
+                <td class="col-md-2 Balance-Col Actual-Balance" data-bind="text: model.Money(balance.ActualBalance )"></td>
+                <td class="col-md-2 Balance-Col Current-Balance"  data-bind="text: model.Money(balance.ClearedBalance )"></td>
                 <td class="col-md-2"> <div data-bind="click: model.AddFutureTransaction" class="link" >Add</div> </td>
             </tr>
         </tbody>
@@ -220,7 +218,7 @@
         </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -280,16 +278,40 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="myModalLabel summaryLabel">Filter</h4>
+        <h4 class="modal-title" id="myModalLabel summaryLabel">Filters &amp; Display</h4>
       </div>
       <div class="modal-body">
+        <form >
+          <div class="form-group">
+            <label for="btn-group-future">Show Future Items</label><br/>
+            <div class="btn-group" id="btn-group-future" role="group" aria-label="...">
+              <button type="button" class="btn btn-default active" data-bind="click: ToggleShowFutureTransactions">On</button>
+              <button type="button" class="btn btn-default" data-bind="click: ToggleShowFutureTransactions">Off</button>
+            </div>
+          </div>
 
-<div>Show (<span data-bind="text: numberOfFutureItems()"></span>) Future Items:  <input type="checkbox" data-bind="checked: showFutureItems" /> </div>
-                            <div>Show Status: <select id="someId" data-bind="options:StatusOptions,optionsCaption: '<No Filter>', value:statusFilter"></select></div>
-                            <div>Show Category: <select id="someId2" data-bind="options:cats, optionsText:'name', optionsValue:'name',optionsCaption: '<No Filter>', value:categoryFilter"></select></div>
+
+            <div class="form-group" style="display:none">
+              <label for="exampleInputEmail1">Show Balances</label>
+              <div class="btn-group form-control" role="group" aria-label="...">
+                <button type="button" class="btn btn-default" data-bind="click: ToggleBalanceDisplay">Current</button>
+                <button type="button" class="btn btn-default" data-bind="click: ToggleBalanceDisplay">Both</button>
+                <button type="button" class="btn btn-default" data-bind="click: ToggleBalanceDisplay">Actual</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="someId">Show Status</label>
+              <select id="someId" class="form-control" data-bind="options:StatusOptions,optionsCaption: '<No Filter>', value:statusFilter"></select>
+            </div>
+            <div class="form-group">
+              <label for="someId2">Show Category</label>
+              <select id="someId2" class="form-control" data-bind="options:cats, optionsText:'name', optionsValue:'name',optionsCaption: '<No Filter>', value:categoryFilter"></select>
+              </div>
+          </form>
 
 
-        </div>
+
+    </div>
 
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" data-bind="click:populateBank">Update</button>

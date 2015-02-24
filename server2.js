@@ -118,7 +118,7 @@ app.get('/categories/:bank', isAuthenticated, function(req, res){
 
 app.get('/banks/:bank', isAuthenticated, function(req, res){
   var bank = req.params.bank
-  BankRepository.GetDisplay(bank, req.query.PageNumber, req.query.StatusFilter, req.query.CategoryFilter, req.query.ShowFutureItems, function(err, data){
+  BankRepository.GetDisplay(bank, req.query.PageNumber, req.query.StatusFilter, req.query.CategoryFilter, req.query.ShowFutureItems == "true", function(err, data){
     res.status(200).send(data);
   } );
 })

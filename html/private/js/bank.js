@@ -179,6 +179,40 @@ var ViewModel = function() {
         $('#filterModel').modal()
     }
 
+    this.ToggleShowFutureTransactions = function(modal, sender){
+
+      var senderObject = $(sender.currentTarget);
+      senderObject.parent().find("button").removeClass("active");
+      senderObject.addClass("active");
+
+      switch(senderObject.html()){
+        case "Off":
+          modal.showFutureItems(false);
+          break;
+        case "On":
+            modal.showFutureItems(true);
+            break;
+        }
+    }
+
+    this.ToggleBalanceDisplay = function(){
+      switch($(sender.currentTarget).html()){
+        case "Off":
+          $(".Balance-Col").show();
+          break;
+          case "Actual":
+            $(".Actual-Balance").show();
+            $(".Current-Balance").hide();
+            break;
+            case "Current":
+              console.log($(".Actual-Balance").hide());
+              $(".Actual-Balance").hide();
+              $(".Current-Balance").show();
+              break;
+            }
+
+    }
+
     this.transactionType = ko.computed(function() {
 
         if (this.transactionDeposit()) {

@@ -17,6 +17,8 @@ module.exports = function (db)
       .on('error', callback)
       .on('close', function () {
         var sortedTransactions =  new LINQ(allData).OrderByDescending(getTransactionDate)
+        if(showFutureItems ==false){
+        sortedTransactions = sortedTransactions.Where(function(item){return getTransactionDate(item) < new Date()});}
 
         if(statusFilter !="")
           sortedTransactions = sortedTransactions.Where(function(item){return item.Status === statusFilter});
@@ -32,9 +34,13 @@ module.exports = function (db)
   };
   function getTransactionDate(transaction)
   {
-  
+
     if(transaction.date == "Pending")
-      return Date.now();
+    {
+      var now = new Date();
+      var str = (now.getMonth()+1)+"/"+now.getDate()+"/"+now.getFullYear();
+      return new Date(str);
+    }
     return new Date(transaction.date)
   };
   var SumUpData = function(transactions){
