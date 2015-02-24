@@ -1,5 +1,9 @@
 var LINQ = require('node-linq').LINQ;
 var helpers = require('../helpers.js');
+var Sort = require('node-sort');
+
+var sort = new Sort();
+
 module.exports = function (db)
 {
   var Banks = db.sublevel("Banks");
@@ -16,7 +20,28 @@ module.exports = function (db)
       })
       .on('error', callback)
       .on('close', function () {
-        var sortedTransactions =  new LINQ(allData).OrderByDescending(getTransactionDate)
+        allData = sort.mergeSort(allData, function(left, right){
+          var leftDate = getTransactionDate(left);
+          var rightDate = getTransactionDate(right);
+          if( leftDate< rightDate){
+            return 1;
+          }
+          else if( leftDate > rightDate){
+            return -1;
+          }
+          else{
+            if( left.payee < right.payee){
+              return -1;
+            }
+            else if( left.payee > right.payee){
+              return 1;
+            }
+            return 0;
+          }
+        })
+        var sortedTransactions =  new LINQ(allData)
+
+
         if(showFutureItems ==false){
         sortedTransactions = sortedTransactions.Where(function(item){return getTransactionDate(item) < new Date()});}
 
