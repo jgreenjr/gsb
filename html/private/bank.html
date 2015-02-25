@@ -144,22 +144,79 @@
                 <td class="col-md-2" ><span data-bind="text: model.Money(balance.ActualBalance )"></span>
                 </td>
                 <td class="col-md-2"  data-bind="text: model.Money(balance.ClearedBalance )"></td>
-                <td class="col-md-2"><a data-bind="click: $parent.UpdateTransaction" class="link" >Update</a> | <a class="link" data-bind="click: $parent.DeleteTransaction">Delete</a> | <a class="link" data-bind="click: $parent.ShowDetails">Details</a>
-                <div class="modal fade bs-example-modal-sm" id="transactionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                  <div class="modal-dialog modal-sm">
+                <td class="col-md-2">
+                  <div class="btn-group">
+                    <button type="button" data-bind="click: $parent.UpdateTransaction" class= "btn btn-sm btn-default"><span class="glyphicon glyphicon-ok"></span></button>
+                    <button type="button" data-bind="click: $parent.DeleteTransaction" class= "btn btn-sm btn-default"><span class="glyphicon glyphicon-remove"></span></button>
+                    <button type="button" data-bind="click: $parent.ShowDetails"       class= "btn btn-sm btn-default"><span class="glyphicon glyphicon-pencil"></span></button>
+                  </div>
+                <div class="modal fade bs-example-modal-md" id="transactionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-md">
                     <div class="modal-content">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                         <h4 class="modal-title" id="myModalLabel summaryLabel">Details</h4>
                       </div>
                       <div class="modal-body">
-                      <div>
-                          Category:<select data-bind="options:$parent.cats, optionsText:'name', optionsValue:'name', value:category"></select>
+                        <form>
+                          <div class="row">
+                            <div class="col-lg-12">
+                              <div class="form-group">
+                                <label for="exampleInputEmail1">Payee</label>
+                                <input type="text" class="form-control" id="txtPayee" placeholder="" data-bind="value: payee">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row"><div class="col-lg-6">&nbsp;</div></div>
+                          <div class="row">
+                            <div class="col-lg-6">
+                              <div class="form-group">
+                                <label>Transaction Type</label>
+                                <select class="form-control" data-bind="options:['widthdrawl', 'deposit'], value:type">
 
-                      </div><div>Status:<select data-bind="options:$parent.StatusOptions, value:Status"><select data-bind="options:$parent.StatusOptions, value:Status"></div>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="col-lg-6">
+                              <div class="form-group">
+                                <label>Amount </label>
+                                <input type="text" class="form-control" id="txtAmount" placeholder="" data-bind="value:amount"/>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row"><div class="col-lg-6">&nbsp;</div></div>
+                          <div class="row">
+                            <div class="col-lg-6">
+                              <div class="form-group">
+                                <label for="exampleInputEmail1">Status</label>
+                                <select class="form-control" data-bind="options:$parent.StatusOptions, value:Status">
+                                </select>
+                              </div>
+                            </div>
+                            <div class="col-lg-6">
+                              <div class="form-group">
+                                <label for="idCat">Category</label>
+                                <select class="form-control" data-bind="options:$parent.cats, optionsText:'name', optionsValue:'name', value:category"></select>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row"><div class="col-lg-6">&nbsp;</div></div>
+                          <div class="row">
+                            <div class="col-lg-12">
+                              <div class="form-group">
+                                <label for="txtNodes">Notes</label>
+                                <textarea id="txtNodes" rows="4" class="form-control"></textarea>
+                              </div>
+                            </div>
+                          </div>
+
+                        </form>
+                        Inserted on <span style="font-style: italic;" data-bind="text: InsertDate"></span><br/>
+                        Updated on <span style="font-style: italic;" data-bind="text: UpdateDate"></span>
                       </div>
                       <div class="modal-footer">
-                           <button type="button" class="btn btn-default" data-bind="click: $parent.UpdateTransactionInModal" >Update</button>
+
+                          <button type="button" class="btn btn-default" data-bind="click: $parent.UpdateTransactionInModal" >Update</button>
                       </div>
                     </div>
                 </div>

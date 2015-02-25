@@ -20,25 +20,7 @@ module.exports = function (db)
       })
       .on('error', callback)
       .on('close', function () {
-        allData = sort.mergeSort(allData, function(left, right){
-          var leftDate = getTransactionDate(left);
-          var rightDate = getTransactionDate(right);
-          if( leftDate< rightDate){
-            return 1;
-          }
-          else if( leftDate > rightDate){
-            return -1;
-          }
-          else{
-            if( left.payee < right.payee){
-              return -1;
-            }
-            else if( left.payee > right.payee){
-              return 1;
-            }
-            return 0;
-          }
-        })
+        allData = sort.mergeSort(allData, GetIndicationSort)
         var sortedTransactions =  new LINQ(allData)
 
 
@@ -57,6 +39,36 @@ module.exports = function (db)
       });
 
   };
+
+  function GetIndicationSort(left, right){
+    var leftDate = getTransactionDate(left);
+    var rightDate = getTransactionDate(right);
+
+    var leftInserted = new Date(left.InsertDate);
+    var rightInserted = new Date(right.InsertDate);
+
+    if( leftDate< rightDate){
+      return 1;
+    }
+    else if( leftDate > rightDate){
+      return -1;
+    }
+    else if( leftInserted < rightInserted){
+        return 1;
+    }
+    else if( leftInserted > rightInserted){
+      return -1;
+    }
+    else if( left.payee < right.payee){
+      return -1;
+    }
+    else if( left.payee > right.payee){
+      return 1;
+    }
+    return 0;
+  }
+
+
   function getTransactionDate(transaction)
   {
 

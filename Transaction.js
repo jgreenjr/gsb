@@ -32,6 +32,22 @@ exports.StandardTransactionValidation = function(json)
         json.Status = "Pending";
     }
 
+    delete json.balance;
+
+    if(!json.InsertDate){
+
+    json.InsertDate = new Date().toISOString().
+    replace(/T/, ' ').      // replace T with a space
+    replace(/\..+/, '');    // delete the dot and everything after
+    json.UpdateDate = "";
+    }
+    else
+    {
+      json.UpdateDate = new Date().toISOString().
+      replace(/T/, ' ').      // replace T with a space
+      replace(/\..+/, '');    // delete the dot and everything after
+    }
+
      if(exports.Types.indexOf(json.type) < 0)
          messages.push({errorCode:"InvalidType", message:"Invalid Type"});
 
