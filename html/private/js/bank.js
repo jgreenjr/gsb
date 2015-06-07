@@ -33,6 +33,7 @@ var ViewModel = function() {
     var summaryDate = (currentDate.getMonth() + 1) + "/1/" + currentDate.getFullYear()
     this.summaryDate = ko.observable(summaryDate);
     this.summaryEndDate = ko.observable("");
+    this.startingIndex = ko.observable(100);
     this.summary = ko.observable();
 
     this.WebBalance = ko.observable("");
@@ -320,7 +321,16 @@ function populateBank() {
                     model.transactionWidthdrawl("");
                     model.total(data.Total);
                     model.ClearedBalance(data.Total.ClearedBalance);
-                    model.Transactions(data.Transactions);
+
+                    var tempTransaction = [];
+                    var maxTransactions =  parseInt(model.startingIndex());
+
+
+                    for(var i = 0; i< maxTransactions &&   i < data.Transactions.length  ; i++){
+                      tempTransaction.push(data.Transactions[i]);
+                    }
+
+                    model.Transactions(tempTransaction);
                     model.numberOfFutureItems(data.FutureItemCount);
                     model.GetSummary();
                     model.GetBankPlan()
