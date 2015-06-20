@@ -14,12 +14,44 @@ module.exports = function (db)
     return user.password == hash;
   }
 
+  ValidateUserPin = function(username, signature, payee, callback){
+    this.GetUser(username, function(err, user){
+      if(err){
+        callback(err);
+        return;
+      }
+
+      if(user.Pin == undefined || user.Pin == "" || !user.Pin){
+        callback("No Pin Set")
+        return;
+      }
+
+      if(user.defaultBank == ""){
+        callback("No Default Bank Set");
+        return;
+      }
+
+      var localSignature = GetUserSignature(user, "");
+
+      if(signature != localSignature){
+        callback("Bad Pin");
+        return;
+      }
+      var returnValue = {"username":user.username, "RedirectUrl":user.RedirectUrl, "defaultBank":user.defaultBank};
+      callback(null, returnValue);
+    })
+  };
+
+  function GetUserSignature(user, url){
+    return md5(user.username+""+user.Pin)
+  }
+
   function calculateSalt(user){
     return ""
   }
 
   var Users = db.sublevel("Users");
-  var admin = {username:"admin@gsb.com", RedirectUrl:'private/BankConfiguration.html', defaultBank:"", InsertDate:Date.now(), canCreateUser:true, canCreateBank: true};
+  var admin = {username:"admin@gsb.com", RedirectUrl:'private/BankConfiguration.html', defaultBank:"defaultBank", InsertDate:Date.now(), canCreateUser:true, canCreateBank: true, Pin:"1234"};
   admin.password = CreatePassword(admin, "password1");
   Users.put("user_admin", admin);
 

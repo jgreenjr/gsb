@@ -1,0 +1,37 @@
+<html lang="en" ng-app="gsbApp">
+<head >
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="/v2/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/v2/bower_components/angular/angular.js"></script>
+    <script type="text/javascript" src="/v2/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="js/UserController.js"></script>
+    <link rel="stylesheet" href="/v2/bower_components/bootstrap/dist/css/bootstrap.css"/>
+</head>
+<body>
+<div>
+    <table class="table" ng-controller="UserController as user">
+        <tr>
+            <th class="col-md-3">Username</th>
+            <td class="col-md-3">{{user.username}}</td>
+        </tr>
+        <tr>
+            <th class="col-md-3">Default Account</th>
+            <td class="col-md-3"><select id="ddlDefaultBank" ng-model="user.defaultBank">
+                <option ng-repeat="bank in user.banks" value="{{bank.displayName}}" ng-selected="{{bank.displayName == user.defaultBank}}">{{bank.displayName}}</option>
+            </select></td>
+        </tr>
+        <tr>
+            <th>Pin Number</th>
+            <td><input type="password" model="user.Pin"/> </td>
+        </tr>
+        <tr>
+            <th>Password</th>
+            <td><input type="password" model="user.Password"/> </td>
+        </tr>
+    </table>
+    <button ng-click="user.Save()" class="btn btn-primary">Save</button>
+</div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<html ng-app="gsbApp">
+<head>
+  <title>Green Savings and Blown</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-route/angular-route.js"></script>
+  <script src="bower_components/angular-resource/angular-resource.js"></script>
+  <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/md5.js"></script>
+  <script src="js/controllers.js"></script>
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css"/>
+</head>
+<body ng-controller="quickAddCtrl as quickCtrl">
+  <div class="page-header"><h1>Quick Add</h1></div>
+  <div class='container'>
+    <div class="panel">
+      <div class="panel-body">
+
+        <form id="frmQuickAdd" ng-submit="quickCtrl.SaveTransaction()" novalidate>
+          <div class="form-group">
+            <input type="email" class="form-control" id="txtEmail" placeholder="Email" ng-model="quickCtrl.transaction.email" required>
+          </div>
+            <div class="form-group">
+                <input type="text" class="form-control" id="txtDate" placeholder="Date" ng-model="quickCtrl.transaction.date" required>
+            </div>
+          <div class="form-group">
+            <input type="text" class="form-control" id="txtPayee" placeholder="Payee" ng-model="quickCtrl.transaction.payee" required>
+          </div>
+          <div class="form-group">
+            <input type="number" class="form-control" id="txtAmount" placeholder="amount"  ng-model="quickCtrl.transaction.amount" required>
+          </div>
+          <div class="form-group">
+            <input type="password" class="form-control" id="txtPin" placeholder="Pin" ng-model="quickCtrl.transaction.pin" required>
+          </div>
+          <button type="submit" class="btn btn-Success btn-lg btn-block">Add</button>
+          <button type="button" class="btn btn-Default btn-lg btn-block">Reset</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

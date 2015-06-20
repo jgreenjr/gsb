@@ -71,10 +71,12 @@ var isAuthenticated = function (req, res, next) {
   }
 
   app.all('/private/**', isAuthenticated)
+  app.all('/V2/private/**', isAuthenticated)
 
 app.use(express.static(__dirname + '/html/public'));
 app.use('/private', express.static(__dirname + '/html/private'));
-
+app.use('/V2', express.static(__dirname + '/v2'))
+app.use('/V2/bower_components',express.static(__dirname + '/bower_components'));
 app.post('/login', passport.authenticate('local'), function(req, res) {
     res.send(req.user);
   });
@@ -176,8 +178,16 @@ app.delete("/Banks/:bank/users/:username", isAuthenticated, function(req, res){
 });
 
 
-app.post("/banks/:bank", isAuthenticated, handleTransaction);
-app.put("/banks/:bank", isAuthenticated, handleTransaction);
+app.post("/banks/:bank", isAuthenticated, function(req, res){
+  var bank = req.params.bank;
+  handleTransaction(req, res, bank);
+});
+
+app.put("/banks/:bank", isAuthenticated, function(req, res){
+  var bank = req.params.bank;
+  handleTransaction(req, res, bank);
+});
+
 app.delete("/banks/:bank/:transactionid", isAuthenticated, function(req, res){
   var bank = req.params.bank;
   var id = req.params.transactionid;
@@ -191,14 +201,14 @@ app.delete("/banks/:bank/:transactionid", isAuthenticated, function(req, res){
   });
 });
 
-function handleTransaction(req, res){
-  var bank = req.params.bank;
+function handleTransaction(req, res, bank){
   req.on("data", function(stream){
     var trans = {};
     var myText = stream.toString();
 
     try{
       trans = JSON.parse(myText)
+
       var errs = Transaction.Validate(trans);
       if(errs.length > 0){
         res.status(400).send(errs);
@@ -213,9 +223,10 @@ function handleTransaction(req, res){
           res.status(400).send("error adding transaction");
           return;
         }
-        res.status(200).send("{'message':'saved'}")
+        res.status(200).send('{"message":"saved"}');
       });
     }catch(ex){
+      console.log(ex);
       res.status(400).send("bad")
       return;
     }
@@ -361,6 +372,16 @@ app.post("/Users", isAuthenticated, function(req, res){
     })
   });
 
+app.post("/Transaction", function(req, res){
+  UserRepository.ValidateUserPin( req.get("username"), req.get("signature"), "", function(err, data){
+    if(err){
+      res.status(400).send(err);
+      return;
+    }
+    var bank = data.defaultBank;
+    handleTransaction(req, res, bank);
+});
+});
 
 var port = process.env.PORT;
 if(process.argv[2])
