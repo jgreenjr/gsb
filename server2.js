@@ -343,6 +343,34 @@ app.get("/Users/:user/Permissions", isAuthenticated, function(req, res){
 
 });
 
+app.put("/Users", isAuthenticated, function(req, res){
+
+  req.on("data", function(stream){
+    var trans = {};
+    var myText = stream.toString();
+    try{
+      user = JSON.parse(myText)
+
+      if(user.username !== req.user.username){
+        res.status(400).send("cannot update for this user");
+      }
+
+      UserRepository.UpdateUser(user.username, user.password,user.defaultBank, user.Pin, function(err, user){
+        if(err) {
+          res.status(400).send("error updating user");
+          return;
+        }
+        res.status(200).send("user updated");
+      });
+    }catch(ex){
+      console.log(ex);
+      res.status(400).send(ex)
+      return;
+    }
+
+  });
+})
+
 app.post("/Users", isAuthenticated, function(req, res){
   UserRepository.GetUserPermissions(req.user.username,function(err, returnValue){
     if(!returnValue.canCreateUser){

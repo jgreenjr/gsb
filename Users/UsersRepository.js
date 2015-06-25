@@ -121,6 +121,29 @@ module.exports = function (db)
     });
   }
 
+  this.UpdateUser= function(username, password, defaultBank,pin,  callback){
+      this.GetUser(username, function(err, user){
+          if(user == null){
+              callback("User not found");
+              return;
+          }
+
+          if(pin !== "") {
+            user.Pin = pin;
+          }
+
+          if(password !== "") {
+            user.password = CreatePassword(user, password);
+          }
+
+          user.defaultBank =defaultBank;
+
+          var atSpot = user.username.indexOf("@");
+          Users.put("user_"+user.username.substr(0,atSpot), user);
+          callback(null, user);
+      })
+  }
+
   return this;
 
 }
