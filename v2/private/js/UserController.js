@@ -14,7 +14,7 @@ gsb.controller("UserController", ['$http','$cookies', function($http, $cookies){
 
     this.Save = function(){
 
-        var data = JSON.stringify ({"username":thisg.username, "defaultBank": this.defaultBank, "Pin":this.Pin, "Password": this.Password});
+        var data = JSON.stringify ({"username":this.username, "defaultBank": this.defaultBank, "Pin":this.Pin, "Password": this.Password});
 
         $http.put("/users", data, {"headers":{'content-type': 'text/json',
             'accept': "text/plain"}}).success(function(arg1, arg2){
