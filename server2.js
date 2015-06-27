@@ -353,6 +353,7 @@ app.put("/Users", isAuthenticated, function(req, res){
 
       if(user.username !== req.user.username){
         res.status(400).send("cannot update for this user");
+        return;
       }
 
       UserRepository.UpdateUser(user.username, user.password,user.defaultBank, user.Pin, function(err, user){
