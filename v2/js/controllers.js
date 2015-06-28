@@ -5,7 +5,9 @@ var gsb = angular.module('gsbApp', []);
 gsb.controller('quickAddCtrl', ['$http',
 
     function ($http) {
-        this.transaction = {};
+        var d = new Date();
+        var today = (d.getMonth()+1)+"/"+ d.getDate()+"/"+ d.getFullYear();
+        this.transaction = {'date':today};
         this.SaveTransaction = function () {
             var req = {
                 method: 'POST',
