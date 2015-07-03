@@ -1,0 +1,31 @@
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Green Savings and Blown</a>
+        </div>
+        <p class="navbar-text">Signed in as <span>{{menuBarData.username}}</span><a href="#">(Signout)</a></p>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="active dropdown">
+                    <a href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Banks <span>(<span>{{menuBarData.selectedBank}}</span>)</span><span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li ng-repeat="bank in menuBarData.banks"><a href="#" ng-click="alert('asdf')">{{bank.bankName}}</a></li>
+                    </ul>
+                </li>
+                <li><a href="Transaction.html">Add Transaction</a></li>
+                <li class=""><a href="PlanEditor.html">Plan Editor</a></li>
+                <li><a href="BankConfiguration.html">Configuration</a></li>
+            </ul>
+
+
+        </div>
+
+    </div>
+</nav>
