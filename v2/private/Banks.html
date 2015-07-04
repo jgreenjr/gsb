@@ -21,7 +21,7 @@
     </menu-bar>
 
     <div class="container" ng-controller="BankController as myc">
-        <button ng-click="myc.SwitchShowCurrent()" class="btn btn-default">Switch Showing Balance</button>
+        <button ng-click="myc.SwitchShowCurrent()" class="btn btn-default" ng-class="{'btn-primary': myc.showCurrent}">Show Current Balance</button>
         <table class="table">
             <thead>
             <tr class="">
