@@ -1,20 +1,34 @@
 /**
  * Created by greenj on 6/27/15.
  */
-app.directive("menuBar", ["$http", function($http){
+app.directive("menuBar", ["$http", "$cookies", function($http,$cookies){
     return {
         restrict:"E",
 
         "templateUrl":"directives/menu-bar.html",
-        controller: function($scope){
+        controller: function($scope, $injector){
+            var SharedDataService = $injector.get("SharedDataService");
             $scope.menuBarData = {username: "asdf", banks: []};
             $http.get("/banks").success(function(data){
                 $scope.menuBarData = data;
-                console.log(data);
-                $scope.menuBarData.selectedBank = "test123";
+                $scope.menuBarData.selectedBank = $cookies.defaultBank;
+                SharedDataService.setData("selectedBank",  $cookies.defaultBank);
             });
+
+            this.UpdateBankName = function(bankName){
+                $scope.menuBarData.selectedBank = bankName;
+
+                SharedDataService.setData("selectedBank", bankName);
+            }
         },
-        controllerAs: "menuCtrl",
-       // template: "<div>{{data.username}}</div>"
+        controllerAs: "menuCtrl"
     };
 }]);
+
+
+app.directive('transactionBalance', function(){
+    return {
+        restrict: 'E',
+        templateUrl: 'directives/transaction-balance.html'
+    };
+});
