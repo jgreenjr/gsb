@@ -32,3 +32,10 @@ app.directive('transactionBalance', function(){
         templateUrl: 'directives/transaction-balance.html'
     };
 });
+
+app.directive("statusFilters", function(){
+    return {
+        restrict: 'E',
+        templateUrl: 'directives/Status-Filters.html'
+    };
+})

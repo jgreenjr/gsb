@@ -3,11 +3,25 @@
  */
 app.controller("BankController",["SharedDataService","$http",function(SharedDataService,$http){
     this.showCurrent = false;
-
+    this.pending = true;
+    this.cleared = true;
 
     parent = this;
     this.SwitchShowCurrent = function(){
         this.showCurrent = !this.showCurrent;
+    }
+
+    this.showPending = function() {
+        this.pending = !this.pending;
+
+    }
+    this.showCleared = function(){
+            this.cleared = !this.cleared;
+    }
+
+    this.filteredTransactions = function(transaction){
+        return (transaction.Status == "Cleared" && parent.cleared)||
+            (transaction.Status == "Pending" && parent.pending)
     }
 
     this.UpdateStatus = function(transaction){
@@ -15,6 +29,11 @@ app.controller("BankController",["SharedDataService","$http",function(SharedData
             transaction.Status = 'Cleared'
         }
     }
+
+    this.ShowStatusDialog = function(){
+        $("#statusFilterModal").modal();
+    }
+
     SharedDataService.watcher = function(data){
         parent.selectedBank = data.selectedBank;
         parent.GetTransactions();
