@@ -28,6 +28,11 @@ app.controller("BankController",["SharedDataService","$http",function(SharedData
         if(transaction.Status != 'Cleared' ) {
             transaction.Status = 'Cleared'
         }
+        else{
+            if(confirm("Are You Sure you want to Pend " + transaction.payee + "?"))
+            transaction.Status = 'Pending'
+        }
+        parent.UpdateTransaction(transaction);
     }
 
     this.ShowStatusDialog = function(){
@@ -38,7 +43,22 @@ app.controller("BankController",["SharedDataService","$http",function(SharedData
         parent.selectedBank = data.selectedBank;
         parent.GetTransactions();
     }
-    this.UpdateTransaction = function(){
+    this.UpdateTransaction = function(transaction){
+        console.log(transaction)
+        var settings =  {method: 'put',
+            url: '/banks/'+ this.selectedBank,
+            headers: {
+                'bank':this.selectedBank,
+                'content-type': 'text/json',
+                'accept': "text/plain"
+            },
+            data: JSON.stringify(transaction)
+        };
+        $http(settings).success(function(data){
+            parent.GetTransactions();
+        }).error(function(arg1, arg2){
+            console.log(arg1, arg2)
+        });
 
     }
 

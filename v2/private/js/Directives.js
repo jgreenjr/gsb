@@ -39,3 +39,10 @@ app.directive("statusFilters", function(){
         templateUrl: 'directives/Status-Filters.html'
     };
 })
+
+app.directive("accountSummary", function(){
+    return {
+        restrict: 'E',
+        templateUrl: 'directives/account-summary.html'
+    };
+})
