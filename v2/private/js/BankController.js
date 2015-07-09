@@ -1,27 +1,32 @@
 /**
  * Created by greenj on 7/3/15.
  */
-app.controller("BankController",["SharedDataService","$http",function(SharedDataService,$http){
-    this.showCurrent = false;
-    this.pending = true;
-    this.cleared = true;
+app.controller("BankController",["DataShareService","$http", "$scope", "TransactionSaveService",function(DataShareService,$http, $scope, TransactionSaveService){
+    $scope.showCurrent = false;
+    $scope.pending = true;
+    $scope.cleared = true;
 
     parent = this;
     this.SwitchShowCurrent = function(){
-        this.showCurrent = !this.showCurrent;
+        $scope.showCurrent = !$scope.showCurrent;
     }
 
     this.showPending = function() {
-        this.pending = !this.pending;
+        $scope.pending = !$scope.pending;
 
     }
     this.showCleared = function(){
-            this.cleared = !this.cleared;
+        $scope.cleared = !$scope.cleared;
     }
 
     this.filteredTransactions = function(transaction){
-        return (transaction.Status == "Cleared" && parent.cleared)||
-            (transaction.Status == "Pending" && parent.pending)
+        return (transaction.Status == "Cleared" && $scope.cleared)||
+            (transaction.Status == "Pending" && $scope.pending)
+    }
+
+    this.EditTransaction = function (transaction){
+        DataShareService.selectedTransactionUpdated(transaction);
+        $("#transactionModal").modal();
     }
 
     this.UpdateStatus = function(transaction){
@@ -39,27 +44,18 @@ app.controller("BankController",["SharedDataService","$http",function(SharedData
         $("#statusFilterModal").modal();
     }
 
-    SharedDataService.watcher = function(data){
-        parent.selectedBank = data.selectedBank;
-        parent.GetTransactions();
-    }
-    this.UpdateTransaction = function(transaction){
-        console.log(transaction)
-        var settings =  {method: 'put',
-            url: '/banks/'+ this.selectedBank,
-            headers: {
-                'bank':this.selectedBank,
-                'content-type': 'text/json',
-                'accept': "text/plain"
-            },
-            data: JSON.stringify(transaction)
-        };
-        $http(settings).success(function(data){
-            parent.GetTransactions();
-        }).error(function(arg1, arg2){
-            console.log(arg1, arg2)
-        });
+    $scope.$on('selectedBankUpdated', function() {
 
+        parent.selectedBank = DataShareService.selectedBank;;
+        parent.GetTransactions();
+    });
+
+    $scope.$on('TransactionUpdated', function() {
+        parent.GetTransactions();
+    });
+
+    this.UpdateTransaction = function(transaction){
+        TransactionSaveService.SaveTransaction(parent.selectedBank, transaction);
     }
 
     this.GetTransactions = function(){
