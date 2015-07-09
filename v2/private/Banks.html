@@ -24,7 +24,7 @@
     <div class="container" ng-controller="BankController as myc">
         <status-filters></status-filters>
         <account-summary></account-summary>
-
+        <transaction-editor></transaction-editor>
         <div class="panel panel-default">
             <div class="panel-heading">
                 <span class="panel-title">Transactions for {{myc.selectedBank}}</span>
@@ -35,7 +35,7 @@
                      <button type="button" class="btn btn-xs" ng-class="{'btn-primary': !myc.showCurrent, 'btn-default': myc.showCurrent}" aria-label="Switch Balance" ng-click="myc.SwitchShowCurrent()">
                          <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
                      </button>
-                    <button type="button" class="btn btn-primary btn-xs" aria-label="Add Transaction">
+                    <button type="button" class="btn btn-primary btn-xs" aria-label="Add Transaction" ng-click="myc.EditTransaction({})">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                     </button>
                 </span>
@@ -45,10 +45,11 @@
             <tr class="">
                 <th class="col-md-2">Date</th>
                 <th class="col-md-4">Payee</th>
-                <th class="col-md-2">Withdrawal</th>
-                <th class="col-md-2">Deposit</th>
+                <th class="col-md-1">Withdrawal</th>
+                <th class="col-md-1">Deposit</th>
                 <th class="col-md-1">Status</th>
-                <th class="col-md-2">Total</th>
+                <th class="col-md-1">Total</th>
+                <th class="col-md-2">Actions</th>
             </tr>
             </thead>
             <tbody >
@@ -59,6 +60,16 @@
                 <td><div ng-show="myTransaction.type == 'deposit'">{{myTransaction.amount  | currency }}</div></td>
                 <td><div ng-click="myc.UpdateStatus(myTransaction)">{{myTransaction.Status | statusCheckMark}}</div></td>
                 <td><transaction-balance></transaction-balance></td>
+                <td>
+                    <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </button>
+                        <button type="button" class="btn btn-default btn-sm" ng-click="myc.EditTransaction(myTransaction)">
+                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </td>
             </tr>
             </tbody>
         </table>

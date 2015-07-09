@@ -1,0 +1,76 @@
+<div class="modal fade bs-example-modal-md" id="transactionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel summaryLabel">Details</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label for="txtPayee">Payee</label>
+                                <input type="text" class="form-control" id="txtPayee" placeholder="" ng-model="transactionObject.payee">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"><div class="col-lg-6">&nbsp;</div></div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Transaction Type</label>
+                                <select class="form-control" ng-model="transactionObject.type">
+                                    <option value="widthdrawl" ng-selected="{{transactionObject.type == 'widthdrawl'}}">widthdrawl</option>
+                                    <option value="deposit" ng-selected="{{transactionObject.type == 'deposit'}}">deposit</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Amount </label>
+                                <input type="text" class="form-control" id="txtAmount" placeholder="" ng-model="transactionObject.amount"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"><div class="col-lg-6">&nbsp;</div></div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select class="form-control" ng-model="transactionObject.Status">
+                                    <option value="Pending" ng-selected="{{transactionObject.Status == 'Pending'}}">Pending</option>
+                                    <option value="Cleared" ng-selected="{{transactionObject.Status == 'Cleared'}}">Cleared</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="idCat">Category</label>
+                                <select id="idCat" class="form-control" ng-model="transactionObject.category">
+                                    <option ng-repeat="category in Categories" value="{{category.name}}" ng-selected="{{category.name == transactionObject.category}}">{{category.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"><div class="col-lg-6">&nbsp;</div></div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label for="txtNodes">Notes</label>
+                                <textarea id="txtNodes" rows="4" class="form-control" ng-model="transactionObject.Notes"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+                Inserted on <span style="font-style: italic;">{{transactionObject.InsertDate}}</span><br/>
+                Updated on <span style="font-style: italic;">{{transactionObject.UpdateDate}}</span>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-default" ng-click="SaveTransaction()">{{btnText}}</button>
+            </div>
+        </div>
+    </div>
+</div>
