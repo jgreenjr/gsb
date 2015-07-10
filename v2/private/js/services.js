@@ -5,6 +5,7 @@ app.factory("DataShareService", function($rootScope){
     var service = {};
     service.selectedBank = "";
     service.selectedTransaction = "";
+    service.categoryData = "";
 
     service.selectedBankUpdated = function(value){
         this.selectedBank = value;
@@ -14,6 +15,11 @@ app.factory("DataShareService", function($rootScope){
     service.selectedTransactionUpdated = function(value){
         this.selectedTransaction = value;
         $rootScope.$broadcast("selectedTransactionUpdated");
+    }
+
+    service.updateCategoryData = function(value){
+        this.categoryData = value;
+        $rootScope.$broadcast("categoryDataUpdated");
     }
 
     return service;
@@ -47,3 +53,28 @@ app.factory("TransactionSaveService", function($http, $rootScope){
 
     return service;
 });
+
+
+app.factory("FilterService", function($rootScope){
+    var service = {};
+
+    service.showPending = true;
+    service.showCleared = true;
+    service.showFutureTransaction = true;
+    service.updateShowPending = function(value){
+        this.showPending = value;
+        $rootScope.$broadcast("filteringUpdated");
+    }
+
+    service.updateShowCleared = function(value){
+        this.showCleared = value;
+        $rootScope.$broadcast("filteringUpdated");
+    }
+
+    service.updateShowFutureTransactions = function(value){
+        this.showFutureTransaction = value;
+        $rootScope.$broadcast("filteringUpdated");
+    }
+
+    return service;
+})

@@ -10,6 +10,14 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="form-group">
+                                <label for="txtDate">Payee</label>
+                                <input type="text" class="form-control" id="txtDate" placeholder="" ng-model="transactionObject.date">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
                                 <label for="txtPayee">Payee</label>
                                 <input type="text" class="form-control" id="txtPayee" placeholder="" ng-model="transactionObject.payee">
                             </div>
@@ -69,7 +77,7 @@
             </div>
             <div class="modal-footer">
 
-                <button type="button" class="btn btn-default" ng-click="SaveTransaction()">{{btnText}}</button>
+                <button type="button" class="btn btn-default" ng-click="transactionCtrl.SaveTransaction()">Save</button>
             </div>
         </div>
     </div>

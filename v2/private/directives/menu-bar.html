@@ -20,9 +20,16 @@
                             <a ng-click='menuCtrl.UpdateBankName(bank.bankName)'>{{bank.bankName}}</a></li>
                     </ul>
                 </li>
-                <li><a href="Transaction.html">Add Transaction</a></li>
+                <li><a href="#" ng-click="menuCtrl.AddTransaction()">Add Transaction</a></li>
                 <li class=""><a href="PlanEditor.html">Plan Editor</a></li>
                 <li><a href="BankConfiguration.html">Configuration</a></li>
+                <li class="dropdown">
+                    <a href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Filters<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a ng-click="menuCtrl.updateDisplay('showPending')">Show Pending {{showPending | filterCheckmark}}</a></li>
+                        <li><a ng-click="menuCtrl.updateDisplay('showCleared')">Show Cleared {{showCleared | filterCheckmark}}</a></li>
+                    </ul>
+                </li>
             </ul>
 
 

@@ -1,10 +1,28 @@
 /**
  * Created by greenj on 7/3/15.
  */
-app.controller("BankController",["DataShareService","$http", "$scope", "TransactionSaveService",function(DataShareService,$http, $scope, TransactionSaveService){
+app.controller("BankController",["DataShareService","$http", "$scope", "TransactionSaveService", "FilterService",function(DataShareService,$http, $scope, TransactionSaveService, FilterService){
     $scope.showCurrent = false;
     $scope.pending = true;
     $scope.cleared = true;
+
+    this.GetCategories = function()
+    {
+        var settings =  {method: 'get',
+            url: '/categories/'+ this.selectedBank,
+            headers: {
+                'bank':this.selectedBank
+            }
+        }
+
+        $http(settings).success(function(data){
+
+            $scope.Categories = data;
+            DataShareService.updateCategoryData(data);
+    }).error(function(){
+
+        });
+    }
 
     parent = this;
     this.SwitchShowCurrent = function(){
@@ -44,14 +62,21 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
         $("#statusFilterModal").modal();
     }
 
+    $scope.$on("filteringUpdated", function(){
+        $scope.cleared = FilterService.showCleared
+        $scope.pending = FilterService.showPending;
+    })
+
     $scope.$on('selectedBankUpdated', function() {
 
         parent.selectedBank = DataShareService.selectedBank;;
+        parent.GetCategories();
         parent.GetTransactions();
     });
 
     $scope.$on('TransactionUpdated', function() {
         parent.GetTransactions();
+        $("#transactionModal").modal("toggle");
     });
 
     this.UpdateTransaction = function(transaction){
@@ -79,6 +104,12 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
 app.filter('statusCheckMark', function() {
     return function(input) {
         return input == 'Cleared' ? '\u2713' : '\u2718';
+    };
+});
+
+app.filter('filterCheckmark', function() {
+    return function(input) {
+        return input ? '\u2713' : '';
     };
 });
 
