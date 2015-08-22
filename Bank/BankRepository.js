@@ -141,5 +141,13 @@ module.exports = function (db)
   this.DeleteTransaction = function(bank, id, callback){
     Banks.del(bank+":"+id, callback);
   }
+
+  this.DeleteTransactions = function(bank, callback){
+    Banks.createReadStream({start:bank+":",end:bank+":\xff"})
+        .on("data", function(data){
+          Banks.del(data.key, function(){});
+        })
+        .on("close", callback);
+  }
   return this;
 }

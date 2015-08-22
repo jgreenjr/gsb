@@ -21,10 +21,14 @@
 
     </menu-bar>
 
-    <div class="container" ng-controller="BankController as myc">
+    <div class="container-fluid" ng-controller="BankController as myc">
         <status-filters></status-filters>
-        <account-summary></account-summary>
+
         <transaction-editor></transaction-editor>
+        <div class="col-md-2 sidebar">
+            <account-summary></account-summary>
+        </div>
+        <div class="col-md-8">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <span class="panel-title">Transactions for {{myc.selectedBank}}</span>
@@ -73,6 +77,7 @@
             </tr>
             </tbody>
         </table>
+        </div>
         </div>
     </div>
 </body>

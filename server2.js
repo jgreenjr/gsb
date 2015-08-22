@@ -201,6 +201,18 @@ app.delete("/banks/:bank/:transactionid", isAuthenticated, function(req, res){
   });
 });
 
+app.delete("/banks/:bank", isAuthenticated, function(req, res){
+  var bank = req.params.bank;
+  console.log("deleting");
+  BankRepository.DeleteTransactions(bank, function(err){
+    if(err != undefined && err != null){
+      res.status(400).send("error deleting transaction");
+      return;
+    }
+    res.status(200).send("{'message':'deleted'}")
+  });
+});
+
 function handleTransaction(req, res, bank){
   req.on("data", function(stream){
     var trans = {};

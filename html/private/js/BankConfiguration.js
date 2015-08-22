@@ -18,7 +18,23 @@ var first = true;
     }
   });
 
-    }
+    };
+
+        this.DeleteAll = function (args1, args2){
+            console.log(args1.title)
+            $.ajax({
+                url: "/banks/" + args1.title,
+                type: 'DELETE',
+                dataType: "json",
+                success: function(data){
+
+
+                },
+                error: function(eArgs1, eArgs2){
+
+                }
+            });
+        };
         this.OpenAddUser = function(args1, args2){
 
             bankConfigurationModel.selectedBank(args1);

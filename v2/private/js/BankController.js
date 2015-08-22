@@ -76,7 +76,7 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
 
     $scope.$on('TransactionUpdated', function() {
         parent.GetTransactions();
-        $("#transactionModal").modal("toggle");
+        $("#transactionModal").modal("hide");
     });
 
     this.UpdateTransaction = function(transaction){
