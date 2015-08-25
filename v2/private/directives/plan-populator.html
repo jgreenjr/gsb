@@ -1,0 +1,34 @@
+<div class="modal fade" id="planPopulatorModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Plan Populator</h4>
+            </div>
+            <div class="modal-body">
+               Days
+                <div class="input-group">
+                    <input type="text" ng-model="DaysToProject" class="form-control"/>
+                    <span class="input-group-btn">
+                        <button class="btn" type="button" ng-click="LoadTransactions()">Update</button>
+                    </span>
+                </div><br/>
+                <table class="table">
+                    <tr>
+                        <th>Date</th>
+                        <th>Payee</th>
+                        <th>Amount</th>
+                        <th></th>
+                    </tr>
+                    <tr ng-repeat="transaction in FutureTransactions">
+                        <td>{{transaction.date}}</td>
+                        <td>{{transaction.payee}}</td>
+                        <td>{{transaction.amount}}</td>
+                        <td><button class="btn btn-sm btn-primary" ng-click="SaveTransaction(transaction)">Add</button> </td>
+                    </tr>
+                </table>
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

@@ -6,7 +6,7 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
     $scope.pending = true;
     $scope.cleared = true;
 
-    this.GetCategories = function()
+    $scope.GetCategories = function()
     {
         var settings =  {method: 'get',
             url: '/categories/'+ this.selectedBank,
@@ -24,30 +24,29 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
         });
     }
 
-    parent = this;
-    this.SwitchShowCurrent = function(){
+    $scope.SwitchShowCurrent = function(){
         $scope.showCurrent = !$scope.showCurrent;
     }
 
-    this.showPending = function() {
+    $scope.showPending = function() {
         $scope.pending = !$scope.pending;
 
     }
-    this.showCleared = function(){
+    $scope.showCleared = function(){
         $scope.cleared = !$scope.cleared;
     }
 
-    this.filteredTransactions = function(transaction){
+    $scope.filteredTransactions = function(transaction){
         return (transaction.Status == "Cleared" && $scope.cleared)||
             (transaction.Status == "Pending" && $scope.pending)
     }
 
-    this.EditTransaction = function (transaction){
+    $scope.EditTransaction = function (transaction){
         DataShareService.selectedTransactionUpdated(transaction);
         $("#transactionModal").modal();
     }
 
-    this.UpdateStatus = function(transaction){
+    $scope.UpdateStatus = function(transaction){
         if(transaction.Status != 'Cleared' ) {
             transaction.Status = 'Cleared'
         }
@@ -55,10 +54,10 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
             if(confirm("Are You Sure you want to Pend " + transaction.payee + "?"))
             transaction.Status = 'Pending'
         }
-        parent.UpdateTransaction(transaction);
+        $scope.UpdateTransaction(transaction);
     }
 
-    this.ShowStatusDialog = function(){
+    $scope.ShowStatusDialog = function(){
         $("#statusFilterModal").modal();
     }
 
@@ -69,21 +68,31 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
 
     $scope.$on('selectedBankUpdated', function() {
 
-        parent.selectedBank = DataShareService.selectedBank;;
-        parent.GetCategories();
-        parent.GetTransactions();
+        $scope.selectedBank = DataShareService.selectedBank;;
+        $scope.GetCategories();
+        $scope.GetTransactions();
     });
 
     $scope.$on('TransactionUpdated', function() {
-        parent.GetTransactions();
+        $scope.GetTransactions();
         $("#transactionModal").modal("hide");
     });
 
-    this.UpdateTransaction = function(transaction){
-        TransactionSaveService.SaveTransaction(parent.selectedBank, transaction);
+    $scope.UpdateTransaction = function(transaction){
+        TransactionSaveService.SaveTransaction($scope.selectedBank, transaction);
     }
 
-    this.GetTransactions = function(){
+    $scope.DeleteTransaction = function(transaction){
+        if(!confirm("Are you sure you want to delete " + transaction.payee +"?")) {
+            return
+        }
+        $http.delete("/banks/" + $scope.selectedBank + "/" + transaction.id, {headers: { "accept": "application/json"}, responseType:"json"}).success(function(data){
+            $scope.GetTransactions();
+            $scope.$broadcast("TransactionUpdated");
+        })
+    };
+
+    $scope.GetTransactions = function(){
         var settings =  {method: 'get',
             url: '/banks/'+ this.selectedBank+"?PageNumber=1&StatusFilter=&CategoryFilter=&ShowFutureItems=true",
             headers: {
@@ -92,8 +101,8 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
         }
 
         $http(settings).success(function(data){
-            parent.Transactions = data.Transactions;
-            parent.Total = data.Total;
+            $scope.Transactions = data.Transactions;
+            $scope.Total = data.Total;
         }).error(function(arg1, arg2){
             console.log(arg1);
             console.log(arg2);

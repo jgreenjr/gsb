@@ -21,8 +21,14 @@
                     </ul>
                 </li>
                 <li><a href="#" ng-click="menuCtrl.AddTransaction()">Add Transaction</a></li>
-                <li class=""><a href="PlanEditor.html">Plan Editor</a></li>
-                <li><a href="BankConfiguration.html">Configuration</a></li>
+                <li class="dropdown">
+                    <a href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Plan<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a ng-click="OpenPopulatorWindow()">Populator</a> </li>
+                        <li><a href="/private/PlanEditor.html">Plan Editor</a></li>
+                    </ul>
+                </li>
+                <li><a href="/private/BankConfiguration.html">Configuration</a></li>
                 <li class="dropdown">
                     <a href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Filters<span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">

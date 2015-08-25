@@ -140,6 +140,7 @@ module.exports = function (db)
 
           var atSpot = user.username.indexOf("@");
           Users.put("user_"+user.username.substr(0,atSpot), user);
+
           callback(null, user);
       })
   }

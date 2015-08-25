@@ -37,11 +37,15 @@ app.directive("menuBar", ["$http", "$cookies", "FilterService", function($http,$
                 DataShareService.selectedBankUpdated(bankName);
             }
 
+            $scope.OpenPopulatorWindow = function(){
+               $("#planPopulatorModal").modal();
+            }
+
             this.AddTransaction = function(){
                 var currentDate = new Date();
 
                 var dateStr = (currentDate.getMonth()+1)+"/"+currentDate.getDate()+"/"+currentDate.getFullYear();
-                DataShareService.selectedTransactionUpdated({date: dateStr})
+                DataShareService.selectedTransactionUpdated({date: dateStr, Status:'Pending', type:'widthdrawl' })
                 $("#transactionModal").modal();
                 return false;
             }
@@ -93,5 +97,30 @@ app.directive("transactionEditor", function(){
             }
         },
         controllerAs: "transactionCtrl"
+    };
+})
+
+
+app.directive("planPopulator", function(){
+    return {
+        restrict: 'E',
+        templateUrl: 'directives/plan-populator.html',
+        controller: function($scope, $http, DataShareService, TransactionSaveService){
+            $scope.DaysToProject = 28;
+            $scope.LoadTransactions = function(){
+                $http.get("/bankplan/"+$scope.selectedBank+"?Days="+$scope.DaysToProject).success(function(data){
+                    $scope.FutureTransactions = data.transactions;
+                })
+            };
+
+            $scope.SaveTransaction = function(transaction){
+                TransactionSaveService.SaveTransaction(DataShareService.selectedBank, transaction)
+            }
+            $scope.$on("selectedBankUpdated", function(){
+                $scope.selectedBank = DataShareService.selectedBank;
+                $scope.LoadTransactions();
+            })
+            $scope.$on("TransactionUpdated",  $scope.LoadTransactions);
+        }
     };
 })

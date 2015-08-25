@@ -248,10 +248,10 @@ function handleTransaction(req, res, bank){
 app.delete("/Banks/:bank", isAuthenticated, function(req, res){
   BankMetaDataRepository.DeleteBank(req.params.bank, req.user.username, function(err){
     if(err){
-      res.status(400).send("failed to delete")
+      res.status(400).send("{message: 'failed'}")
       return;
     }
-    res.status(200).send("bank deleted");
+    res.status(200).send("{message: 'deleted'}");
   })
 });
 
