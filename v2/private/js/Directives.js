@@ -10,6 +10,8 @@ app.directive("menuBar", ["$http", "$cookies", "FilterService", function($http,$
 
             $scope.showPending = true;
             $scope.showCleared = true;
+            $scope.showFutureItems = true;
+
             $scope.menuBarData = {username: "asdf", banks: []};
             $http.get("/banks").success(function(data){
                 $scope.menuBarData = data;
@@ -27,6 +29,10 @@ app.directive("menuBar", ["$http", "$cookies", "FilterService", function($http,$
                         $scope.showCleared = !$scope.showCleared;
                         FilterSerivce.updateShowCleared($scope.showCleared);
                         return false;
+                    case "showFutureItems":
+                        $scope.showFutureItems = !$scope.showFutureItems;
+                        alert($scope.showFutureItems);
+                        FilterSerivce.updateShowFutureTransactions($scope.showFutureItems)
                 }
                 return false;
             }

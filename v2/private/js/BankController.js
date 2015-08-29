@@ -5,6 +5,11 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
     $scope.showCurrent = false;
     $scope.pending = true;
     $scope.cleared = true;
+    $scope.futureItems = true;
+    $scope.OnlineBalance = "";
+    var currentDate = new Date();
+
+    var dateStr = (currentDate.getMonth()+1)+"/"+currentDate.getDate()+"/"+currentDate.getFullYear();
 
     $scope.GetCategories = function()
     {
@@ -38,7 +43,8 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
 
     $scope.filteredTransactions = function(transaction){
         return (transaction.Status == "Cleared" && $scope.cleared)||
-            (transaction.Status == "Pending" && $scope.pending)
+            (transaction.Status == "Pending" && $scope.pending) &&
+            (transaction.date <= dateStr || $scope.futureItems)
     }
 
     $scope.EditTransaction = function (transaction){
@@ -64,6 +70,7 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
     $scope.$on("filteringUpdated", function(){
         $scope.cleared = FilterService.showCleared
         $scope.pending = FilterService.showPending;
+        $scope.futureItems = FilterService.showFutureTransaction;
     })
 
     $scope.$on('selectedBankUpdated', function() {
@@ -71,6 +78,7 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
         $scope.selectedBank = DataShareService.selectedBank;;
         $scope.GetCategories();
         $scope.GetTransactions();
+        $scope.OnlineBalance = "";
     });
 
     $scope.$on('TransactionUpdated', function() {
