@@ -42,6 +42,11 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
     }
 
     $scope.filteredTransactions = function(transaction){
+
+        if($scope.showNeedsTip){
+            return transaction.TipNeeded;
+
+        }
         return (transaction.Status == "Cleared" && $scope.cleared)||
             (transaction.Status == "Pending" && $scope.pending) &&
             (transaction.date <= dateStr || $scope.futureItems)
@@ -71,6 +76,7 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
         $scope.cleared = FilterService.showCleared
         $scope.pending = FilterService.showPending;
         $scope.futureItems = FilterService.showFutureTransaction;
+        $scope.showNeedsTip = FilterService.showNeedsTip;
     })
 
     $scope.$on('selectedBankUpdated', function() {

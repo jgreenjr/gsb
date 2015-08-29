@@ -35,6 +35,8 @@
                         <li><a ng-click="menuCtrl.updateDisplay('showPending')">Show Pending {{showPending | filterCheckmark}}</a></li>
                         <li><a ng-click="menuCtrl.updateDisplay('showCleared')">Show Cleared {{showCleared | filterCheckmark}}</a></li>
                         <li><a ng-click="menuCtrl.updateDisplay('showFutureItems')">Show Future Items {{showFutureItems | filterCheckmark}}</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a ng-click="menuCtrl.updateDisplay('showNeedsTip')">Tip Needed Items {{showNeedsTips | filterCheckmark}}</a></li>
                     </ul>
                 </li>
             </ul>

@@ -61,6 +61,7 @@ app.factory("FilterService", function($rootScope){
     service.showPending = true;
     service.showCleared = true;
     service.showFutureTransaction = true;
+    service.showNeedsTip = false;
     service.updateShowPending = function(value){
         this.showPending = value;
         $rootScope.$broadcast("filteringUpdated");
@@ -73,6 +74,11 @@ app.factory("FilterService", function($rootScope){
 
     service.updateShowFutureTransactions = function(value){
         this.showFutureTransaction = value;
+        $rootScope.$broadcast("filteringUpdated");
+    }
+
+    service.updateFilterSetting = function(key, value){
+        service[key] = value;
         $rootScope.$broadcast("filteringUpdated");
     }
 
