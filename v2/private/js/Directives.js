@@ -31,7 +31,7 @@ app.directive("menuBar", ["$http", "$cookies", "FilterService", function($http,$
                         return false;
                     case "showFutureItems":
                         $scope.showFutureItems = !$scope.showFutureItems;
-                        alert($scope.showFutureItems);
+
                         FilterSerivce.updateShowFutureTransactions($scope.showFutureItems)
                 }
                 return false;
