@@ -2,11 +2,7 @@
  * Created by greenj on 7/3/15.
  */
 app.controller("BankController",["DataShareService","$http", "$scope", "TransactionSaveService", "FilterService",function(DataShareService,$http, $scope, TransactionSaveService, FilterService){
-    $scope.showCurrent = false;
-    $scope.pending = true;
-    $scope.cleared = true;
-    $scope.futureItems = true;
-    $scope.OnlineBalance = "";
+   $scope.filters = FilterService.filters;
     var currentDate = new Date();
 
     var dateStr = (currentDate.getMonth()+1)+"/"+currentDate.getDate()+"/"+currentDate.getFullYear();
@@ -43,13 +39,13 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
 
     $scope.filteredTransactions = function(transaction){
 
-        if($scope.showNeedsTip){
+        if($scope.filters.showNeedsTip){
             return transaction.TipNeeded;
 
         }
-        return (transaction.Status == "Cleared" && $scope.cleared)||
-            (transaction.Status == "Pending" && $scope.pending) &&
-            (transaction.date <= dateStr || $scope.futureItems)
+        return (transaction.Status == "Cleared" && $scope.filters.showCleared)||
+            (transaction.Status == "Pending" && $scope.filters.showPending) &&
+            (new Date(transaction.date) <= new Date( dateStr) || $scope.filters.showFutureTransaction)
     }
 
     $scope.EditTransaction = function (transaction){
@@ -73,10 +69,7 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
     }
 
     $scope.$on("filteringUpdated", function(){
-        $scope.cleared = FilterService.showCleared
-        $scope.pending = FilterService.showPending;
-        $scope.futureItems = FilterService.showFutureTransaction;
-        $scope.showNeedsTip = FilterService.showNeedsTip;
+        $scope.filters = FilterService.filters;
     })
 
     $scope.$on('selectedBankUpdated', function() {

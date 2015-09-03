@@ -57,30 +57,30 @@ app.factory("TransactionSaveService", function($http, $rootScope){
 
 app.factory("FilterService", function($rootScope){
     var service = {};
+    service.filters ={
+        showPending: true,
+        showCleared: true,
+        showFutureTransaction: true,
+        showNeedsTip: false,
+        searchQuery: ""
+    };
 
-    service.showPending = true;
-    service.showCleared = true;
-    service.showFutureTransaction = true;
-    service.showNeedsTip = false;
     service.updateShowPending = function(value){
-        this.showPending = value;
-        $rootScope.$broadcast("filteringUpdated");
+        service.updateFilterSetting("showPending", value);
     }
 
     service.updateShowCleared = function(value){
-        this.showCleared = value;
-        $rootScope.$broadcast("filteringUpdated");
+
+        service.updateFilterSetting("showCleared", value);
     }
 
     service.updateShowFutureTransactions = function(value){
-        this.showFutureTransaction = value;
-        $rootScope.$broadcast("filteringUpdated");
+        service.updateFilterSetting("showFutureTransaction", value);
     }
 
     service.updateFilterSetting = function(key, value){
-        service[key] = value;
+        service.filters[key] = value;
         $rootScope.$broadcast("filteringUpdated");
     }
-
     return service;
 })

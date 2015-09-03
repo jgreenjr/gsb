@@ -59,7 +59,7 @@
             </tr>
             </thead>
             <tbody >
-            <tr ng-repeat="myTransaction in Transactions | filter: filteredTransactions">
+            <tr ng-repeat="myTransaction in Transactions | filter: filteredTransactions | filter: filters.searchQuery">
                 <td>{{myTransaction.date}}</td>
                 <td>{{myTransaction.payee}}</td>
                 <td><div ng-show="myTransaction.type == 'widthdrawl'">{{myTransaction.amount  |currency }}</div></td>

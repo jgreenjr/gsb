@@ -60,6 +60,12 @@ app.directive("menuBar", ["$http", "$cookies", "FilterService", function($http,$
                 $("#transactionModal").modal();
                 return false;
             }
+
+            $scope.UpdateSearchQuery = function(){
+
+                FilterSerivce.updateFilterSetting("searchQuery", $scope.searchQuery);
+                return false;
+            }
         },
         controllerAs: "menuCtrl"
     };

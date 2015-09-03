@@ -8,7 +8,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Green Savings and Blown</a>
+            <a class="navbar-brand" href="#"><img src="/v2/logo.jpg" height="30px" width="50px"/> </a>
         </div>
         <p class="navbar-text">Signed in as <span>{{menuBarData.username}}</span><a href="#">(Signout)</a></p>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -37,8 +37,13 @@
                         <li><a ng-click="menuCtrl.updateDisplay('showFutureItems')">Show Future Items {{showFutureItems | filterCheckmark}}</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a ng-click="menuCtrl.updateDisplay('showNeedsTip')">Tip Needed Items {{showNeedsTips | filterCheckmark}}</a></li>
+
                     </ul>
                 </li>
+                <form class="navbar-form navbar-left">
+                    <input type="textbox" class="form-control" ng-model="searchQuery" ng-change="UpdateSearchQuery()"/>
+                </form>
+                <li>
             </ul>
 
 
