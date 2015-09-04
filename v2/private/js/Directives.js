@@ -146,7 +146,7 @@ app.directive("fullSummary", function(){
     return {
         restrict:'E',
         templateUrl:'directives/full-summary.html',
-        controller: function($scope, $http, DataShareService) {
+        controller: function($scope, $http, DataShareService, FilterService) {
             $scope.selectedBank = "";
 
             $scope.GetSummaries = function () {
@@ -155,10 +155,27 @@ app.directive("fullSummary", function(){
                 });
             }
 
+            $scope.selectCategory = function(cat){
+                alert(cat);
+                $scope.categoryFilter = cat;
+                FilterService.updateFilterSetting("categoryFilter", cat);
+                return false;
+            };
+
+            $scope.ResetFilter = function(){
+                $scope.categoryFilter = "";
+                FilterService.updateFilterSetting("categoryFilter", "");
+                return false;
+            }
+
+
+
+
             $scope.$on("selectedBankUpdated", function () {
                 $scope.selectedBank = DataShareService.selectedBank;
                 $scope.GetSummaries();
             })
+
         }
     }
 });

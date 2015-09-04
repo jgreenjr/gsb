@@ -43,6 +43,10 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
             return transaction.TipNeeded;
 
         }
+
+        if($scope.filters.categoryFilter && transaction.category != $scope.filters.categoryFilter)
+            return false;
+
         return (transaction.Status == "Cleared" && $scope.filters.showCleared)||
             (transaction.Status == "Pending" && $scope.filters.showPending) &&
             (new Date(transaction.date) <= new Date( dateStr) || $scope.filters.showFutureTransaction)

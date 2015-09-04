@@ -3,15 +3,16 @@
         <div class="panel-title">Category Summary</div>
     </div>
     <div class="panel-body">
+
         <div class="input-group">
-            <label>Total:</label>
+            <label><a href="#" ng-click="ResetFilter()">Total</a> </label>
             <span class="form-control-static">
                 {{summaryData.TotalGains | currency}}({{summaryData.TotalTransactions}})
             </span>
         </div>
 
         <div class="input-group" ng-repeat="cat in summaryData.ByCategory | orderBy: '-Gains'">
-            <label>{{cat.category}}</label>
+            <label><a href="#" ng-click="selectCategory(cat.category)">{{cat.category}}</a></label>
             <span class="form-control-static">
                 {{cat.Gains | currency}}
             </span>
