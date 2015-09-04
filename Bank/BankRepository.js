@@ -98,7 +98,8 @@ module.exports = function (db)
     var twc = 0;
     var tdc = 0;
     var tc = 0;
-
+    var byCategory = [];
+    var catIndex = [];
     Banks.createReadStream({start:bank+":",end:bank+":\xff"})
     .on("data", function(data){
       var amount = parseInt(data.value.amount);
@@ -110,18 +111,19 @@ module.exports = function (db)
           case "widthdrawl":
             twc++
             tw += amount
-            //AddCategory(trans[i].category, amount, byCategory, false);
+            AddCategory(data.value.category, amount, byCategory, false, catIndex);
             break;
             case "deposit":
               tdc++;
               td += amount
-              //AddCategory(data.value.category, amount, byCategory, true);
+              AddCategory(data.value.category, amount, byCategory, true, catIndex);
               break;
             }
           }
     })
     .on('error', callback)
     .on('close', function () {
+
       callback(null, {
         date:new Date().toDateString(),
         TotalWithdrawls:tw,
@@ -130,10 +132,36 @@ module.exports = function (db)
         TotalDepositsCount: tdc,
         TotalGains: td-tw,
         TotalTransactions: tc,
-        ByCategory: []
+        ByCategory: byCategory
       });
     });
   }
+
+
+  AddCategory = function(cat, amount, list, isDeposit, catIndex){
+
+    var index = catIndex[cat];
+
+
+
+
+    if(index == null){
+      list.push({Widthdrawls: 0, Deposit: 0, Gains:0, category: cat});
+      index =  list.length - 1;
+      catIndex[cat] = index;
+    }
+
+    if(isDeposit){
+      list[index].Deposit += amount;
+      list[index].Gains += amount;
+    }
+    else{
+      list[index].Widthdrawls += amount;
+      list[index].Gains -= amount;
+    }
+
+
+  };
 
   this.AddTransaction = function(bank, transaction, callback){
       Banks.put(bank+":"+transaction.id, transaction, callback);

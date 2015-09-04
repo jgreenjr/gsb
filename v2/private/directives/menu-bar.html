@@ -29,19 +29,22 @@
                     </ul>
                 </li>
                 <li><a href="/private/BankConfiguration.html">Configuration</a></li>
-                <li class="dropdown">
-                    <a href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Filters<span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a ng-click="menuCtrl.updateDisplay('showPending')">Show Pending {{showPending | filterCheckmark}}</a></li>
-                        <li><a ng-click="menuCtrl.updateDisplay('showCleared')">Show Cleared {{showCleared | filterCheckmark}}</a></li>
-                        <li><a ng-click="menuCtrl.updateDisplay('showFutureItems')">Show Future Items {{showFutureItems | filterCheckmark}}</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a ng-click="menuCtrl.updateDisplay('showNeedsTip')">Tip Needed Items {{showNeedsTips | filterCheckmark}}</a></li>
 
-                    </ul>
-                </li>
                 <form class="navbar-form navbar-left">
-                    <input type="textbox" class="form-control" ng-model="searchQuery" ng-change="UpdateSearchQuery()"/>
+                    <span class="input-group" style="width:200px;">
+                        <input type="textbox" class="form-control" ng-model="searchQuery" ng-change="UpdateSearchQuery()" width="100px" placeholder="Search"/>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
+                            <ul class="dropdown-menu dropdown-menu-right">
+                                <li><a ng-click="menuCtrl.updateDisplay('showPending')">Show Pending {{showPending | filterCheckmark}}</a></li>
+                                <li><a ng-click="menuCtrl.updateDisplay('showCleared')">Show Cleared {{showCleared | filterCheckmark}}</a></li>
+                                <li><a ng-click="menuCtrl.updateDisplay('showFutureItems')">Show Future Items {{showFutureItems | filterCheckmark}}</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a ng-click="menuCtrl.updateDisplay('showNeedsTip')">Tip Needed Items {{showNeedsTips | filterCheckmark}}</a></li>
+
+                            </ul>
+                        </span><!-- /btn-group -->
+                    </span>
                 </form>
                 <li>
             </ul>

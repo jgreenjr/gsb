@@ -141,3 +141,24 @@ app.directive("planPopulator", function(){
         }
     };
 })
+
+app.directive("fullSummary", function(){
+    return {
+        restrict:'E',
+        templateUrl:'directives/full-summary.html',
+        controller: function($scope, $http, DataShareService) {
+            $scope.selectedBank = "";
+
+            $scope.GetSummaries = function () {
+                $http.get("/banks/" + $scope.selectedBank + "/summary").success(function (data) {
+                    $scope.summaryData = data;
+                });
+            }
+
+            $scope.$on("selectedBankUpdated", function () {
+                $scope.selectedBank = DataShareService.selectedBank;
+                $scope.GetSummaries();
+            })
+        }
+    }
+});

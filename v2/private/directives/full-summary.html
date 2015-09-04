@@ -1,0 +1,21 @@
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <div class="panel-title">Category Summary</div>
+    </div>
+    <div class="panel-body">
+        <div class="input-group">
+            <label>Total:</label>
+            <span class="form-control-static">
+                {{summaryData.TotalGains | currency}}({{summaryData.TotalTransactions}})
+            </span>
+        </div>
+
+        <div class="input-group" ng-repeat="cat in summaryData.ByCategory">
+            <label>{{cat.category}}</label>
+            <span class="form-control-static">
+                {{cat.Gains | currency}}
+            </span>
+        </div>
+        {{summaryData}}
+    </div>
+</div>
