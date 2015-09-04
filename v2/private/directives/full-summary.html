@@ -10,12 +10,12 @@
             </span>
         </div>
 
-        <div class="input-group" ng-repeat="cat in summaryData.ByCategory">
+        <div class="input-group" ng-repeat="cat in summaryData.ByCategory | orderBy: '-Gains'">
             <label>{{cat.category}}</label>
             <span class="form-control-static">
                 {{cat.Gains | currency}}
             </span>
         </div>
-        {{summaryData}}
+
     </div>
 </div>
