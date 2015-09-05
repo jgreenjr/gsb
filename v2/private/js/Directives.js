@@ -156,7 +156,6 @@ app.directive("fullSummary", function(){
             }
 
             $scope.selectCategory = function(cat){
-                alert(cat);
                 $scope.categoryFilter = cat;
                 FilterService.updateFilterSetting("categoryFilter", cat);
                 return false;
@@ -172,6 +171,11 @@ app.directive("fullSummary", function(){
 
 
             $scope.$on("selectedBankUpdated", function () {
+                $scope.selectedBank = DataShareService.selectedBank;
+                $scope.GetSummaries();
+            })
+
+            $scope.$on("TransactionUpdated", function () {
                 $scope.selectedBank = DataShareService.selectedBank;
                 $scope.GetSummaries();
             })

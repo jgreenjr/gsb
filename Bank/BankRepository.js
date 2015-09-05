@@ -102,7 +102,7 @@ module.exports = function (db)
     var catIndex = [];
     Banks.createReadStream({start:bank+":",end:bank+":\xff"})
     .on("data", function(data){
-      var amount = parseInt(data.value.amount);
+      var amount = parseFloat(data.value.amount);
       var transactionDate = new Date(data.value.date);
       if((!startDate || transactionDate>= new Date(startDate))&&
         (!endDate || transactionDate <= new Date(endDate))){
@@ -141,9 +141,6 @@ module.exports = function (db)
   AddCategory = function(cat, amount, list, isDeposit, catIndex){
 
     var index = catIndex[cat];
-
-
-
 
     if(index == null){
       list.push({Widthdrawls: 0, Deposit: 0, Gains:0, category: cat});
