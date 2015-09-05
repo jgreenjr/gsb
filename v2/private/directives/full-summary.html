@@ -1,6 +1,6 @@
 <div class="panel panel-info">
     <div class="panel-heading">
-        <div class="panel-title">Category Summary</div>
+        <div class="panel-title"><a href="#" ng-click="ShowFullSummary()">Category Summary</a></div>
     </div>
     <div class="panel-body">
 
@@ -18,5 +18,65 @@
             </span>
         </div>
 
+    </div>
+</div>
+
+<div class="modal fade" id="fullSummaryDialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                Full Summary
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs">
+                    <li role="presentation" ng-class="{active: activeTab=='byCategory'}"><a href="#" ng-click="SetActiveTab('byCategory', this)">By Category</a></li>
+                    <li role="presentation" ng-class="{active: activeTab=='byDate'}"><a href="#" ng-click="SetActiveTab('byDate')">By Date</a></li>
+                </ul>
+                <div ng-show="activeTab=='byCategory'">
+                    <table class="table">
+                        <tr>
+                            <th>Category</th>
+                            <th>Deposits</th>
+                            <th>Withdrawals</th>
+                            <th>Gains</th>
+                        </tr>
+                        <tr ng-repeat="cat in summaryData.ByCategory | orderBy: 'category'">
+                            <td>{{cat.category}}</td>
+                            <td>{{cat.Deposit | currency}}</td>
+                            <td>{{cat.Widthdrawls | currency}}</td>
+                            <td>{{cat.Gains | currency}}</td>
+                        </tr>
+                        <tr style="border-top: double 1px;">
+                            <td>&nbsp</td>
+                            <td>{{summaryData.TotalDeposits | currency}}({{summaryData.TotalDepositsCount}})</td>
+                            <td>{{summaryData.TotalWithdrawls | currency}}({{summaryData.TotalWithdrawlsCount}})</td>
+                            <td>{{summaryData.TotalGains | currency}}({{summaryData.TotalTransactions}})</td>
+                        </tr>
+                    </table>
+                </div>
+                <div ng-show="activeTab=='byDate'">
+                    <table class="table">
+                        <tr>
+                            <th>Category</th>
+                            <th>Deposits</th>
+                            <th>Withdrawals</th>
+                            <th>Gains</th>
+                        </tr>
+                        <tr ng-repeat="cat in summaryData.ByDate | orderBy: 'date'">
+                            <td>{{cat.date | date}}</td>
+                            <td>{{cat.Deposit | currency}}</td>
+                            <td>{{cat.Widthdrawls | currency}}</td>
+                            <td>{{cat.Gains | currency}}</td>
+                        </tr>
+                        <tr style="border-top: double 1px;">
+                            <td>&nbsp</td>
+                            <td>{{summaryData.TotalDeposits | currency}}({{summaryData.TotalDepositsCount}})</td>
+                            <td>{{summaryData.TotalWithdrawls | currency}}({{summaryData.TotalWithdrawlsCount}})</td>
+                            <td>{{summaryData.TotalGains | currency}}({{summaryData.TotalTransactions}})</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

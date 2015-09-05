@@ -148,7 +148,7 @@ app.directive("fullSummary", function(){
         templateUrl:'directives/full-summary.html',
         controller: function($scope, $http, DataShareService, FilterService) {
             $scope.selectedBank = "";
-
+            $scope.activeTab = "byCategory";
             $scope.GetSummaries = function () {
                 $http.get("/banks/" + $scope.selectedBank + "/summary").success(function (data) {
                     $scope.summaryData = data;
@@ -167,8 +167,9 @@ app.directive("fullSummary", function(){
                 return false;
             }
 
-
-
+            $scope.ShowFullSummary = function(){
+                $("#fullSummaryDialog").modal();
+            }
 
             $scope.$on("selectedBankUpdated", function () {
                 $scope.selectedBank = DataShareService.selectedBank;
@@ -180,6 +181,10 @@ app.directive("fullSummary", function(){
                 $scope.GetSummaries();
             })
 
+            $scope.SetActiveTab = function(tabName, li){
+
+               $scope.activeTab = tabName;
+            }
         }
     }
 });

@@ -92,14 +92,14 @@ module.exports = function (db)
   }
 
   this.GetSummary = function(bank, startDate,endDate, callback){
+    var sumSorter = new summarySorter();
     var tw = 0;
     var td = 0;
     var tg = 0;
     var twc = 0;
     var tdc = 0;
     var tc = 0;
-    var byCategory = [];
-    var catIndex = [];
+
     Banks.createReadStream({start:bank+":",end:bank+":\xff"})
     .on("data", function(data){
       var amount = parseFloat(data.value.amount);
@@ -111,12 +111,12 @@ module.exports = function (db)
           case "widthdrawl":
             twc++
             tw += amount
-            AddCategory(data.value.category, amount, byCategory, false, catIndex);
+            sumSorter.AddCategory(data.value.category, amount, transactionDate, false);
             break;
             case "deposit":
               tdc++;
               td += amount
-              AddCategory(data.value.category, amount, byCategory, true, catIndex);
+              sumSorter.AddCategory(data.value.category, amount, transactionDate, true);
               break;
             }
           }
@@ -132,34 +132,52 @@ module.exports = function (db)
         TotalDepositsCount: tdc,
         TotalGains: td-tw,
         TotalTransactions: tc,
-        ByCategory: byCategory
+        ByCategory: sumSorter.byCategory,
+        ByDate: sumSorter.byDate
       });
     });
   }
 
+  function summarySorter() {
 
-  AddCategory = function(cat, amount, list, isDeposit, catIndex){
+    var dateIndices = [];
+    var catIndex = [];
+    this.byCategory = [];
+    this.byDate = [];
 
-    var index = catIndex[cat];
+    this.AddCategory = function (cat, amount, date, isDeposit) {
 
-    if(index == null){
-      list.push({Widthdrawls: 0, Deposit: 0, Gains:0, category: cat});
-      index =  list.length - 1;
-      catIndex[cat] = index;
-    }
+      var index = catIndex[cat];
+      var dateIndex = dateIndices["#" + date.getTime()]
 
-    if(isDeposit){
-      list[index].Deposit += amount;
-      list[index].Gains += amount;
-    }
-    else{
-      list[index].Widthdrawls += amount;
-      list[index].Gains -= amount;
-    }
+      if (index == null) {
+        this.byCategory.push({Widthdrawls: 0, Deposit: 0, Gains: 0, category: cat});
+        index = this.byCategory.length - 1;
+        catIndex[cat] = index;
+      }
+
+      if (dateIndex == null) {
+        this.byDate.push({Widthdrawls: 0, Deposit: 0, Gains: 0, date: date});
+        dateIndex = this.byDate.length - 1;
+        dateIndices["#" + date.getTime()] = dateIndex;
+      }
+
+      if (isDeposit) {
+        this.byCategory[index].Deposit += amount;
+        this.byCategory[index].Gains += amount;
+        this.byDate[dateIndex].Deposit += amount;
+        this.byDate[dateIndex].Gains += amount;
+      }
+      else {
+        this.byCategory[index].Widthdrawls += amount;
+        this.byCategory[index].Gains -= amount;
+        this.byDate[dateIndex].Widthdrawls += amount;
+        this.byDate[dateIndex].Gains -= amount;
+      }
 
 
-  };
-
+    };
+  }
   this.AddTransaction = function(bank, transaction, callback){
       Banks.put(bank+":"+transaction.id, transaction, callback);
   }
