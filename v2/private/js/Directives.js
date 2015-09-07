@@ -43,9 +43,9 @@ app.directive("menuBar", ["$http", "$cookies", "FilterService", function($http,$
             }
 
             this.UpdateBankName = function(bankName){
-                $scope.menuBarData.selectedBank = bankName;
+                $scope.menuBarData.selectedBank = bankName.bankName;
+                DataShareService.selectedBankUpdated( bankName);
 
-                DataShareService.selectedBankUpdated(bankName);
             }
 
             $scope.OpenPopulatorWindow = function(){
@@ -67,7 +67,12 @@ app.directive("menuBar", ["$http", "$cookies", "FilterService", function($http,$
                 return false;
             }
         },
-        controllerAs: "menuCtrl"
+        controllerAs: "menuCtrl",
+        link: function(scope, element, attrs) {
+             if (attrs.activeMenuItem) {
+                scope.activeMenuItem = attrs.activeMenuItem;
+            }
+        },
     };
 }]);
 
@@ -149,8 +154,16 @@ app.directive("fullSummary", function(){
         controller: function($scope, $http, DataShareService, FilterService) {
             $scope.selectedBank = "";
             $scope.activeTab = "byCategory";
+            $scope.categoryFilter = "";
+            $scope.FilterRange= "budget"
             $scope.GetSummaries = function () {
-                $http.get("/banks/" + $scope.selectedBank + "/summary").success(function (data) {
+
+                var startDate = "";
+                if($scope.FilterRange=="budget"){
+                    startDate = $scope.startDate
+                }
+
+                $http.get("/banks/" + $scope.selectedBank + "/summary?startDate="+startDate).success(function (data) {
                     $scope.summaryData = data;
                 });
             }
@@ -171,8 +184,12 @@ app.directive("fullSummary", function(){
                 $("#fullSummaryDialog").modal();
             }
 
+            $scope.$watch("FilterRange", function(old, newValue){
+                $scope.GetSummaries();
+            })
             $scope.$on("selectedBankUpdated", function () {
                 $scope.selectedBank = DataShareService.selectedBank;
+                $scope.startDate =  DataShareService.selectedBudgetStartDate;
                 $scope.GetSummaries();
             })
 

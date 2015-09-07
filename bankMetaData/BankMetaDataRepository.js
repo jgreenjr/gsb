@@ -9,7 +9,7 @@ module.exports = function (db)
       bank.createReadStream()
       .on("data", function(data){
         if(new LINQ(data.value.users).Contains(user)){
-          returnValue.push({"bankName": data.value.title});
+          returnValue.push({"bankName": data.value.title, "BudgetStartDate": data.value.BudgetStartDate});
         }
       })
       .on("end", function(){
@@ -56,6 +56,23 @@ module.exports = function (db)
       }
       bank.delete("bank_"+bankname, callback);
     });
+  }
+
+  this.UpdateBank = function(data, username, callback){
+    bank.get("bank_"+data.title, function(err, data2){
+      if(err){
+        callback("bank not found")
+        return;
+      }
+      var linqUsers = new LINQ(data.users);
+
+      if(!linqUsers.Contains(username)){
+        callback("user does not have access");
+        return;
+      }
+      bank.put("bank_"+data.title, data, callback);
+    });
+
   }
 
 

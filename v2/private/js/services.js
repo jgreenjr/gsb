@@ -6,11 +6,15 @@ app.factory("DataShareService", function($rootScope){
     service.selectedBank = "";
     service.selectedTransaction = "";
     service.categoryData = "";
+    service.selectedBudgetStartDate = "1/1/2015";
 
     service.selectedBankUpdated = function(value){
-        this.selectedBank = value;
+        this.selectedBank = value.bankName;
+        this.selectedBudgetStartDate = value.BudgetStartDate;
         $rootScope.$broadcast("selectedBankUpdated");
     }
+
+
 
     service.selectedTransactionUpdated = function(value){
         this.selectedTransaction = value;

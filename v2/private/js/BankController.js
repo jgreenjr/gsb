@@ -133,4 +133,10 @@ app.filter('filterCheckmark', function() {
     };
 });
 
+app.filter('shortText', function(){
+    return function(input) {
+        return input.substr(0, 8);
+    };
+})
+
 var bankResponse = {"Transactions":[{"payee":"test transaction 4","date":"6/17/2015","amount":"44.22","type":"widthdrawl","Status":"Pending","InsertDate":"2015-06-17 14:17:11","UpdateDate":"","category":"Not Specified","id":"115_5_17_14_17_11_369","balance":{"ActualBalance":700.51,"ClearedBalance":-255.27,"FutureBalance":0}},{"payee":"test transaction 3","date":"6/17/2015","amount":"55.27","type":"widthdrawl","Status":"Cleared","InsertDate":"2015-06-17 14:16:59","UpdateDate":"","category":"Not Specified","id":"115_5_17_14_16_59_410","balance":{"ActualBalance":744.73,"ClearedBalance":-255.27,"FutureBalance":0}},{"payee":"test transaction 2","date":"6/17/2015","amount":"200.00","type":"widthdrawl","Status":"Cleared","InsertDate":"2015-06-17 14:16:44","UpdateDate":"","category":"Not Specified","id":"115_5_17_14_16_44_581","balance":{"ActualBalance":800,"ClearedBalance":-200,"FutureBalance":0}},{"payee":"asdf","date":"6/17/2015","amount":"1000.00","type":"deposit","Status":"Pending","InsertDate":"2015-06-17 14:16:32","UpdateDate":"","category":"Not Specified","id":"115_5_17_14_16_32_728","balance":{"ActualBalance":1000,"ClearedBalance":0,"FutureBalance":0}}],"Total":{"ActualBalance":700.51,"ClearedBalance":-255.27,"FutureBalance":0}};

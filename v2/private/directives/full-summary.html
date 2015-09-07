@@ -3,19 +3,20 @@
         <div class="panel-title"><a href="#" ng-click="ShowFullSummary()">Category Summary</a></div>
     </div>
     <div class="panel-body">
+        <select class="form-control" ng-model="FilterRange">
+            <option value="budget">{{startDate}}</option>
+            <option value="All">All Time</option>
+        </select>
+        <br/>
+        <div class="list-group">
+            <a href="#" class="list-group-item" ng-class="{active: categoryFilter == ''}"  ng-click="ResetFilter()">
+                Total
+                <span class="badge">{{summaryData.TotalGains| currency}}</span>
+            </a>
+            <a ng-repeat="cat in summaryData.ByCategory | orderBy: '-Gains'" href="#"
+               class="list-group-item" ng-class="{active: categoryFilter == cat.category}" ng-click="selectCategory(cat.category)">{{cat.category|shortText}}
+                <span class="badge">{{cat.Gains| currency}}</span></a>
 
-        <div class="input-group">
-            <label><a href="#" ng-click="ResetFilter()">Total</a> </label>
-            <span class="form-control-static">
-                {{summaryData.TotalGains | currency}}({{summaryData.TotalTransactions}})
-            </span>
-        </div>
-
-        <div class="input-group" ng-repeat="cat in summaryData.ByCategory | orderBy: '-Gains'">
-            <label><a href="#" ng-click="selectCategory(cat.category)">{{cat.category}}</a></label>
-            <span class="form-control-static">
-                {{cat.Gains | currency}}
-            </span>
         </div>
 
     </div>
@@ -28,6 +29,10 @@
                 Full Summary
             </div>
             <div class="modal-body">
+                <select class="form-control" ng-model="FilterRange">
+                    <option value="budget">{{startDate}}</option>
+                    <option value="All">All Time</option>
+                </select>
                 <ul class="nav nav-tabs">
                     <li role="presentation" ng-class="{active: activeTab=='byCategory'}"><a href="#" ng-click="SetActiveTab('byCategory', this)">By Category</a></li>
                     <li role="presentation" ng-class="{active: activeTab=='byDate'}"><a href="#" ng-click="SetActiveTab('byDate')">By Date</a></li>
@@ -57,7 +62,7 @@
                 <div ng-show="activeTab=='byDate'">
                     <table class="table">
                         <tr>
-                            <th>Category</th>
+                            <th>Date</th>
                             <th>Deposits</th>
                             <th>Withdrawals</th>
                             <th>Gains</th>

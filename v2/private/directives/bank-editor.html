@@ -1,0 +1,41 @@
+<div class="modal" id="bankEditor">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel summaryLabel">Edit Bank: {{targetBank.title}}</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Bank Name</label>
+                    <div class="form-control-static">
+                        {{targetBank.title}}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Users:</label>
+                    <div class="input-group">
+                        <input type="text" id="NewUserName" class="form-control"/>
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" ng-click="addUser()">Add</button>
+                        </span>
+
+                    </div>
+                    <ul class="list-group">
+                        <li class="list-group-item" ng-repeat="user in targetBank.users">{{user}}<span class="badge bg-danger" ng-click="removeUser(user)">X</span></li>
+
+                    </ul>
+                </div>
+                <div class="form-group">
+                    <label>Budget Start Date</label>
+                    <input type="text" class="form-control" ng-model="targetBank.BudgetStartDate"/>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" ng-click="SaveBank()">Save</button>
+            </div>
+        </div>
+    </div>
+
+</div>

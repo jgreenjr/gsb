@@ -111,6 +111,19 @@ app.get('/BankConfiguration', isAuthenticated, function(req, res){
   });
 });
 
+app.post('/BankConfiguration', isAuthenticated, function(req, res){
+  var userName = req.user.username;
+  BankMetaDataRepository.UpdateBank(req.body, userName, function(err){
+    if(err){
+      res.status(400).send(err)
+      return;
+    }
+    res.status(200).send(req.body)
+  })
+
+
+});
+
 app.get('/categories/:bank', isAuthenticated, function(req, res){
   var bank = req.params.bank
   CategoriesRepository.GetList(bank, function(err, data){
