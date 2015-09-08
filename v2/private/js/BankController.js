@@ -3,10 +3,10 @@
  */
 app.controller("BankController",["DataShareService","$http", "$scope", "TransactionSaveService", "FilterService",function(DataShareService,$http, $scope, TransactionSaveService, FilterService){
    $scope.filters = FilterService.filters;
-    var currentDate = new Date();
+    $scope.currentDate = new Date();
 
-    var dateStr = (currentDate.getMonth()+1)+"/"+currentDate.getDate()+"/"+currentDate.getFullYear();
-
+    var dateStr = ($scope.currentDate.getMonth()+1)+"/"+$scope.currentDate.getDate()+"/"+$scope.currentDate.getFullYear();
+    $scope.currentDateObj = new Date(dateStr);
     $scope.GetCategories = function()
     {
         var settings =  {method: 'get',
@@ -79,6 +79,7 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
     $scope.$on('selectedBankUpdated', function() {
 
         $scope.selectedBank = DataShareService.selectedBank;;
+        $scope.dateIsOld = new Date(DataShareService.selectedBudgetEndDate) < new Date();
         $scope.GetCategories();
         $scope.GetTransactions();
         $scope.OnlineBalance = "";

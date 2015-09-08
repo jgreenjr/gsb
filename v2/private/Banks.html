@@ -22,6 +22,8 @@
     </menu-bar>
 
     <div class="container-fluid" ng-controller="BankController as myc">
+
+        <div class="alert alert-danger" role="alert" ng-show="dateIsOld"><b>Warning!</b> Budget End Date is After Today! <a href="bankConfiguration.html">Click Here to Update</a></div>
         <status-filters></status-filters>
 
         <transaction-editor></transaction-editor>

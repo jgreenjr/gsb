@@ -9,7 +9,8 @@ module.exports = function (db)
       bank.createReadStream()
       .on("data", function(data){
         if(new LINQ(data.value.users).Contains(user)){
-          returnValue.push({"bankName": data.value.title, "BudgetStartDate": data.value.BudgetStartDate});
+
+          returnValue.push({"bankName": data.value.title, "BudgetStartDate": data.value.BudgetStartDate, "BudgetEndDate": data.value.BudgetEndDate});
         }
       })
       .on("end", function(){

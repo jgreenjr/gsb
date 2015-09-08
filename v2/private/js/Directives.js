@@ -16,8 +16,16 @@ app.directive("menuBar", ["$http", "$cookies", "FilterService", function($http,$
             $scope.menuBarData = {username: "asdf", banks: []};
             $http.get("/banks").success(function(data){
                 $scope.menuBarData = data;
-                $scope.menuBarData.selectedBank = $cookies.defaultBank;
-                DataShareService.selectedBankUpdated( $cookies.defaultBank);
+
+                for(var i = 0; i < data.banks.length; i++){
+                    //alert(data.banks[i].bankName == $cookies.defaultBank);
+                    if(data.banks[i].bankName == $cookies.defaultBank){
+                        $scope.menuBarData.selectedBank = $cookies.defaultBank;
+                        DataShareService.selectedBankUpdated(data.banks[i]);
+                        return;
+                    }
+                }
+
             });
 
             this.updateDisplay = function(type){
@@ -159,11 +167,13 @@ app.directive("fullSummary", function(){
             $scope.GetSummaries = function () {
 
                 var startDate = "";
+                var endDate = "";
                 if($scope.FilterRange=="budget"){
                     startDate = $scope.startDate
+                    endDate = $scope.endDate;
                 }
 
-                $http.get("/banks/" + $scope.selectedBank + "/summary?startDate="+startDate).success(function (data) {
+                $http.get("/banks/" + $scope.selectedBank + "/summary?startDate="+startDate+"&endDate="+endDate).success(function (data) {
                     $scope.summaryData = data;
                 });
             }
@@ -190,6 +200,7 @@ app.directive("fullSummary", function(){
             $scope.$on("selectedBankUpdated", function () {
                 $scope.selectedBank = DataShareService.selectedBank;
                 $scope.startDate =  DataShareService.selectedBudgetStartDate;
+                $scope.endDate =  DataShareService.selectedBudgetEndDate;
                 $scope.GetSummaries();
             })
 
