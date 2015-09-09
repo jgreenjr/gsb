@@ -12,6 +12,8 @@ app.directive("menuBar", ["$http", "$cookies", "FilterService", function($http,$
             $scope.showCleared = true;
             $scope.showFutureItems = true;
             $scope.showNeedsTips = false;
+            $scope.showBudgetItems = false;
+            
 
             $scope.menuBarData = {username: "asdf", banks: []};
             $http.get("/banks").success(function(data){
@@ -46,6 +48,9 @@ app.directive("menuBar", ["$http", "$cookies", "FilterService", function($http,$
                         $scope.showNeedsTips = !$scope.showNeedsTips;
                         FilterSerivce.updateFilterSetting("showNeedsTip", $scope.showNeedsTips)
                         break;
+                    case "showBudgetItems":
+                        $scope.showBudgetItems = !$scope.showBudgetItems;
+                        FilterSerivce.updateFilterSetting("showBudgetItems", $scope.showBudgetItems);
                 }
                 return false;
             }

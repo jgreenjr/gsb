@@ -7,6 +7,7 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
 
     var dateStr = ($scope.currentDate.getMonth()+1)+"/"+$scope.currentDate.getDate()+"/"+$scope.currentDate.getFullYear();
     $scope.currentDateObj = new Date(dateStr);
+    $scope.budgetEndAmount = "";
     $scope.GetCategories = function()
     {
         var settings =  {method: 'get',
@@ -38,10 +39,22 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
     }
 
     $scope.filteredTransactions = function(transaction){
+        tDt = new Date(transaction.date);
+        bSD = new Date($scope.startDate);
+        bED = new Date($scope.endDate);
+
+        if(tDt <= bED && $scope.budgetEndAmount == ""){
+            $scope.budgetEndAmount = transaction.balance.ActualBalance;
+        }
 
         if($scope.filters.showNeedsTip){
             return transaction.TipNeeded;
 
+        }
+        if($scope.filters.showBudgetItems){
+            if(tDt > bED || bSD < tDt){
+                return false;
+            }
         }
 
         if($scope.filters.categoryFilter && transaction.category != $scope.filters.categoryFilter)
@@ -49,7 +62,7 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
 
         return (transaction.Status == "Cleared" && $scope.filters.showCleared)||
             (transaction.Status == "Pending" && $scope.filters.showPending) &&
-            (new Date(transaction.date) <= new Date( dateStr) || $scope.filters.showFutureTransaction)
+            (tDt <= new Date( dateStr) || $scope.filters.showFutureTransaction)
     }
 
     $scope.EditTransaction = function (transaction){
