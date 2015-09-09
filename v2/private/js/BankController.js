@@ -52,7 +52,7 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
 
         }
         if($scope.filters.showBudgetItems){
-            if(tDt > bED || bSD < tDt){
+            if(tDt > bED || tDt < bSD){
                 return false;
             }
         }
