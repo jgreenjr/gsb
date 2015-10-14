@@ -87,6 +87,7 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
 
     $scope.$on("filteringUpdated", function(){
         $scope.filters = FilterService.filters;
+        $scope.showCurrent = FilterService.filters.showCurrentBalance;
     })
 
     $scope.$on('selectedBankUpdated', function() {
