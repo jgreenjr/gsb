@@ -13,6 +13,7 @@ app.directive("menuBar", ["$http", "$cookies", "FilterService", function($http,$
             $scope.showFutureItems = true;
             $scope.showNeedsTips = false;
             $scope.showBudgetItems = false;
+            $scope.showCurrentBalance = false;
             
 
             $scope.menuBarData = {username: "asdf", banks: []};
@@ -51,6 +52,11 @@ app.directive("menuBar", ["$http", "$cookies", "FilterService", function($http,$
                     case "showBudgetItems":
                         $scope.showBudgetItems = !$scope.showBudgetItems;
                         FilterSerivce.updateFilterSetting("showBudgetItems", $scope.showBudgetItems);
+                        break;
+                    case "showCurrentBalance":
+                        $scope.showCurrentBalance = !$scope.showCurrentBalance;
+                        FilterSerivce.updateFilterSetting("showCurrentBalance", $scope.showCurrentBalance);
+                        break;
                 }
                 return false;
             }

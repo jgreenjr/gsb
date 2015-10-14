@@ -68,7 +68,8 @@ app.factory("FilterService", function($rootScope){
         showFutureTransaction: true,
         showNeedsTip: false,
         searchQuery: "",
-        showBudgetItems: false
+        showBudgetItems: false,
+        showCurrentBalance: false
     };
 
     service.updateShowPending = function(value){
