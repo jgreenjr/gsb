@@ -66,7 +66,7 @@ app.factory("FilterService", function($rootScope){
         showPending: true,
         showCleared: true,
         showFutureTransaction: true,
-        showNeedsTip: false,
+        showNeedsTips: false,
         searchQuery: "",
         showBudgetItems: false,
         showCurrentBalance: false
@@ -87,6 +87,11 @@ app.factory("FilterService", function($rootScope){
 
     service.updateFilterSetting = function(key, value){
         service.filters[key] = value;
+        $rootScope.$broadcast("filteringUpdated");
+    }
+
+    service.updateAllFilterSettings = function(newFilterSettings){
+        service.filters = newFilterSettings;
         $rootScope.$broadcast("filteringUpdated");
     }
     return service;

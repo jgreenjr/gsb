@@ -37,14 +37,16 @@
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
                             <ul class="dropdown-menu dropdown-menu-right">
-                                <li><a ng-click="menuCtrl.updateDisplay('showPending')">Show Pending {{showPending | filterCheckmark}}</a></li>
-                                <li><a ng-click="menuCtrl.updateDisplay('showCleared')">Show Cleared {{showCleared | filterCheckmark}}</a></li>
-                                <li><a ng-click="menuCtrl.updateDisplay('showFutureItems')">Show Future Items {{showFutureItems | filterCheckmark}}</a></li>
+                                <li><a ng-click="menuCtrl.updateDisplay('showPending')">Show Pending {{filters.showPending | filterCheckmark}}</a></li>
+                                <li><a ng-click="menuCtrl.updateDisplay('showCleared')">Show Cleared {{filters.showCleared | filterCheckmark}}</a></li>
                                 <li role="separator" class="divider"></li>
-                                <li><a ng-click="menuCtrl.updateDisplay('showBudgetItems')">Show Budget Items {{showBudgetItems | filterCheckmark}}</a></li>
-                                <li><a ng-click="menuCtrl.updateDisplay('showNeedsTip')">Tip Needed Items {{showNeedsTips | filterCheckmark}}</a></li>
+                                <li><a ng-click="menuCtrl.updateDisplay('showFutureItems')">Show Future Items {{filters.showFutureTransaction | filterCheckmark}}</a></li>
+                                <li><a ng-click="menuCtrl.updateDisplay('showNextSevenDays')">Show Next 7 Items {{filters.showNextSevenDays | filterCheckmark}}</a></li>
                                 <li role="separator" class="divider"></li>
-                                <li><a ng-click="menuCtrl.updateDisplay('showCurrentBalance')">Show Current Balance {{showCurrentBalance | filterCheckmark}}</a></li>
+                                <li><a ng-click="menuCtrl.updateDisplay('showBudgetItems')">Show Budget Items {{filters.showBudgetItems | filterCheckmark}}</a></li>
+                                <li><a ng-click="menuCtrl.updateDisplay('showNeedsTip')">Tip Needed Items {{filters.showNeedsTips | filterCheckmark}}</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a ng-click="menuCtrl.updateDisplay('showCurrentBalance')">Show Current Balance {{filters.showCurrentBalance | filterCheckmark}}</a></li>
                             </ul>
                         </span><!-- /btn-group -->
                     </span>

@@ -8,13 +8,7 @@ app.directive("menuBar", ["$http", "$cookies", "FilterService", function($http,$
         "templateUrl":"directives/menu-bar.html",
         controller: function($scope, DataShareService){
 
-            $scope.showPending = true;
-            $scope.showCleared = true;
-            $scope.showFutureItems = true;
-            $scope.showNeedsTips = false;
-            $scope.showBudgetItems = false;
-            $scope.showCurrentBalance = false;
-            
+            $scope.filters = FilterSerivce.filters;
 
             $scope.menuBarData = {username: "asdf", banks: []};
             $http.get("/banks").success(function(data){
@@ -34,28 +28,43 @@ app.directive("menuBar", ["$http", "$cookies", "FilterService", function($http,$
             this.updateDisplay = function(type){
                 switch(type){
                     case "showPending":
-                        $scope.showPending = !$scope.showPending;
-                        FilterSerivce.updateShowPending($scope.showPending);
+                        $scope.filters.showPending = !$scope.filters.showPending;
+                        FilterSerivce.updateShowPending($scope.filters.showPending);
                         return false;
                     case "showCleared":
-                        $scope.showCleared = !$scope.showCleared;
-                        FilterSerivce.updateShowCleared($scope.showCleared);
+                        $scope.filters.showCleared = !$scope.filters.showCleared;
+                        FilterSerivce.updateShowCleared($scope.filters.showCleared);
                         return false;
                     case "showFutureItems":
-                        $scope.showFutureItems = !$scope.showFutureItems;
-                        FilterSerivce.updateShowFutureTransactions($scope.showFutureItems)
+                        $scope.filters.showFutureTransaction = !$scope.filters.showFutureTransaction;
+                        if($scope.filters.showFutureTransaction)
+                        {
+                            $scope.filters.showNextSevenDays = false;
+                        }
+
+                        FilterSerivce.updateAllFilterSettings($scope.filters);
+                        break;
+
+                    case "showNextSevenDays":
+                        $scope.filters.showNextSevenDays = !$scope.filters.showNextSevenDays;
+                        if($scope.filters.showNextSevenDays)
+                        {
+                            $scope.filters.showFutureTransaction = false;
+                        }
+
+                        FilterSerivce.updateAllFilterSettings($scope.filters);
                         break;
                     case "showNeedsTip":
-                        $scope.showNeedsTips = !$scope.showNeedsTips;
-                        FilterSerivce.updateFilterSetting("showNeedsTip", $scope.showNeedsTips)
+                        $scope.filters.showNeedsTips = !$scope.filters.showNeedsTips;
+                        FilterSerivce.updateAllFilterSettings($scope.filters);
                         break;
                     case "showBudgetItems":
-                        $scope.showBudgetItems = !$scope.showBudgetItems;
-                        FilterSerivce.updateFilterSetting("showBudgetItems", $scope.showBudgetItems);
+                        $scope.filters.showBudgetItems = !$scope.filters.showBudgetItems;
+                        FilterSerivce.updateAllFilterSettings($scope.filters);
                         break;
                     case "showCurrentBalance":
-                        $scope.showCurrentBalance = !$scope.showCurrentBalance;
-                        FilterSerivce.updateFilterSetting("showCurrentBalance", $scope.showCurrentBalance);
+                        $scope.filters.showCurrentBalance = !$scope.filters.showCurrentBalance;
+                        FilterSerivce.updateAllFilterSettings($scope.filters);
                         break;
                 }
                 return false;

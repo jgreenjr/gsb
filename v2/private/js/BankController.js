@@ -42,12 +42,15 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
         tDt = new Date(transaction.date);
         bSD = new Date($scope.startDate);
         bED = new Date($scope.endDate);
+        todayDate = new Date(dateStr)
+        sevenDays = new Date(todayDate);
+        sevenDays.setDate(todayDate.getDate()+7);
 
         if(tDt <= bED && $scope.budgetEndAmount == ""){
             $scope.budgetEndAmount = transaction.balance.ActualBalance;
         }
 
-        if($scope.filters.showNeedsTip){
+        if($scope.filters.showNeedsTips){
             return transaction.TipNeeded;
 
         }
@@ -60,9 +63,13 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
         if($scope.filters.categoryFilter && transaction.category != $scope.filters.categoryFilter)
             return false;
 
-        return (transaction.Status == "Cleared" && $scope.filters.showCleared)||
-            (transaction.Status == "Pending" && $scope.filters.showPending) &&
-            (tDt <= new Date( dateStr) || $scope.filters.showFutureTransaction)
+
+//        console.log(tDt <= sevenDays && $scope.filters.showNextSevenDays);
+
+        return ((transaction.Status == "Cleared" && $scope.filters.showCleared)||
+            (transaction.Status == "Pending" && $scope.filters.showPending)) &&
+        (tDt <=  todayDate || $scope.filters.showFutureTransaction ||
+        (tDt <= sevenDays && $scope.filters.showNextSevenDays));
     }
 
     $scope.EditTransaction = function (transaction){
