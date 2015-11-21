@@ -15,6 +15,7 @@ var flash = require('express-flash');
 var session = require('express-session');
 var bodyParser= require("body-parser");
 var fs = require("fs");
+var https = require("https");
 
 var app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -442,7 +443,18 @@ if(process.argv[2])
 {
     port = process.argv[2]
 }
+var privateKey = fs.readFileSync( './key.pem', 'utf8' );
+var certificate = fs.readFileSync( './server.crt', 'utf8');
 
+var server = https.createServer({
+  key: privateKey,
+  cert: certificate
+}, app).listen(port, function (){
+  var host = server.address().address
+  var port = server.address().port
+  console.log('Example app listening at http://%s:%s', host, port)
+});
+/*
 var server = app.listen(port, function () {
 
   var host = server.address().address
@@ -450,4 +462,4 @@ var server = app.listen(port, function () {
 
 
   console.log('Example app listening at http://%s:%s', host, port)
-})
+})*/
