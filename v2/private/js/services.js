@@ -44,8 +44,8 @@ app.factory("TransactionSaveService", function($http, $rootScope){
             url: '/banks/'+ bank,
             headers: {
                 'bank':bank,
-                'content-type': 'text/json',
-                'accept': "text/plain"
+                'content-type': 'application/json',
+                'accept': "application/json"
             },
             data: angular.toJson(transactionData)
         };

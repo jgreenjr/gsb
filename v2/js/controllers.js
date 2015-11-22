@@ -18,8 +18,8 @@ gsb.controller('quickAddCtrl', ['$http','$cookies',
                 headers: {
                     'username': this.transaction.email,
                     'signature': this.calculateHash(),
-                    'content-type': 'text/json',
-                    'accept': "text/plain"
+                    'content-type': 'application/json',
+                    'accept': "application/plain"
                 },
                 data: JSON.stringify({
                     "payee": this.transaction.payee,

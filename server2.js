@@ -16,6 +16,7 @@ var session = require('express-session');
 var bodyParser= require("body-parser");
 var fs = require("fs");
 var https = require("https");
+//var http = require("http");
 
 var app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -228,13 +229,13 @@ app.delete("/banks/:bank", isAuthenticated, function(req, res){
 });
 
 function handleTransaction(req, res, bank){
-  req.on("data", function(stream){
+ /* req.on("data", function(stream){
     var trans = {};
     var myText = stream.toString();
-
+*/
     try{
-      trans = JSON.parse(myText)
-
+  //    trans = JSON.parse(myText)
+      var trans = req.body;
       var errs = Transaction.Validate(trans);
       if(errs.length > 0){
         res.status(400).send(errs);
@@ -256,8 +257,8 @@ function handleTransaction(req, res, bank){
       res.status(400).send("bad")
       return;
     }
-  }
-);
+  /*}
+);*/
 }
 app.delete("/Banks/:bank", isAuthenticated, function(req, res){
   BankMetaDataRepository.DeleteBank(req.params.bank, req.user.username, function(err){
@@ -455,7 +456,7 @@ var server = https.createServer({
   console.log('Example app listening at http://%s:%s', host, port)
 });
 /*
-var server = app.listen(port, function () {
+var server = app.listen(8888, function () {
 
   var host = server.address().address
   var port = server.address().port
