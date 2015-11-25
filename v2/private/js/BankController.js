@@ -77,14 +77,20 @@ app.controller("BankController",["DataShareService","$http", "$scope", "Transact
         $("#transactionModal").modal();
     }
 
-    $scope.UpdateStatus = function(transaction){
-        if(transaction.Status != 'Cleared' ) {
+    $scope.UpdateStatus = function(transaction) {
+        if (transaction.Status != 'Cleared') {
             transaction.Status = 'Cleared'
         }
-        else{
-            if(confirm("Are You Sure you want to Pend " + transaction.payee + "?"))
-            transaction.Status = 'Pending'
+        else {
+            if (confirm("Are You Sure you want to Pend " + transaction.payee + "?"))
+                transaction.Status = 'Pending'
         }
+        $scope.UpdateTransaction(transaction);
+
+    }
+
+    $scope.UpdateFlag = function(transaction){
+      transaction.TipNeeded = !transaction.TipNeeded;
         $scope.UpdateTransaction(transaction);
     }
 
