@@ -26,7 +26,8 @@ gsb.controller('quickAddCtrl', ['$http','$cookies',
                     "date": this.transaction.date,
                     "amount": this.transaction.amount,
                     "type": "widthdrawl",
-                    "Status": "Pending"
+                    "Status": "Pending",
+                    "TipNeeded": true
                 })
             }
             var object = this;
