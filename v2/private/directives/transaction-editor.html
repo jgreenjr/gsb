@@ -60,9 +60,11 @@
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label for="idCat">Category</label>
-                                <select id="idCat" class="form-control" ng-model="transactionObject.category">
+                                <select id="idCat" class="form-control" ng-model="transactionObject.category" ng-hide="ShowOtherText">
                                     <option ng-repeat="category in Categories" value="{{category.name}}" ng-selected="{{category.name == transactionObject.category}}">{{category.name}}</option>
                                 </select>
+                                <a href="#" ng-click="transactionCtrl.ShowOtherTextBox()" style="font-size: 8pt;" ng-hide="ShowOtherText">Not Listed</a>
+                                <input class="form-control" ng-model="transactionObject.category" ng-show="ShowOtherText"/>
                             </div>
                         </div>
                     </div>

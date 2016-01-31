@@ -133,12 +133,24 @@ app.directive("transactionEditor", function(){
 
         controller: function($scope, $http, DataShareService,TransactionSaveService){
             $scope.transactionObject = {};
-                $scope.$on('selectedTransactionUpdated', function() {
+            $scope.$on('selectedTransactionUpdated', function() {
                 $scope.transactionObject = DataShareService.selectedTransaction;
+                if(!$scope.transactionObject.category){
+                    $scope.transactionObject.category = $scope.Categories[0].name;
+                }
+
+                $scope.ShowOtherText = false;
             });
+            $scope.ShowOtherText = false;
+
+            this.ShowOtherTextBox= function(){
+                $scope.transactionObject.category="";
+                $scope.ShowOtherText = true;
+            }
 
             $scope.$on('categoryDataUpdated', function(){
                $scope.Categories = DataShareService.categoryData;
+                console.log($scope.Categories[0].name)
 
             });
 
