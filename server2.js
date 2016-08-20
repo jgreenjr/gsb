@@ -1,15 +1,12 @@
 var express = require('express');
 var passport = require('passport');
-var level = require("level");
-var sub = require("level-sublevel");
 var Transaction = require("./Transaction.js");
-var db = sub(level("./data",{valueEncoding:"json"}));
 
-var UserRepository = require('./Users/UsersRepository.js')(db);
-var BankMetaDataRepository = require('./bankMetaData/BankMetaDataRepository.js')(db);
-var CategoriesRepository = require('./Categories/CategoryRepository.js')(db);
-var BankRepository = require('./Bank/BankRepository.js')(db);
-var PlanRepository = require('./Plan/PlanRepository.js')(db);
+var UserRepository = require('./Services/UserServices.js')();
+var BankMetaDataRepository = require('./bankMetaData/BankMetaDataRepository.js')();
+var CategoriesRepository = require('./Categories/CategoryRepository.js')();
+var BankRepository = require('./Bank/BankRepository.js')();
+var PlanRepository = require('./Plan/PlanRepository.js')();
 var LocalStrategy = require('passport-local').Strategy;
 var flash = require('express-flash');
 var session = require('express-session');
@@ -22,12 +19,13 @@ var app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-
+var Budgets = require('./Routers/Budgets.js');
 
 app.use(session({secret:"softkitty", saveUninitialized:true, resave:true}));
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use("/Budgets", Budgets);
 passport.use(new LocalStrategy(
   function(username, password, done) {
     UserRepository.LoginUser(username, password, function(err, user){
@@ -131,6 +129,13 @@ app.get('/categories/:bank', isAuthenticated, function(req, res){
   CategoriesRepository.GetList(bank, function(err, data){
     res.status(200).send(data);
   });
+});
+
+app.put('/categories/:bank', isAuthenticated, function( req,res){
+  var bank = req.params.bank;
+  CategoriesRepository.SaveToList(bank, req.body, function(err, data){
+    res.send(200).send({status: "added"});
+  })
 });
 
 app.get('/banks/:bank', isAuthenticated, function(req, res){
@@ -243,7 +248,7 @@ function handleTransaction(req, res, bank){
       }
       if(trans.category != undefined && trans.category != "")
       {
-        CategoriesRepository.SaveToList(bank, {"name":trans.category}, function(){});
+        CategoriesRepository.SaveToList(bank, {"name":trans.category, "budget":0, "showAsProjection": false}, function(){});
       }
       BankRepository.AddTransaction(bank, trans, function(err){
         if(err != undefined && err != null){
