@@ -3,7 +3,7 @@
  */
 
 var mongoose = require("mongoose");
-var bcrypt = require("bcrypt");
+var passwordHash = require("password-hash");
 
 var db = mongoose.createConnection("mongodb://localhost/gsb")
 
@@ -24,18 +24,10 @@ User.pre("save",function(next) { var user = this;
     if (!user.isModified('password')) return next();
 
 // generate a salt
-    bcrypt.genSalt(10, function(err, salt) {
-        if (err) return next(err);
 
-        // hash the password along with our new salt
-        bcrypt.hash(user.password, salt, function(err, hash) {
-            if (err) return next(err);
+    user.password = passwordHash.generate(user.password);
+    next();
 
-            // override the cleartext password with the hashed one
-            user.password = hash;
-            next();
-        });
-    });
 });
 
 User.pre("save",function(next) { var user = this;
@@ -43,34 +35,17 @@ User.pre("save",function(next) { var user = this;
     if (!user.isModified('Pin')) return next();
 
 // generate a salt
-    bcrypt.genSalt(10, function(err, salt) {
-        if (err) return next(err);
-
-        // hash the password along with our new salt
-        bcrypt.hash(user.Pin, salt, function(err, hash) {
-            if (err) return next(err);
-
-            // override the cleartext password with the hashed one
-            user.Pin = hash;
-            next();
-        });
-    });
+   user.Pin = passwordHash.generate(user.Pin);
 });
 
 User.methods.comparePassword = function(candidatePassword, cb) {
-    bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
-        if (err) return cb(err);
-        cb(null, isMatch);
-    });
+    return cb(null, passwordHash.verify(candidatePassword, this.password))
 };
 
 
 User.methods.comparePin = function(candidatePassword, cb) {
-    bcrypt.compare(candidatePassword, this.Pin, function(err, isMatch) {
-        if (err) return cb(err);
-        cb(null, isMatch);
-    });
-}
+    return cb(null, passwordHash.verify(candidatePassword, this.Pin));
+};
 
 
 module.exports  = db.model('User', User);
