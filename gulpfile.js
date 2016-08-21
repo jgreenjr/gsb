@@ -7,7 +7,7 @@ gulp.task('test', function(){
 })
 
 gulp.task('watch', function(){
-    gulp.watch(['./app.js','./Services/*.js', './Routes/*.js','./Models/*.js'], ['test']);
+    gulp.watch(['./app.js','./Services/*.js', './Routes/*.js','./Models/*.js', './test/*.js'], ['test']);
 });
 
 gulp.task('default',['watch', 'test']);

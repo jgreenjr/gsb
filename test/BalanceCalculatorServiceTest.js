@@ -49,8 +49,12 @@ describe('BalanceCalculatorService', function() {
             expect(BalanceCalculatorService).to.not.be.null;
             var bcs = new BalanceCalculatorService();
             var result = bcs.CalculateBalances(trans);
-           expect(bcs.Balances.CurrentBalance).to.be.equal(-9);
+            expect(bcs.Balances.CurrentBalance).to.be.equal(-9);
             expect(bcs.Balances.ActualBalance).to.be.equal(1);
+        });
+
+        it('should always fail', function(){
+            expect(false).to.be.true();
         });
     });
 });
