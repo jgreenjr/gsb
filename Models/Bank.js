@@ -11,7 +11,7 @@ var Schema = mongoose.Schema,
 var BankUser = new Schema({
     UserId: ObjectId,
     IsOwner: Boolean
-})
+});
 
 var Bank = new Schema({
     Name: String,

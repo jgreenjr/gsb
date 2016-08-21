@@ -3,15 +3,14 @@
  */
 var express = require('express');
 var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
 var session = require('express-session');
 var bodyParser= require("body-parser");
-var BasicStrategy = require("passport-http").BasicStrategy;
 
 var User = require("./Models/User.js");
 var AuthenticationService = require("./Services/AuthenticationService.js")(User);
 
 var app = express();
+var passport = require('./factory/passportFactory.js')(AuthenticationService.Authenticate);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -19,16 +18,12 @@ app.use(session({secret:"softkitty", saveUninitialized:true, resave:true}));
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.all('/V2/private/**', AuthenticationService.IsAuthenticated);
 
-passport.use(new BasicStrategy( AuthenticationService.Authenticate));
-
-passport.serializeUser(function(user, done) {
-    done(null, user);
-});
-
-passport.deserializeUser(function(user, done) {
-    done(null,user);
-});
+app.use(express.static(__dirname + '/html/public'));
+app.use('/private', express.static(__dirname + '/html/private'));
+app.use('/V2', express.static(__dirname + '/v2'));
+app.use('/V2/bower_components',express.static(__dirname + '/bower_components'));
 
 app.use("/User", require("./Routes/Users.js")(AuthenticationService));
 app.use('/Session', require('./Routes/Sessions.js')(passport, AuthenticationService));
@@ -45,5 +40,5 @@ var server = app.listen(8888, function () {
         var port = server.address().port;
 
 
-        console.log('Example app listening at http://%s:%s', host, port)
-    })
+        console.log('Example app listening at http://%s:%s', host, port);
+    });

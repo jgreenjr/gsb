@@ -11,6 +11,6 @@ var createRoute = function(passport, AuthenticationService){
         .put("/", passport.authenticate('basic', {session:true}), function(req, res){
             res.send({'message': 'Success'});
         });
-}
+};
 
 module.exports = createRoute;

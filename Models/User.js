@@ -5,7 +5,7 @@
 var mongoose = require("mongoose");
 var passwordHash = require("password-hash");
 
-var db = mongoose.createConnection("mongodb://localhost/gsb")
+var db = mongoose.createConnection("mongodb://localhost/gsb");
 
 var Schema = mongoose.Schema;
 
@@ -39,7 +39,7 @@ User.pre("save",function(next) { var user = this;
 });
 
 User.methods.comparePassword = function(candidatePassword, cb) {
-    return cb(null, passwordHash.verify(candidatePassword, this.password))
+    return cb(null, passwordHash.verify(candidatePassword, this.password));
 };
 
 

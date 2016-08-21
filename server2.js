@@ -1,5 +1,5 @@
 var express = require('express');
-var passport = require('passport');
+
 var Transaction = require("./Transaction.js");
 
 var UserRepository = require('./Services/UserServices.js')();

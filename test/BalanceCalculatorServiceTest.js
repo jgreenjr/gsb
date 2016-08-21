@@ -19,7 +19,7 @@ describe('BalanceCalculatorService', function() {
 
             trans.push(MakeTransaction(10, 'Deposit', 'Pending' ));
             trans.push(MakeTransaction(9, 'Withdrawl', 'Pending' ));
-            expect(BalanceCalculatorService).to.not.be.null;
+            expect(BalanceCalculatorService).to.not.equal(null);
             var bcs = new BalanceCalculatorService();
             var result = bcs.CalculateBalances(trans);
             assert.equal(2, result.length);
@@ -32,7 +32,7 @@ describe('BalanceCalculatorService', function() {
 
             trans.push(MakeTransaction(10, 'Deposit', 'Pending' ));
             trans.push(MakeTransaction(9, 'Withdrawl', 'Cleared' ));
-            expect(BalanceCalculatorService).to.not.be.null;
+            expect(BalanceCalculatorService).to.not.equal(null);
             var bcs = new BalanceCalculatorService();
             var result = bcs.CalculateBalances(trans);
             assert.equal(2, result.length);
@@ -46,15 +46,11 @@ describe('BalanceCalculatorService', function() {
 
             trans.push(MakeTransaction(10, 'Deposit', 'Pending' ));
             trans.push(MakeTransaction(9, 'Withdrawl', 'Cleared' ));
-            expect(BalanceCalculatorService).to.not.be.null;
+            expect(BalanceCalculatorService).to.not.equal(null);
             var bcs = new BalanceCalculatorService();
-            var result = bcs.CalculateBalances(trans);
+            bcs.CalculateBalances(trans);
             expect(bcs.Balances.CurrentBalance).to.be.equal(-9);
             expect(bcs.Balances.ActualBalance).to.be.equal(1);
-        });
-
-        it('should always fail', function(){
-            expect(false).to.be.true();
         });
     });
 });

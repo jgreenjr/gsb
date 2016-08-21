@@ -4,7 +4,7 @@
 var mongoose = require("mongoose"),
     autoIncrement = require("mongoose-auto-increment");
 
-var db = mongoose.createConnection("mongodb://localhost/gsb")
+var db = mongoose.createConnection("mongodb://localhost/gsb");
 autoIncrement.initialize(db);
 var Schema = mongoose.Schema,
         ObjectId = Schema.ObjectId;

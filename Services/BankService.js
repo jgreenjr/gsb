@@ -15,19 +15,19 @@ module.exports = function (Bank, TransactionModel, BankCalculatorService){
                     }
                     else{
                         var returnValue = _.map(data,function(a){
-                            return {bankId: a._id, Name: a.Name}
-                        })
+                            return {bankId: a._id, Name: a.Name};
+                        });
 
                         callback(null, returnValue);
                     }
-                })
+                });
             }
 
             return callback({errorCode: 400, message: "Must send UserId"});
         },
         Get: function(bankId, userId, cb) {
             if (!bankId) {
-                return cb({errorCode: 400, "message": "Must send BankId"})
+                return cb({errorCode: 400, "message": "Must send BankId"});
             }
             else if (!userId)
             {
@@ -36,7 +36,7 @@ module.exports = function (Bank, TransactionModel, BankCalculatorService){
 
             return Bank.findOne({'_id':bankId, 'Users.UserId': userId}, function(err, bank){
                 if(err){
-                    return cb(err)
+                    return cb(err);
                 }
                 else if(!bank){
                     return cb({message: "BankID UserId set incorrect"});
@@ -52,7 +52,7 @@ module.exports = function (Bank, TransactionModel, BankCalculatorService){
                             Title: bank.Name,
                             Transaction: returnData,
                             Balances: bcs.Balances
-                        }
+                        };
                         return cb(null, bankReturn);
                     });
             });
@@ -64,7 +64,7 @@ module.exports = function (Bank, TransactionModel, BankCalculatorService){
             var bankUser = {
                 UserId: userId,
                 IsOwner: true
-            }
+            };
 
             bank.Users.push(bankUser);
 
@@ -74,16 +74,16 @@ module.exports = function (Bank, TransactionModel, BankCalculatorService){
             CheckForBank(bankId, callback, function(){
                 var transaction = new TransactionModel();
                 transaction.Payee = transactionData.Payee;
-                transaction.Type = transactionData.Type
-                transaction.Date = transactionData.Date
-                transaction.Amount = transactionData.Amount
+                transaction.Type = transactionData.Type;
+                transaction.Date = transactionData.Date;
+                transaction.Amount = transactionData.Amount;
                 transaction.Status =  transactionData.Status;
                 transaction.Bank = bankId;
                 transaction.Note = transactionData.Note;
-                transaction.FollowUp = transactionData.FollowUp
+                transaction.FollowUp = transactionData.FollowUp;
 
                 transaction.save(function(err, data){
-                    return callback(err, data)
+                    return callback(err, data);
                 });
             });
         }
@@ -92,7 +92,7 @@ module.exports = function (Bank, TransactionModel, BankCalculatorService){
         Bank.findOne({'_id': BankId}, function(err, bank){
             if(err  || bank === null)
                 return callback("bank not found");
-            next()
-        })
+            next();
+        });
     }
 };

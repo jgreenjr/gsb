@@ -24,23 +24,23 @@ var buildRouter =  function(AuthenticationService){
                return;
            }
            res.status(201).send({"msg": "created"});
-       } )
+       } );
     }).get('/:id', function(req, res){
         UserServices.GetUser(req.param.email, function(err, data){
                 if(err){
                     res.status(400).send(err);
                     return;
                 }
-                data.password = undefined
+                data.password = undefined;
                 data.Pin = undefined;
                 res.status(200).send(data);
             }
-        )
+        );
     }).post("/:id", function(req, res){
 
-    })
+    });
 
     return route;
-}
+};
 
-module.exports = buildRouter
+module.exports = buildRouter;

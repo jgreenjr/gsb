@@ -13,7 +13,11 @@
     "chai": "^3.5.0",
     "gulp": "^3.9.1",
     "gulp-install": "^0.6.0",
+    "gulp-jshint": "^2.0.1",
     "gulp-mocha": "^3.0.1",
+    "gulp-nodemon": "^2.1.0",
+    "jshint": "^2.9.3",
+    "jshint-stylish": "^2.2.1",
     "mocha": "^3.0.2"
   },
   "scripts": {
@@ -34,6 +38,7 @@
     "express-flash": "^0.0.2",
     "express-session": "^1.10.1",
     "flash": "^1.1.0",
+    "graceful-fs": "^4.1.6",
     "lodash": "^4.14.2",
     "md5": "^1.0.0",
     "mongoose": "^4.5.8",

@@ -18,21 +18,21 @@ module.exports =  function(AuthenticationService){
                 else{
                     res.send(banks);
                 }
-            })
+            });
         })
         .put("/", function(req, res) {
             BankService.Create(req.body.Name, req.user._id, function(err,message){
                 res.send(err||message);
-            })
+            });
         })
         .get('/:bankId', function(req, res){
             BankService.Get(req.params.bankId, req.user._id,function(err, bank){
                 res.send(err||bank);
-            })
+            });
         })
         .put('/:bankId', function(req, res){
            BankService.AddTransaction(req.params.bankId, req.body, function(err, Transaction){
-               res.send(err||Transaction)
-           })
+               res.send(err||Transaction);
+           });
         });
  };

@@ -1,4 +1,4 @@
-'use restrict'
+'use restrict';
 
 var mongoose = require('mongoose');
 var db = mongoose.createConnection('mongodb://localhost/greensavingsblown');
@@ -29,7 +29,7 @@ var budgetSheet = new Schema({
     UserId: String,
     StartDate: Date,
     EndDate: Date
-})
+});
 var model  = db.model('budgetSheet', budgetSheet);
 
 
@@ -37,7 +37,7 @@ var getRoute  = function(){
     var getAll = function(req, res){
       model.find({},function(err, data){
           res.send(_.map(data, ['Name', 'Id']));
-      })
+      });
     };
 
     return express.Router()
