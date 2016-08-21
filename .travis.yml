@@ -8,4 +8,4 @@ install:
 
 before_script:
   - npm install gulp
-script: gulp test
+script: gulp travisTest

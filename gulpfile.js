@@ -1,6 +1,14 @@
 var gulp = require('gulp');
 var mocha = require('gulp-mocha');
 
+gulp.task('travisTest', function(){
+    gulp.src('test/*.js')
+        .pipe(mocha())
+        .on('error', function(){
+            // Exits gulp with error
+            process.exit(1);
+        }).bundle();
+});
 gulp.task('test', function(){
     gulp.src('test/*.js')
         .pipe(mocha());
