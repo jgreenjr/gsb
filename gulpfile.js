@@ -7,7 +7,7 @@ gulp.task('travisTest', function(){
         .on('error', function(){
             // Exits gulp with error
             process.exit(1);
-        }).bundle();
+        });
 });
 gulp.task('test', function(){
     gulp.src('test/*.js')
