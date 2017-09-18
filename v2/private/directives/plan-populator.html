@@ -21,9 +21,9 @@
                         <th></th>
                     </tr>
                     <tr ng-repeat="transaction in FutureTransactions">
-                        <td>{{transaction.date}}</td>
-                        <td>{{transaction.payee}}</td>
-                        <td>{{transaction.amount}}</td>
+                        <td>{{transaction.Date}}</td>
+                        <td>{{transaction.Payee}}</td>
+                        <td>{{transaction.Amount}}</td>
                         <td><button class="btn btn-sm btn-primary" ng-click="SaveTransaction(transaction)">Add</button> </td>
                     </tr>
                 </table>

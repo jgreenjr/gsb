@@ -8,9 +8,7 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label>Bank Name</label>
-                    <div class="form-control-static">
-                        {{targetBank.title}}
-                    </div>
+                    <input type="text" class="form-control" ng-model="targetBank.Name"/>
                 </div>
                 <div class="form-group">
                     <label>Users:</label>
@@ -22,21 +20,13 @@
 
                     </div>
                     <ul class="list-group">
-                        <li class="list-group-item" ng-repeat="user in targetBank.users">{{user}}<span class="badge bg-danger" ng-click="removeUser(user)">X</span></li>
+                        <li class="list-group-item" ng-repeat="user in targetBank.Users">{{user}}<span class="badge bg-danger" ng-click="bankEditorCtrl.removeUser(user)">X</span></li>
 
                     </ul>
                 </div>
-                <div class="form-group">
-                    <label>Budget Start Date</label>
-                    <input type="text" class="form-control" ng-model="targetBank.BudgetStartDate"/>
                 </div>
-                <div class="form-group">
-                    <label>Budget End Date</label>
-                    <input type="text" class="form-control" ng-model="targetBank.BudgetEndDate"/>
 
-            </div>
 
-        </div>
             <div class="modal-footer">
                 <button class="btn btn-default" ng-click="SaveBank()">Save</button>
             </div>

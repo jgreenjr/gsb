@@ -2,15 +2,15 @@
 var gsb = angular.module('gsbApp', ['ngCookies']);
 /* App Module */
 
-gsb.controller('quickAddCtrl', ['$http','$cookies',
+gsb.controller('quickAddCtrl', ['$http', '$cookies',
 
     function ($http, $cookies) {
         console.log($cookies);
         var d = new Date();
-        var today = (d.getMonth()+1)+"/"+ d.getDate()+"/"+ d.getFullYear();
+        var today = (d.getMonth() + 1) + '/' + d.getDate() + '/' + d.getFullYear();
 
-        var cookieEmail = $cookies["email"];
-        this.transaction = {'date':today, 'email': cookieEmail};
+        var cookieEmail = $cookies['email'];
+        this.transaction = {'date': today, 'email': cookieEmail};
         this.SaveTransaction = function () {
             var req = {
                 method: 'POST',
@@ -19,23 +19,22 @@ gsb.controller('quickAddCtrl', ['$http','$cookies',
                     'username': this.transaction.email,
                     'signature': this.calculateHash(),
                     'content-type': 'application/json',
-                    'accept': "application/plain"
+                    'accept': 'application/plain'
                 },
                 data: JSON.stringify({
-                    "payee": this.transaction.payee,
-                    "date": this.transaction.date,
-                    "amount": this.transaction.amount,
-                    "type": "widthdrawl",
-                    "Status": "Pending",
-                    "TipNeeded": true
+                    'payee': this.transaction.payee,
+                    'date': this.transaction.date,
+                    'amount': this.transaction.amount,
+                    'type': 'withdrawal',
+                    'Status': 'Pending',
+                    'TipNeeded': true
                 })
             }
             var object = this;
             $http(req).success(function () {
-
-                alert("Transaction Added")
-                $cookies["email"] = object.transaction.email;
-                object.transaction = {'email':  object.transaction.email, 'date':today};
+                alert('Transaction Added')
+                $cookies['email'] = object.transaction.email;
+                object.transaction = {'email': object.transaction.email, 'date': today};
             }).error(function () {
                 alert('Something went wrong: Check PIN')
             });

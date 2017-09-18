@@ -1,0 +1,39 @@
+<div class="modal fade bs-example-modal-md" id="CategoryEditor" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel summaryLabel">Details</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <table class="table table-condensed table-striped">
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Monthly Target
+                            </th>
+                            <th>Active</th>
+                        </tr>
+                        <tr ng-repeat="cat in Categories">
+                            <td>
+                                <input type="text" ng-model="cat.Text"></input>
+                            </td>
+                            <td>
+                                <input type="text" ng-model="cat.Amount"></input>
+                            </td>
+                            <td>
+                                <input type="checkbox" ng-model="cat.Active"></input>
+                             </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                    <button type="button" class="btn btn-default" ng-click="SaveCategories()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>

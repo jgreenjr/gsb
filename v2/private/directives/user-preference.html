@@ -1,0 +1,37 @@
+<div class="modal fade bs-example-modal-md" id="userPreference" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel summaryLabel">Details</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+    <table class="table">
+        <tr>
+            <th class="col-md-3">Username</th>
+            <td class="col-md-3">{{User.email}}</td>
+        </tr>
+        <tr>
+            <th class="col-md-3">Default Account</th>
+            <td class="col-md-3"><select id="ddlDefaultBank" ng-model="User.defaultBank">
+                <option ng-repeat="bank in Banks" value="{{bank}}" ng-selected="{{bank.Name == User.defaultBank.Name}}">{{bank.Name}}</option>
+            </select></td>
+        </tr>
+        <tr>
+            <th>Pin Number</th>
+            <td><input type="password" ng-model="User.Pin"/> </td>
+        </tr>
+        <tr>
+            <th>Password</th>
+            <td><input type="password" ng-model="User.password"/> </td>
+        </tr>
+    </table>
+</div>
+            </div>
+ <div class="modal-footer">
+                <button type="button" class="btn btn-default" ng-click="userController.Save()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>

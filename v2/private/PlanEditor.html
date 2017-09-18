@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Green Savings and Blown</title>
+    <script type="text/javascript" src="/v2/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/v2/bower_components/angular/angular.js"></script>
+    <script type="text/javascript" src="/v2/bower_components/angular-cookies/angular-cookies.js"></script>
+    <script type="text/javascript" src="/v2/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/v2/bower_components/bootstrap/js/collapse.js"></script>
+    <script type="text/javascript" src="/v2/bower_components/bootstrap/js/modal.js"></script>
+    
+    <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="js/services.js"></script>
+    <script type="text/javascript" src="js/Directives.js"></script>
+    <script type="text/javascript" src="js/BankEditorDirectives.js"></script>
+
+    <script type="text/javascript" src="js/BankController.js"></script>
+    <script type="text/javascript" src="js/planEditorController.js"></script>
+    <link rel="stylesheet" href="/v2/bower_components/bootstrap/dist/css/bootstrap.css"/>
+</head>
+<body ng-app="mainApp">
+<menu-bar active-Menu-Item="config">
+
+</menu-bar>
+<div ng-controller="planEditorController">
+    <div ng-show="Plan">
+            <div class="alert alert-success" role="alert">
+                    <strong>Saved!</strong> You successfully save you plan!
+            </div>
+        <button class="btn btn-default" ng-click="AddRow()">Add Row</button>
+        <button class="btn btn-default" ng-click="ChangeAutoPopulate()">
+                <span class="glyphicon" ng-class="{'glyphicon-check':Plan.AutoPopulate, 'glyphicon-unchecked': !Plan.AutoPopulate}" aria-hidden="true"></span>
+            {{GetAutoPopulateText()}}</button>
+            
+        <table class="table table-condensed table-striped">
+            <thead>
+                <tr>
+                    <th>Payee </th>
+                    <th>Start Date</th>
+                    <th>Repeat Iteration</th>
+                    <th>Repeat Interval</th>
+                    <th>Amount</th>
+                    <th>type</th>
+                    <th>Category</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="pt in Plan.PlannedTransactions">
+                    <td><input type="textbox" ng-model="pt.Payee" style="width:250px"/></td>
+                    <td><input type="textbox" ng-model="pt.StartDate" style="width:80px"/></td>
+                    <td><select ng-model="pt.RepeatUnit">
+                            <option value="day">Day</option>
+                            <option value="month">Month<option>
+                        </select></td>
+                    <td><input type="textbox" ng-model="pt.RepeatFrequency"/></td>
+                    <td><input type="textbox" ng-model="pt.Amount"/></td>
+                    <td><select ng-model="pt.Type">
+                          <option value="withdrawal" ng-selected="{{pt.Type == 'withdrawal'}}">withdrawal</option>
+                                    <option value="deposit" ng-selected="{{pt.Type == 'deposit'}}">deposit</option>
+                                </select>
+                    </td>
+                    <td><input type="textbox" ng-model="pt.Category"/></td>
+                    <td><input type="checkbox" ng-model="pt.Active"/></td>
+                </tr>
+            </tbody>
+        </table>
+        <button class="btn btn-default" ng-click="SavePlan()">Save</button>
+        <button class="btn btn-primary" ng-click="GetPlan()">Reset</button>
+    </div>
+        
+</div>
+</body>
+</html>

@@ -3,19 +3,26 @@
  */
 
 var mongoose = require('mongoose');
-var db = mongoose.createConnection('mongodb://localhost/gsb');
-
-var Schema = mongoose.Schema,
-    ObjectId = Schema.ObjectId;
+var Schema = mongoose.Schema;
+var ObjectId = Schema.ObjectId;
 
 var BankUser = new Schema({
     UserId: ObjectId,
     IsOwner: Boolean
 });
 
-var Bank = new Schema({
-    Name: String,
-    Users: [BankUser]
+var Category = new Schema({
+    CategoryId: {Type: Number},
+    Text: String,
+    Type: String,
+    Active:{type: Boolean, default: true},
+    Amount: {type: Number, required: true, default: 0}
 });
 
-module.exports =  db.model('Bank', Bank);
+var Bank = new Schema({
+    Name: String,
+    Users: [BankUser],
+    Categories: [Category]
+});
+
+module.exports = mongoose.model('Bank', Bank);

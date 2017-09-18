@@ -1,57 +1,70 @@
 /**
  * Created by greenj on 7/3/15.
  */
-app.factory("DataShareService", function($rootScope){
+app.factory('DataShareService', function ($rootScope) {
     var service = {};
-    service.selectedBank = "";
-    service.selectedTransaction = "";
-    service.categoryData = "";
-    service.selectedBudgetStartDate = "1/1/2015";
-    service.selectedBudgetEndDate = "1/1/2015";
-    service.selectedBankUpdated = function(value){
-        this.selectedBank = value.bankName;
-        this.selectedBudgetStartDate = value.BudgetStartDate;
-        this.selectedBudgetEndDate = value.BudgetEndDate
-        $rootScope.$broadcast("selectedBankUpdated");
+    service.selectedBank = '';
+    service.selectedTransaction = '';
+    service.selectedBankId = '';
+    service.categoryData = '';
+    service.selectedBudgetStartDate = '1/1/2015';
+    service.selectedBudgetEndDate = '1/1/2015';
+    service.selectedBankUpdated = function (value) {
+        if(value){
+        this.selectedBank = value.Name;
+        this.selectedBankId = value.bankId;
+        }
+        $rootScope.$broadcast('selectedBankUpdated');
     }
 
+    service.BroadcastValue = function(key, value){
+        $rootScope.$broadcast(key,value); 
+    }
 
+    service.PlanIdSet = function (value) {
+        this.PlanId = value;
+        $rootScope.$broadcast('planIdSet',value);
+    }
 
-    service.selectedTransactionUpdated = function(value){
+    service.selectedTransactionUpdated = function (value) {
         this.selectedTransaction = value;
-        $rootScope.$broadcast("selectedTransactionUpdated");
+        $rootScope.$broadcast('selectedTransactionUpdated');
     }
 
-    service.updateCategoryData = function(value){
+    service.updateCategoryData = function (value) {
         this.categoryData = value;
-        $rootScope.$broadcast("categoryDataUpdated");
+        $rootScope.$broadcast('categoryDataUpdated');
     }
 
     return service;
 });
 
-app.factory("TransactionSaveService", function($http, $rootScope){
+app.factory('TransactionSaveService', function ($http, $rootScope) {
     var service = {};
 
-
-    service.SaveTransaction = function(bank, transactionData){
-        var method = "put";
-
-        if(transactionData.id == undefined ){
-            method = "post"
+    service.SaveTransaction = function (bankId, transactionData, done) {
+        var method = 'post';
+        var url = "/"+transactionData.id
+        transactionData.bankId = bankId;
+        if (transactionData.id == undefined) {
+            method = 'put'
+            url = "";
         }
-        var settings =  {method: method,
-            url: '/banks/'+ bank,
+        var settings = {method: method,
+            url: '/Transaction' + url,
             headers: {
-                'bank':bank,
                 'content-type': 'application/json',
-                'accept': "application/json"
+                'accept': 'application/json'
             },
             data: angular.toJson(transactionData)
         };
-        $http(settings).success(function(data){
-            $rootScope.$broadcast("TransactionUpdated");
-        }).error(function(arg1, arg2){
+        $http(settings).success(function (data) {
+            if(done){
+                $rootScope.$broadcast("AddedTransaction", data)
+                return done();
+            }
+            $rootScope.$broadcast('TransactionUpdated');
+        }).error(function (arg1, arg2) {
             console.log(arg1, arg2)
         });
     };
@@ -59,40 +72,38 @@ app.factory("TransactionSaveService", function($http, $rootScope){
     return service;
 });
 
-
-app.factory("FilterService", function($rootScope){
+app.factory('FilterService', function ($rootScope) {
     var service = {};
-    service.filters ={
+    service.filters = {
         showPending: true,
         showCleared: true,
         showFutureTransaction: true,
         showNeedsTips: false,
-        searchQuery: "",
-        showBudgetItems: false,
+        searchQuery: '',
+        showThisMonth: false,
         showCurrentBalance: false
     };
 
-    service.updateShowPending = function(value){
-        service.updateFilterSetting("showPending", value);
+    service.updateShowPending = function (value) {
+        service.updateFilterSetting('showPending', value);
     }
 
-    service.updateShowCleared = function(value){
-
-        service.updateFilterSetting("showCleared", value);
+    service.updateShowCleared = function (value) {
+        service.updateFilterSetting('showCleared', value);
     }
 
-    service.updateShowFutureTransactions = function(value){
-        service.updateFilterSetting("showFutureTransaction", value);
+    service.updateShowFutureTransactions = function (value) {
+        service.updateFilterSetting('showFutureTransaction', value);
     }
 
-    service.updateFilterSetting = function(key, value){
+    service.updateFilterSetting = function (key, value) {
         service.filters[key] = value;
-        $rootScope.$broadcast("filteringUpdated");
+        $rootScope.$broadcast('filteringUpdated');
     }
 
-    service.updateAllFilterSettings = function(newFilterSettings){
+    service.updateAllFilterSettings = function (newFilterSettings) {
         service.filters = newFilterSettings;
-        $rootScope.$broadcast("filteringUpdated");
+        $rootScope.$broadcast('filteringUpdated');
     }
     return service;
 })

@@ -16,7 +16,7 @@
                         <div class="col-lg-12">
                             <div class="form-group">
                                 <label for="txtDate">Date</label>
-                                <input type="text" class="form-control" id="txtDate" placeholder="" ng-model="transactionObject.date">
+                                <input type="date" class="form-control" id="txtDate" placeholder="" ng-model="transactionObject.Date">
                             </div>
                         </div>
                     </div>
@@ -24,7 +24,7 @@
                         <div class="col-lg-12">
                             <div class="form-group">
                                 <label for="txtPayee">Payee</label>
-                                <input type="text" class="form-control" id="txtPayee" placeholder="" ng-model="transactionObject.payee">
+                                <input type="text" class="form-control" id="txtPayee" placeholder="" ng-model="transactionObject.Payee">
                             </div>
                         </div>
                     </div>
@@ -33,16 +33,16 @@
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label>Transaction Type</label>
-                                <select class="form-control" ng-model="transactionObject.type">
-                                    <option value="widthdrawl" ng-selected="{{transactionObject.type == 'widthdrawl'}}">widthdrawl</option>
-                                    <option value="deposit" ng-selected="{{transactionObject.type == 'deposit'}}">deposit</option>
+                                <select class="form-control" ng-model="transactionObject.Type">
+                                    <option value="withdrawal" ng-selected="{{transactionObject.Type == 'withdrawal'}}">withdrawal</option>
+                                    <option value="deposit" ng-selected="{{transactionObject.Type == 'deposit'}}">deposit</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label>Amount </label>
-                                <input type="text" class="form-control" id="txtAmount" placeholder="" ng-model="transactionObject.amount"/>
+                                <input class="form-control" id="txtAmount" placeholder="" ng-model="transactionObject.Amount"/>
                             </div>
                         </div>
                     </div>
@@ -60,11 +60,11 @@
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label for="idCat">Category</label>
-                                <select id="idCat" class="form-control" ng-model="transactionObject.category" ng-hide="ShowOtherText">
-                                    <option ng-repeat="category in Categories" value="{{category.name}}" ng-selected="{{category.name == transactionObject.category}}">{{category.name}}</option>
+                                <select id="idCat" class="form-control" ng-model="transactionObject.Category" ng-hide="ShowOtherText">
+                                    <option ng-repeat="category in Categories | filter: {Active:true} | orderBy: 'Text'" value="{{category.Text}}" ng-selected="{{category.Text == transactionObject.Category}}">{{category.Text}}</option>
                                 </select>
                                 <a href="#" ng-click="transactionCtrl.ShowOtherTextBox()" style="font-size: 8pt;" ng-hide="ShowOtherText">Not Listed</a>
-                                <input class="form-control" ng-model="transactionObject.category" ng-show="ShowOtherText"/>
+                                <input class="form-control" ng-model="transactionObject.Category" ng-show="ShowOtherText"/>
                             </div>
                         </div>
                     </div>
@@ -85,7 +85,6 @@
                 Updated on <span style="font-style: italic;">{{transactionObject.UpdateDate}}</span>
             </div>
             <div class="modal-footer">
-
                 <button type="button" class="btn btn-default" ng-click="transactionCtrl.SaveTransaction()">Save</button>
             </div>
         </div>

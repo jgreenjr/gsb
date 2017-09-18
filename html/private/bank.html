@@ -122,7 +122,7 @@
             <td class="col-md-1"><input data-bind="value: transactionDate" class="transactionDate" style="width:80px"/></td>
             <td class="col-md-3"><input data-bind="value: transactionPayee" style="width:250px"/></td>
             <td class="col-md-1"><input data-bind="value: transactionDeposit" style="width:80px"/></td>
-            <td class="col-md-1"><input data-bind="value: transactionWidthdrawl" style="width:80px"/></td>
+            <td class="col-md-1"><input data-bind="value: transactionWithdrawal" style="width:80px"/></td>
             <td class="col-md-1"><span data-bind="text: transactionTotal"></span></td>
             <td class="col-md-1">&nbsp;</td>
             <td class="col-md-1">
@@ -177,7 +177,7 @@
                             <div class="col-lg-6">
                               <div class="form-group">
                                 <label>Transaction Type</label>
-                                <select class="form-control" data-bind="options:['widthdrawl', 'deposit'], value:type">
+                                <select class="form-control" data-bind="options:['withdrawal', 'deposit'], value:type">
 
                                 </select>
                               </div>

@@ -10,14 +10,15 @@
             </button>
             <a class="navbar-brand" href="#"><img src="/v2/logo.jpg" height="30px" width="50px"/> </a>
         </div>
-        <p class="navbar-text">Signed in as <span>{{menuBarData.username}}</span><a href="#">(Signout)</a></p>
+        <p class="navbar-text">Signed in as <span>{{menuBarData.email}}</span><a href="#">(Signout)</a></p>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li class="dropdown" ng-class="{active : activeMenuItem == 'bank'}" ng-show="activeMenuItem == 'bank'">
                     <a href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Banks <span>(<span>{{menuBarData.selectedBank}}</span>)</span><span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li ng-repeat="bank in menuBarData.banks">
-                            <a ng-click='menuCtrl.UpdateBankName(bank)'>{{bank.bankName}}</a></li>
+                            <a ng-click='menuCtrl.UpdateBankName(bank)'>{{bank.Name}}</a></li>
+                        <li><a ng-click="menuCtrl.CreateBank()">Create New...</a></li>
                     </ul>
                 </li>
                 <li ng-hide="activeMenuItem == 'bank'"><a href="Banks.html">Banks</a></li>
@@ -26,11 +27,12 @@
                     <a href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Plan<span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li ng-show="activeMenuItem =='bank'"><a ng-click="OpenPopulatorWindow()">Populator</a> </li>
-                        <li><a href="/private/PlanEditor.html">Plan Editor</a></li>
+                        <li><a href="/v2/private/PlanEditor.html">Plan Editor</a></li>
                     </ul>
                 </li>
-                <li class="tab" ng-class="{active : activeMenuItem == 'config'}"><a href="bankConfiguration.html">Configuration</a></li>
-
+                <li class="tab" ng-class="{active : activeMenuItem == 'config'}" ng-show="false"><a href="bankConfiguration.html">Configuration</a></li>
+                <li><a href="#" ng-click="menuCtrl.OpenPreference()">User Settings</a></li>
+               
                 <form class="navbar-form navbar-left" ng-show="activeMenuItem =='bank'">
                     <span class="input-group" style="width:200px;">
                         <input type="textbox" class="form-control" ng-model="searchQuery" ng-change="UpdateSearchQuery()" width="100px" placeholder="Search"/>
@@ -43,7 +45,7 @@
                                 <li><a ng-click="menuCtrl.updateDisplay('showFutureItems')">Show Future Items {{filters.showFutureTransaction | filterCheckmark}}</a></li>
                                 <li><a ng-click="menuCtrl.updateDisplay('showNextSevenDays')">Show Next 7 Items {{filters.showNextSevenDays | filterCheckmark}}</a></li>
                                 <li role="separator" class="divider"></li>
-                                <li><a ng-click="menuCtrl.updateDisplay('showBudgetItems')">Show Budget Items {{filters.showBudgetItems | filterCheckmark}}</a></li>
+                                <li><a ng-click="menuCtrl.updateDisplay('showThisMonth')">Show This Month's Items {{filters.showThisMonth | filterCheckmark}}</a></li>
                                 <li><a ng-click="menuCtrl.updateDisplay('showNeedsTip')">Tip Needed Items {{filters.showNeedsTips | filterCheckmark}}</a></li>
                                 <li role="separator" class="divider"></li>
                                 <li><a ng-click="menuCtrl.updateDisplay('showCurrentBalance')">Show Current Balance {{filters.showCurrentBalance | filterCheckmark}}</a></li>
@@ -51,6 +53,10 @@
                         </span><!-- /btn-group -->
                     </span>
                 </form>
+                <form class="navbar-form navbar-left" ng-show="activeMenuItem =='bank'">
+                        <span class="input-group" style="width:200px;">
+                                <button type="button" class="btn btn-default" ng-click="OpenConfiguration()" aria-haspopup="true" aria-expanded="false">  <span class="glyphicon glyphicon-cog" aria-hidden="true"></span></button>    
+                        </span>
                 <li>
             </ul>
 
@@ -59,3 +65,5 @@
 
     </div>
 </nav>
+<bank-editor></bank-editor>
+<user-preference></user-preference>

@@ -1,11 +1,16 @@
 <div class="panel panel-info">
     <div class="panel-heading">
-        <div class="panel-title"><a href="#" ng-click="ShowFullSummary()">Category Summary</a></div>
+        <div class="panel-title"><a href="#" ng-click="ShowFullSummary()">Categories</a></div>
+       
     </div>
+    <span style="float: right;">
+            <category-editor></category-editor>
+      </span>
     <div class="panel-body">
         <select class="form-control" ng-model="FilterRange">
-            <option value="budget">{{startDate}} - {{endDate}}</option>
-            <option value="All">All Time</option>
+            <option value="All">All Time</option> 
+            <option value="thisMonth">This Month</option>
+            <option value="nextMonth">Next Month</option>
         </select>
         <br/>
         <div class="list-group">
@@ -13,8 +18,8 @@
                 Total
                 <span class="badge">{{summaryData.TotalGains| currency}}</span>
             </a>
-            <a ng-repeat="cat in summaryData.ByCategory | orderBy: '-Gains'" href="#"
-               class="list-group-item" ng-class="{active: categoryFilter == cat.category}" ng-click="selectCategory(cat.category)">{{cat.category|shortText}}
+            <a ng-repeat="cat in summaryData.ByCategory | filter: categoryFilters | orderBy: '-Gains'" href="#"
+               class="list-group-item" ng-class="{active: categoryFilter == cat.Category}" ng-click="selectCategory(cat.Category)">{{cat.Category|shortText}}
                 <span class="badge">{{cat.Gains| currency}}</span></a>
 
         </div>
@@ -30,26 +35,31 @@
             </div>
             <div class="modal-body">
                 <select class="form-control" ng-model="FilterRange">
-                    <option value="budget">{{startDate}} - {{endDate}}</option>
                     <option value="All">All Time</option>
+                   <option value="thisMonth">This Month</option>
+                 <option value="nextMonth">Next Month</option>
+                    
                 </select>
-                <ul class="nav nav-tabs">
-                    <li role="presentation" ng-class="{active: activeTab=='byCategory'}"><a href="#" ng-click="SetActiveTab('byCategory', this)">By Category</a></li>
-                    <li role="presentation" ng-class="{active: activeTab=='byDate'}"><a href="#" ng-click="SetActiveTab('byDate')">By Date</a></li>
-                </ul>
                 <div ng-show="activeTab=='byCategory'">
                     <table class="table">
                         <tr>
                             <th>Category</th>
                             <th>Deposits</th>
                             <th>Withdrawals</th>
-                            <th>Gains</th>
+                            <th>Remaining</th>
+                           
                         </tr>
-                        <tr ng-repeat="cat in summaryData.ByCategory | orderBy: 'category'">
-                            <td>{{cat.category}}</td>
-                            <td>{{cat.Deposit | currency}}</td>
-                            <td>{{cat.Widthdrawls | currency}}</td>
-                            <td>{{cat.Gains | currency}}</td>
+                        <tr ng-repeat="cat in summaryData.ByCategory | filter: categoryFilters | orderBy: 'Text'">
+                            <td>{{cat.Category}}</td>
+                            <td>{{cat.Deposits | currency}}</td>
+                            <td>{{cat.Withdrawals | currency}}</td>
+                            <td>
+                                <div class="progress">
+                                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{(cat.Gains*-1)/cat.Budget}}" aria-valuemin="0" aria-valuemax="100" style="width: {{(cat.Gains*-100)/cat.Budget}}%">
+                                            <span class="sr-only">{{cat.Budget + cat.Gains | currency}} of {{cat.Budget | currency}}</span>
+                                        </div>
+                                    </div>
+                                {{cat.Budget + cat.Gains | currency}} of {{cat.Budget | currency}}</td>
                         </tr>
                         <tr style="border-top: double 1px;">
                             <td>&nbsp</td>
@@ -69,14 +79,14 @@
                         </tr>
                         <tr ng-repeat="cat in summaryData.ByDate | orderBy: 'date'">
                             <td>{{cat.date | date}}</td>
-                            <td>{{cat.Deposit | currency}}</td>
-                            <td>{{cat.Widthdrawls | currency}}</td>
+                            <td>{{cat.Deposits | currency}}</td>
+                            <td>{{cat.Withdrawals | currency}}</td>
                             <td>{{cat.Gains | currency}}</td>
                         </tr>
                         <tr style="border-top: double 1px;">
                             <td>&nbsp</td>
                             <td>{{summaryData.TotalDeposits | currency}}({{summaryData.TotalDepositsCount}})</td>
-                            <td>{{summaryData.TotalWithdrawls | currency}}({{summaryData.TotalWithdrawlsCount}})</td>
+                            <td>{{summaryData.TotalWithdrawals | currency}}({{summaryData.TotalWithdrawalsCount}})</td>
                             <td>{{summaryData.TotalGains | currency}}({{summaryData.TotalTransactions}})</td>
                         </tr>
                     </table>
