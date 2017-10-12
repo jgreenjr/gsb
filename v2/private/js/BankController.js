@@ -1,7 +1,7 @@
 /**
  * Created by greenj on 7/3/15.
  */
-app.controller('BankController', ['DataShareService', '$http', '$scope', 'TransactionSaveService', 'FilterService', function (DataShareService, $http, $scope, TransactionSaveService, FilterService) {
+app.controller('BankController', ['DataShareService', '$http', '$scope', 'TransactionSaveService', 'FilterService', '$rootScope', function (DataShareService, $http, $scope, TransactionSaveService, FilterService, $rootScope) {
     $scope.filters = FilterService.filters;
     $scope.currentDate = new Date();
 
@@ -152,13 +152,15 @@ app.controller('BankController', ['DataShareService', '$http', '$scope', 'Transa
     }
 
     $scope.DeleteTransaction = function (transaction) {
-        if (!confirm('Are you sure you want to delete ' + transaction.payee + '?')) {
+       /* if (!confirm('Are you sure you want to delete ' + transaction.payee + '?')) {
             return
         }
         $http.delete('/Transaction/' + $scope.selectedBankId + '/' + transaction.id, { headers: { 'accept': 'application/json' }, responseType: 'json' }).success(function (data) {
             $scope.GetTransactions();
             $scope.$broadcast('TransactionUpdated');
-        })
+        })*/
+      //  DataShareService.DeleteTransaction(transaction);
+      $rootScope.$broadcast("TransactionDelete",$scope.selectedBankId,transaction)
     };
 
     $scope.GetTransactions = function () {

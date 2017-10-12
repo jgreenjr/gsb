@@ -36,6 +36,10 @@ app.factory('DataShareService', function ($rootScope) {
         $rootScope.$broadcast('categoryDataUpdated');
     }
 
+    service.DeleteTransaction = function(transaction){
+        $rootScope.$broadcast("TransactionDelete",service.selectedBankId,transaction)
+    }
+
     return service;
 });
 
