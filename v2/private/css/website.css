@@ -9,3 +9,21 @@
     max-height: calc(100vh - 260px);
      overflow-y: auto;
 }
+
+.navbar{
+    background-color: #4a9160;
+    color: white;
+}
+.navbar-default .navbar-text{
+    color: white;
+}
+
+.navbar-default .navbar-nav > li > a{
+    color: white;
+}
+
+.panel-default > .panel-heading 
+{
+    background-color: #4a9160;
+    color: white;
+}
