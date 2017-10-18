@@ -16,12 +16,12 @@
         </select>
         <br/>
         <div class="list-group">
-            <a href="#" class="list-group-item" ng-class="{active: categoryFilter == ''}"  ng-click="ResetFilter()">
+            <a href="#" class="list-group-item"  ng-click="ResetFilter()">
                 Total
                 <span class="badge">{{summaryData.TotalGains| currency}}</span>
             </a>
             <a ng-repeat="cat in summaryData.ByCategory | filter: categoryFilters | orderBy: '-Gains'" href="#"
-               class="list-group-item" ng-class="{active: categoryFilter == cat.Category}" ng-click="selectCategory(cat.Category)">{{cat.Category|shortText}}
+               class="list-group-item" ng-click="selectCategory(cat.Category)">{{cat.Category|shortText}}
                 <span class="badge">{{cat.Gains| currency}}</span></a>
 
         </div>

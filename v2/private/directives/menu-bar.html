@@ -12,8 +12,8 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 
-                <li><button data-toggle="dropdown" class="btn btn-default navbar-btn">Selected Bank: <span>{{menuBarData.selectedBank}}</span><span class="caret"></span></button>&nbsp;
-                    <ul class="dropdown-menu" role="menu">
+               <li><button data-toggle="dropdown" class="btn btn-default navbar-btn">Bank: <span>{{menuBarData.selectedBank}}</span><span class="caret"></span></button>&nbsp;
+               <ul class="dropdown-menu" role="menu">
                             <li ng-repeat="bank in menuBarData.banks">
                                 <a ng-click='menuCtrl.UpdateBankName(bank)'>{{bank.Name}}</a></li>
                             <li><a ng-click="menuCtrl.CreateBank()">Create New...</a></li>
@@ -56,9 +56,15 @@
                
             </ul>
             <div class="navbar-right">
-                    <ul class="nav navbar-nav">
-                    <li><button class="btn btn-default navbar-btn" ng-click="menuCtrl.OpenPreference()" ><span href="#"class="glyphicon glyphicon-user"></span> {{menuBarData.email}}</button>&nbsp;</li>
-                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                            <li class="dropdown">
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span href="#"class="glyphicon glyphicon-user"></span> {{menuBarData.email}} <span class="caret"></span></a>
+                              <ul class="dropdown-menu">
+                                <li><a href="#" ng-click="menuCtrl.OpenPreference()">User Settings</a></li>
+                                <li><a href="/login.html">Signout</a></li>
+                              </ul>
+                            </li>
+                          </ul>
             </div>
         </div>
     </div>

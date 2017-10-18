@@ -64,11 +64,7 @@ app.directive('menuBar', ['$http', '$cookies', 'FilterService', function ($http,
                 returnValue.append(div);
                 return returnValue.html();
             }
-
-            $scope.OpenConfiguration = function(){
-                $("#CategoryEditor").modal();
-            }
-
+            
             this.updateDisplay = function (type) {
                 switch (type) {
                 case 'showPending':

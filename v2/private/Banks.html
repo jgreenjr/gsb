@@ -56,8 +56,8 @@
         <div class="col-md-8">
         <div class="panel panel-default">
             <div class="panel-heading">
-                    <span class="panel-title">Transactions for {{selectedBank}}</span>
-                    <span style="float: right">    
+                    <span class="panel-title">Transactions for {{selectedBank}} <a href="#" ng-click="OpenConfiguration()"> <span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></span>
+                    <span style="float: right" ng-show="filters.categoryFilter"> Filterd by: {{filters.categoryFilter}}
                   </span>
             </div>
 

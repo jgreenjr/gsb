@@ -30,6 +30,9 @@ app.controller('BankController', ['DataShareService', '$http', '$scope', 'Transa
     $scope.SwitchShowCurrent = function () {
         $scope.showCurrent = !$scope.showCurrent;
     }
+    $scope.OpenConfiguration = function(){
+        $("#CategoryEditor").modal();
+    }
 
     $scope.showPending = function () {
         $scope.pending = !$scope.pending;
