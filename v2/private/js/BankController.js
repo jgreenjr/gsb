@@ -41,8 +41,7 @@ app.controller('BankController', ['DataShareService', '$http', '$scope', 'Transa
         $scope.cleared = !$scope.cleared;
     }
 
-    $scope.filteredTransactions = function (transaction) {
-
+    $scope.filteredTransactions = function (transaction, index) {
         todayDate = new Date(dateStr)
         sevenDays = new Date(todayDate);
         sevenDays.setDate(todayDate.getDate() + 7);
@@ -68,7 +67,10 @@ app.controller('BankController', ['DataShareService', '$http', '$scope', 'Transa
 
             startDate = new Date(month + "/1/" + year);
             endDate = new Date(endMonth + "/1/" + endYear)
-            return tDt < endDate && tDt >= startDate;
+            if( tDt > endDate || tDt < startDate )
+            {
+                return false;
+            }
         }
 
         if ($scope.filters.categoryFilter && transaction.Category != $scope.filters.categoryFilter)
@@ -134,7 +136,7 @@ app.controller('BankController', ['DataShareService', '$http', '$scope', 'Transa
                 async.eachSeries(data.transactions, function (t, done) {
                     TransactionSaveService.SaveTransaction($scope.selectedBankId, t, done)
                 }, function () {
-                        $scope.GetTransactions()              
+                        $scope.GetTransactions()           
                     });
             })
         }
@@ -165,6 +167,13 @@ app.controller('BankController', ['DataShareService', '$http', '$scope', 'Transa
       //  DataShareService.DeleteTransaction(transaction);
       $rootScope.$broadcast("TransactionDelete",$scope.selectedBankId,transaction)
     };
+
+    $scope.alertAutoAdd = function(){
+        $("#alertAutoAdd").modal("show");
+    }
+    $scope.alertAutoRemove = function(){
+        $scope.AutoAddTransactions = [];
+    }
 
     $scope.GetTransactions = function () {
         var settings = {

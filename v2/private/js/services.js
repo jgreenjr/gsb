@@ -63,8 +63,9 @@ app.factory('TransactionSaveService', function ($http, $rootScope) {
             data: angular.toJson(transactionData)
         };
         $http(settings).success(function (data) {
-            $rootScope.$broadcast("AddedTransaction", transactionData)
+           
             if(done){ 
+                $rootScope.$broadcast("AddedTransaction", transactionData)
                 return done();
             }
             $rootScope.$broadcast('TransactionUpdated');
